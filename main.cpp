@@ -59,10 +59,7 @@ int main(int argc, char **argv)
 {
     QApplication app(argc, argv);
 
-    //GraphWidget *widget = new GraphWidget;
-
     MainWindow mainWindow;
-    //mainWindow.setCentralWidget(widget);
 
     mainWindow.show();
     return app.exec();

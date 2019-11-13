@@ -213,7 +213,7 @@ QVariant Node::itemChange(GraphicsItemChange change, const QVariant &value)
         break;
     default:
         break;
-    }
+    };
 
     return QGraphicsItem::itemChange(change, value);
 }

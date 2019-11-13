@@ -79,90 +79,44 @@ GraphWidget::GraphWidget(QWidget *parent,QVector <QVector <int> >& Table,QVector
 //! [1]
     QVector<Node *> nodeVec;
     for(int i = 0; i < Table.size(); i++) {
-        //if(pointsOfGraph.contains(i)) {
             nodeVec.append(new Node(this,pointsOfGraph[i]));
             scene->addItem(nodeVec.last());
             nodeVec.last()->setPos(0,0);
-      //  }
     }
 
-    /*for(int i = 0; i < Table.size(); i++) {
-        scene->addItem(nodeVec[i]);
-        nodeVec[i]->setPos(0,0);
-    }*/
 
     for(int i = 0; i < Table.size()-1; i++) {
         for(int j = i+1; j<Table[i].size();j++) {
             if(Table[i][j] != 0) {
-                scene->addItem(new Edge(nodeVec[i],nodeVec[j]));
+                scene->addItem(new Edge(nodeVec[i],nodeVec[j],Table[i][j]));
             }
         }
     }
 
     shuffle();
     setParentWindow(window);
-    for(int i=0;i<nodeVec.size();i++){
-        nodeVec[i]->calculateForces();
-        nodeVec[i]->advancePosition();
+
+    QList<Node *> nodes;
+    foreach (QGraphicsItem *item, scene->items()) {
+        if (Node *node = qgraphicsitem_cast<Node *>(item))
+            nodes << node;
     }
+    bool itemsMoved;
+    do {
+        foreach (Node *node, nodes)
+            node->calculateForces();
+
+        itemsMoved = false;
+        foreach (Node *node, nodes) {
+            if (node->advancePosition())
+                itemsMoved = true;
+        }
+    } while(itemsMoved);
 
     if(pointsOfGraph.size() > 50) {
         scaleView(1/qreal(1.2*4.5));
     }
     getParentWindow()->setCentralWidget(this);
-    //window->setCentralWidget(this);
-    /*Node *node1 = new Node(this);
-    Node *node2 = new Node(this);
-    Node *node3 = new Node(this);
-    Node *node4 = new Node(this);
-    centerNode = new Node(this);
-    Node *node6 = new Node(this);
-    Node *node7 = new Node(this);
-    Node *node8 = new Node(this);
-    Node *node9 = new Node(this);
-    scene->addItem(node1);
-    scene->addItem(node2);
-    scene->addItem(node3);
-    scene->addItem(node4);
-    scene->addItem(centerNode);
-    scene->addItem(node6);
-    scene->addItem(node7);
-    scene->addItem(node8);
-    scene->addItem(node9);
-    scene->addItem(new Edge(node1, node2));
-    scene->addItem(new Edge(node2, node3));
-    scene->addItem(new Edge(node2, centerNode));
-    scene->addItem(new Edge(node3, node6));
-    scene->addItem(new Edge(node4, node1));
-    scene->addItem(new Edge(node4, centerNode));
-    scene->addItem(new Edge(centerNode, node6));
-    scene->addItem(new Edge(centerNode, node8));
-    scene->addItem(new Edge(node6, node9));
-    scene->addItem(new Edge(node7, node4));
-    scene->addItem(new Edge(node8, node7));
-    scene->addItem(new Edge(node9, node8));
-    //scene->addItem(new Edge(node9, node1));
-    //scene->addItem(new Edge(node7, node3));
-
-    node1->setPos(-50, -50);
-    node2->setPos(0, -50);
-    node3->setPos(50, -50);
-    node4->setPos(-50, 0);
-    centerNode->setPos(0, 0);
-    node6->setPos(50, 0);
-    node7->setPos(-50, 50);
-    node8->setPos(0, 50);
-    node9->setPos(50, 50);
-
-    node1->setPos(0, 0);
-    node2->setPos(0, 0);
-    node3->setPos(0, 0);
-    node4->setPos(0, 0);
-    centerNode->setPos(0, 0);
-    node6->setPos(0, 0);
-    node7->setPos(0, 0);
-    node8->setPos(0, 0);
-    node9->setPos(0, 0);*/
 }
 //! [1]
 
@@ -170,7 +124,7 @@ GraphWidget::GraphWidget(QWidget *parent,QVector <QVector <int> >& Table,QVector
 void GraphWidget::itemMoved()
 {
     if (!timerId)
-        //timerId = startTimer(100 / 25);
+        //timerId = startTimer(1000 / 25);
        timerId = startTimer(0);
 }
 //! [2]

@@ -19,5 +19,3 @@ INSTALLS += target
 
 FORMS += \
     mainwindow.ui
-
-INCLUDEPATH += "C:\Users\Софья\AppData\Local\Microsoft\OneDrive\19.174.0902.0013"

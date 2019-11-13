@@ -49,11 +49,12 @@ void MainWindow::on_actionOpen_json_file_triggered()
                         j = i1;
                     }
                 }
+
                 Table[i][j] = obj["length"].toInt();
                 Table[j][i] = Table[i][j];
             }
 
-            GraphWidget *widget = new GraphWidget(0,Table,pointsOfGraph,this);
+            new GraphWidget(0,Table,pointsOfGraph,this);
         }
 
     }

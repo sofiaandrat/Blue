@@ -55,12 +55,13 @@
 #include <QPainter>
 
 //! [0]
-Edge::Edge(Node *sourceNode, Node *destNode)
+Edge::Edge(Node *sourceNode, Node *destNode, int len)
     : arrowSize(10)
 {
     setAcceptedMouseButtons(0);
     source = sourceNode;
     dest = destNode;
+    length = len;
     source->addEdge(this);
     dest->addEdge(this);
     adjust();
@@ -133,21 +134,19 @@ void Edge::paint(QPainter *painter, const QStyleOptionGraphicsItem *, QWidget *)
     painter->drawLine(line);
 //! [5]
 
-//! [6]
-    // Draw the arrows
-    /*double angle = std::atan2(-line.dy(), line.dx());
+    QRectF edgeRect = this->boundingRect();
 
-    QPointF sourceArrowP1 = sourcePoint + QPointF(sin(angle + M_PI / 3) * arrowSize,
-                                                  cos(angle + M_PI / 3) * arrowSize);
-    QPointF sourceArrowP2 = sourcePoint + QPointF(sin(angle + M_PI - M_PI / 3) * arrowSize,
-                                                  cos(angle + M_PI - M_PI / 3) * arrowSize);
-    QPointF destArrowP1 = destPoint + QPointF(sin(angle - M_PI / 3) * arrowSize,
-                                              cos(angle - M_PI / 3) * arrowSize);
-    QPointF destArrowP2 = destPoint + QPointF(sin(angle - M_PI + M_PI / 3) * arrowSize,
-                                              cos(angle - M_PI + M_PI / 3) * arrowSize);
+    int xCoord = edgeRect.left() + (edgeRect.right() - edgeRect.left())/2 - 5;
+    int yCoord = edgeRect.top() + (edgeRect.bottom() - edgeRect.top())/2 - 5;
 
-    painter->setBrush(Qt::black);
-    painter->drawPolygon(QPolygonF() << line.p1() << sourceArrowP1 << sourceArrowP2);
-    painter->drawPolygon(QPolygonF() << line.p2() << destArrowP1 << destArrowP2);*/
+    QRectF textRect(xCoord, yCoord, edgeRect.width() - 4, edgeRect.height() - 4);
+    QString lengthStr = QString::number(this->length);
+
+    QFont font = painter->font();
+    font.setBold(true);
+    font.setPointSize(10);
+    painter->setFont(font);
+    painter->setPen(Qt::blue);
+    painter->drawText(textRect, lengthStr);
 }
-//! [6]
+
