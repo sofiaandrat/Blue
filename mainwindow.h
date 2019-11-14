@@ -2,6 +2,7 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
+<<<<<<< HEAD
 #include <QJsonObject>
 #include <QJsonArray>
 #include <QJsonParseError>
@@ -9,6 +10,8 @@
 #include <QFileDialog>
 #include <QStandardItem>
 #include <QMessageBox>
+=======
+>>>>>>> First commit
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
@@ -22,6 +25,7 @@ public:
     MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
 
+<<<<<<< HEAD
     QJsonDocument doc;
     QJsonArray docAr;
     QJsonParseError docError;
@@ -32,6 +36,10 @@ public:
 
 private slots:
     void on_actionOpen_json_file_triggered();
+=======
+private slots:
+    void on_pushButton_clicked();
+>>>>>>> First commit
 
 private:
     Ui::MainWindow *ui;
