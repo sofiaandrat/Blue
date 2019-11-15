@@ -15,7 +15,6 @@ public:
     explicit SocketTest(QObject *parent = nullptr);
     void Connect();
     void SendMessage(Actions Action, QJsonObject jsonData);
-    void SendMessage1(Actions Action, QJsonObject jsonData);
 signals:
 
 public slots:
