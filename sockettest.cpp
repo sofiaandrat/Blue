@@ -21,14 +21,10 @@ void SocketTest::Connect()
 
 void SocketTest::SendMessage(Actions Action, QJsonObject jsonObj)
 {
-    QByteArray jsonData;
-    jsonData = QJsonDocument(jsonObj).toJson(QJsonDocument::Compact);
-    QByteArray content("\x01\x00\x00\x00\x10\x00\x00\x00", 8);
     if(socket->isOpen())
     {
-        socket->write(content + jsonData);
-        qDebug() << content + jsonData;
-        socket->waitForBytesWritten(500);
+        socket->write(toMessageFormat(Action,jsonObj));
+        qDebug()<< toMessageFormat(Action,jsonObj);
     } else {
         qDebug() << "socket is close";
     }
@@ -40,12 +36,15 @@ void SocketTest::readyRead()
 {
     if(socket->waitForConnected(500))
     {
-        socket->waitForReadyRead(500);
-        Data = socket->readAll();
-        qDebug() << Data;
-        doc = QJsonDocument::fromJson(Data, &docError);
-        if (docError.errorString().toInt() == QJsonParseError::NoError)
-        {
+        if(socket->waitForReadyRead(500)) {
+            Data = socket->readAll();
+            qDebug() << Data;
+            doc = QJsonDocument::fromJson(Data, &docError);
+            if (docError.errorString().toInt() == QJsonParseError::NoError)
+            {
+            }
+        } else {
+            qDebug() << "Data not availabe";
         }
     }
 }
@@ -54,4 +53,19 @@ void SocketTest::readyRead()
 void SocketTest::disconnect()
 {
     socket->deleteLater();
+}
+
+QByteArray SocketTest::toMessageFormat(Actions Action,QJsonObject jsonObj) {
+
+    QByteArray jsonData = QJsonDocument(jsonObj).toJson(QJsonDocument::Compact);
+
+    int int_action = Action;
+    int* action = &int_action;
+    int int_jsonSize = jsonData.size();
+    int* jsonSize = &int_jsonSize;
+
+    QByteArray bytes_action((char*)action,4);
+    QByteArray bytes_jsonSize((char*)jsonSize,4);
+
+    return bytes_action + bytes_jsonSize + jsonData;
 }
