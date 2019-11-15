@@ -1,3 +1,4 @@
+  
 /****************************************************************************
 **
 ** Copyright (C) 2016 The Qt Company Ltd.
@@ -242,4 +243,3 @@ int Node::getNodeIndex()
 {
     return this->index;
 }
-

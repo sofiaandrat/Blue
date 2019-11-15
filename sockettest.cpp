@@ -29,14 +29,18 @@ void SocketTest::SendMessage(Actions Action, QJsonObject jsonObj)
     } else {
         qDebug() << "socket is close";
     }
+    socket->readyRead();
 }
 
 
 void SocketTest::readyRead()
 {
+
     QByteArray buffer = socket->readAll();
-    while(buffer.size() < 8) {
-        if(socket->waitForReadyRead(500)){
+    while(buffer.size() < 8)
+    {
+        if(socket->waitForReadyRead(500))
+        {
             buffer.append(socket->readAll());
         }
     }
@@ -80,4 +84,9 @@ QByteArray SocketTest::toMessageFormat(Actions Action,QJsonObject jsonObj) {
     QByteArray bytes_jsonSize((char*)jsonSize,4);
 
     return bytes_action + bytes_jsonSize + jsonData;
+}
+
+QJsonDocument SocketTest::getterDoc()
+{
+    return this->doc;
 }

@@ -24,7 +24,7 @@
      </rect>
     </property>
     <property name="text">
-     <string>PushButton</string>
+     <string>Login</string>
     </property>
    </widget>
    <widget class="QLineEdit" name="login">
@@ -51,6 +51,30 @@
     </property>
    </widget>
   </widget>
+  <widget class="QMenuBar" name="menubar">
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>0</y>
+     <width>800</width>
+     <height>26</height>
+    </rect>
+   </property>
+   <widget class="QMenu" name="menuFile">
+    <property name="title">
+     <string>File</string>
+    </property>
+    <addaction name="actionOpen_JSON_FIle"/>
+   </widget>
+   <addaction name="menuFile"/>
+  </widget>
+  <widget class="QStatusBar" name="statusbar"/>
+  <action name="actionOpen_JSON_FIle">
+   <property name="text">
+    <string>Open JSON FIle</string>
+   </property>
+  </action>
+ </widget>
  <resources/>
  <connections/>
 </ui>
