@@ -17,13 +17,21 @@ DEFINES += QT_DEPRECATED_WARNINGS
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 SOURCES += \
+    edge.cpp \
+    graphwidget.cpp \
     main.cpp \
     mainwindow.cpp \
+    node.cpp \
+    parser.cpp \
     sockettest.cpp
 
 HEADERS += \
     Collections.h \
+    edge.h \
+    graphwidget.h \
     mainwindow.h \
+    node.h \
+    parser.h \
     sockettest.h
 
 FORMS += \

@@ -47,7 +47,6 @@
 ** $QT_END_LICENSE$
 **
 ****************************************************************************/
-
 #ifndef GRAPHWIDGET_H
 #define GRAPHWIDGET_H
 
