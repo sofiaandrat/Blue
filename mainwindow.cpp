@@ -23,5 +23,4 @@ void MainWindow::on_pushButton_clicked()
     SocketTest Socket;
     Socket.Connect();
     Socket.SendMessage(LOGIN,{{"name", ui->login->text()}});
-    Socket.SendMessage1(MAP, {{"layer", 0}});
 }
