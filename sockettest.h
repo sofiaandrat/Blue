@@ -15,6 +15,7 @@ public:
     explicit SocketTest(QObject *parent = nullptr);
     void Connect();
     void SendMessage(Actions Action, QJsonObject jsonData);
+    void SendMessage1(Actions Action, QJsonObject jsonData);
 signals:
 
 public slots:
@@ -25,6 +26,7 @@ private:
     QByteArray Data;
     QJsonDocument doc;
     QJsonParseError docError;
+    QByteArray toMessageFormat(Actions Action,QJsonObject jsonObj);
 };
 
 #endif // SOCKETTEST_H
