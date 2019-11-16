@@ -25,27 +25,39 @@ void SocketTest::SendMessage(Actions Action, QJsonObject jsonObj)
     {
         socket->write(toMessageFormat(Action,jsonObj));
         qDebug()<< toMessageFormat(Action,jsonObj);
+        socket->waitForReadyRead(500);
     } else {
         qDebug() << "socket is close";
     }
-    socket->readyRead();
 }
 
 
 void SocketTest::readyRead()
 {
-    if(socket->waitForConnected(500))
-    {
-        if(socket->waitForReadyRead(500)) {
-            Data = socket->readAll();
-            qDebug() << Data;
-            doc = QJsonDocument::fromJson(Data, &docError);
-            if (docError.errorString().toInt() == QJsonParseError::NoError)
-            {
-            }
-        } else {
-            qDebug() << "Data not availabe";
+    QByteArray buffer = socket->readAll();
+    while(buffer.size() < 8) {
+        if(socket->waitForReadyRead(500)){
+            buffer.append(socket->readAll());
         }
+    }
+
+    QByteArray resultCode = buffer.mid(0,4);
+    QByteArray sizeOfData = buffer.mid(4,4);
+    QByteArray data = buffer.mid(8,buffer.size()-8);
+
+    QDataStream in(sizeOfData);
+    in.setByteOrder(QDataStream::LittleEndian);
+    int int_sizeOfData;
+    in >> int_sizeOfData;
+
+    Data = data;
+    while(Data.size() < int_sizeOfData) {
+        if(socket->waitForReadyRead(500))
+            Data.append(socket->readAll());
+    }
+    doc = QJsonDocument::fromJson(Data, &docError);
+    if (docError.errorString().toInt() == QJsonParseError::NoError)
+    {
     }
 }
 
