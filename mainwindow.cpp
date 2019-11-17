@@ -23,7 +23,11 @@ void MainWindow::on_pushButton_clicked()
     Socket.Connect();
     Socket.SendMessage(LOGIN,{{"name", ui->login->text()}});
     Socket.SendMessage(MAP,{{"layer", 0}});
-    Parser.Pars(Socket.getterDoc(),this);
+    Parser.Pars(Socket.getterDoc());
+    QVector <int> pointsOfGraph = Parser.getterPointsOfGraph();
+    QVector <QVector <int> > Table = Parser.getterLayer0();
+    new GraphWidget(nullptr, Table, pointsOfGraph, this);
     Socket.SendMessage(MAP,{{"layer", 1}});
+    Parser.Pars(Socket.getterDoc());
     Socket.SendMessage(MAP,{{"layer", 10}});
 }
