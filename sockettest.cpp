@@ -29,7 +29,7 @@ void SocketTest::SendMessage(Actions Action, QJsonObject jsonObj)
     } else {
         qDebug() << "socket is close";
     }
-    socket->readyRead();
+    //socket->readyRead();
 }
 
 
@@ -60,9 +60,6 @@ void SocketTest::readyRead()
             Data.append(socket->readAll());
     }
     doc = QJsonDocument::fromJson(Data, &docError);
-    if (docError.errorString().toInt() == QJsonParseError::NoError)
-    {
-    }
 }
 
 
