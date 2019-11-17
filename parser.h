@@ -13,12 +13,14 @@ class parser
 {
 private:
     QVector <int> pointsOfGraph;
-    QVector <QVector <int> > Table;
+    QVector <QVector <int> > Layer0;
+    QVector <QVector <int> > Layer1;
 public:
     parser();
-    void Pars(QJsonDocument doc, MainWindow* window);
+    void Pars(QJsonDocument doc);
     QVector <int> getterPointsOfGraph();
-    QVector <QVector <int> > getterTable();
+    QVector <QVector <int> > getterLayer0();
+    QVector <QVector <int> > getterLayer1();
 };
 
 #endif // PARSER_H
