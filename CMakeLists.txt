@@ -1,6 +1,7 @@
+
 cmake_minimum_required(VERSION 3.1.0)
 
-project(graph)
+project(client)
 
 include(${CMAKE_BINARY_DIR}/conanbuildinfo.cmake)
 conan_basic_setup()
@@ -18,8 +19,11 @@ add_executable(graph
     edge.cpp
     graphwidget.cpp
     node.cpp
+    sockettest.cpp
+    parser.cpp
 )
 
+target_link_libraries(graph Qt5::Network)
 target_link_libraries(graph Qt5::Widgets)
 target_link_libraries(graph Qt5::Core)
 target_link_libraries(graph Qt5::Gui)
