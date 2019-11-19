@@ -60,7 +60,7 @@
 #include <QDebug>
 
 //! [0]
-GraphWidget::GraphWidget(QWidget *parent,QVector <QVector <int> >& Table,QVector <int>& pointsOfGraph,MainWindow* window)
+GraphWidget::GraphWidget(QWidget *parent,QVector <QVector <int> >& Table,QVector <int>& pointsOfGraph,QVector <QVector <int> >& pointsType,MainWindow* window)
     : QGraphicsView(parent), timerId(0)
 {
     QGraphicsScene *scene = new QGraphicsScene(this);
@@ -71,17 +71,44 @@ GraphWidget::GraphWidget(QWidget *parent,QVector <QVector <int> >& Table,QVector
     setViewportUpdateMode(BoundingRectViewportUpdate);
     setRenderHint(QPainter::Antialiasing);
     setTransformationAnchor(AnchorUnderMouse);
-    scale(qreal(0.8), qreal(0.8));
+    scale(qreal(0.6), qreal(0.6));
     setMinimumSize(400, 400);
-    setWindowTitle(tr("Elastic Nodes"));
+    setWindowTitle(tr("Train Simulator 2020"));
 //! [0]
+
+    QPixmap storage;
+    QPixmap town;
+    QPixmap market;
+
+    storage.load(":/resources/storage_1.png");
+    town.load(":/resources/town.png");
+    market.load(":/resources/market.png");
 
 //! [1]
     QVector<Node *> nodeVec;
-    for(int i = 0; i < Table.size(); i++) {
-            nodeVec.append(new Node(this,pointsOfGraph[i]));
-            scene->addItem(nodeVec.last());
-            nodeVec.last()->setPos(0,0);
+    for(int i = 0; i < pointsOfGraph.size(); i++) {
+        int a = -2;
+        for(int j = 0; j < pointsType.size(); j++) {
+            if(pointsType[j][0] == pointsOfGraph[i]) {
+                a = pointsType[j][1];
+                break;
+            } else {
+                a = -1;
+            }
+        }
+
+        if(a == 1) {
+            nodeVec.append(new Node(this,pointsOfGraph[i],a,scene->addPixmap(town.scaled(QSize(76,76),Qt::IgnoreAspectRatio,Qt::SmoothTransformation))));
+        } else if(a == 2) {
+            nodeVec.append(new Node(this,pointsOfGraph[i],a,scene->addPixmap(market.scaled(QSize(50,50),Qt::IgnoreAspectRatio,Qt::SmoothTransformation))));
+        } else if(a == 3) {
+            nodeVec.append(new Node(this,pointsOfGraph[i],a,scene->addPixmap(storage.scaled(QSize(50,50),Qt::IgnoreAspectRatio,Qt::SmoothTransformation))));
+        } else {
+            nodeVec.append(new Node(this,pointsOfGraph[i],a,nullptr));
+        }
+
+        scene->addItem(nodeVec.last());
+        nodeVec.last()->setPos(0,0);
     }
 
 
