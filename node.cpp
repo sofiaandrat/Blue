@@ -59,14 +59,19 @@
 #include <QStyleOption>
 
 //! [0]
-Node::Node(GraphWidget *graphWidget,int idx)
+Node::Node(GraphWidget *graphWidget,int idx,int node_type,QGraphicsPixmapItem *image)
     : graph(graphWidget)
 {
     setNodeIndex(idx);
     setFlag(ItemIsMovable);
     setFlag(ItemSendsGeometryChanges);
     setCacheMode(DeviceCoordinateCache);
+    setNodeType(node_type);
     setZValue(-1);
+    setImage(image);
+    if(image != nullptr) {
+        image->setZValue(1);
+    }
 }
 //! [0]
 
@@ -104,7 +109,7 @@ void Node::calculateForces()
         QPointF vec = mapToItem(node, 0, 0);
         qreal dx = vec.x();
         qreal dy = vec.y();
-        double l = 2.0 * (dx * dx + dy * dy);
+        double l = 0.5 * (dx * dx + dy * dy); // 0.5 coeff changes edge length
         if (l > 0) {
             xvel += (dx * 150.0) / l;
             yvel += (dy * 150.0) / l;
@@ -146,6 +151,17 @@ bool Node::advancePosition()
         return false;
 
     setPos(newPos);
+    if(this->imageOnScene != nullptr) {
+        /*if(this->node_type == 1) {
+            this->imageOnScene->setPos(newPos.x()-36,newPos.y()-36);
+        } else {
+            this->imageOnScene->setPos(newPos.x()-25,newPos.y()-25);
+        }*/
+        QRectF rect = this->imageOnScene->boundingRect();
+        qreal width = rect.width();
+        qreal height = rect.height();
+        this->imageOnScene->setPos(newPos.x() - width/2,newPos.y() - height/2);
+    }
     return true;
 }
 //! [7]
@@ -154,7 +170,11 @@ bool Node::advancePosition()
 QRectF Node::boundingRect() const
 {
     qreal adjust = 2;
-    return QRectF( -10 - adjust, -10 - adjust, 23 + adjust, 23 + adjust);
+    if(this->imageOnScene != nullptr) {
+        return QRectF( -10 - adjust, -10 - adjust, 23 + adjust, 23 + adjust);
+    } else {
+        return QRectF( 0, 0, 0, 0);
+    }
 }
 //! [8]
 
@@ -162,7 +182,7 @@ QRectF Node::boundingRect() const
 QPainterPath Node::shape() const
 {
     QPainterPath path;
-    path.addEllipse(-10, -10, 20, 20);
+    path.addRect(-10, -10, 20, 20);
     return path;
 }
 //! [9]
@@ -170,36 +190,7 @@ QPainterPath Node::shape() const
 //! [10]
 void Node::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *)
 {
-    painter->setPen(Qt::NoPen);
-    painter->setBrush(Qt::darkGray);
-    painter->drawEllipse(-7, -7, 20, 20);
 
-    QRadialGradient gradient(-3, -3, 10);
-    if (option->state & QStyle::State_Sunken) {
-        gradient.setCenter(3, 3);
-        gradient.setFocalPoint(3, 3);
-        gradient.setColorAt(1, QColor(Qt::yellow).light(120));
-        gradient.setColorAt(0, QColor(Qt::darkYellow).light(120));
-    } else {
-        gradient.setColorAt(0, Qt::yellow);
-        gradient.setColorAt(1, Qt::darkYellow);
-    }
-    painter->setBrush(gradient);
-
-    painter->setPen(QPen(Qt::black, 0));
-    painter->drawEllipse(-10, -10, 20, 20);
-
-    QRectF nodeRect = this->boundingRect();
-    QRectF textRect(nodeRect.left() + 4, nodeRect.top() + 4,
-                    nodeRect.width() - 4, nodeRect.height() - 4);
-    QString indexStr = QString::number(this->getNodeIndex());
-
-    QFont font = painter->font();
-    font.setBold(true);
-    font.setPointSize(10);
-    painter->setFont(font);
-    painter->setPen(Qt::black);
-    painter->drawText(textRect, indexStr);
 }
 //! [10]
 
@@ -242,4 +233,20 @@ void Node::setNodeIndex(int idx)
 int Node::getNodeIndex()
 {
     return this->index;
+}
+
+
+void Node::setNodeType(int node_type)
+{
+    this->node_type = node_type;
+}
+
+int Node::getNodeType()
+{
+    return this->node_type;
+}
+
+void Node::setImage(QGraphicsPixmapItem* image)
+{
+    this->imageOnScene = image;
 }
