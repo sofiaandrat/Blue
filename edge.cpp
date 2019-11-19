@@ -92,9 +92,11 @@ void Edge::adjust()
     prepareGeometryChange();
 
     if (length > qreal(20.)) {
-        QPointF edgeOffset((line.dx() * 10) / length, (line.dy() * 10) / length);
-        sourcePoint = line.p1() + edgeOffset;
-        destPoint = line.p2() - edgeOffset;
+        //QPointF edgeOffset((line.dx() * 10) / length, (line.dy() * 10) / length);
+        //sourcePoint = line.p1() + edgeOffset;
+        //destPoint = line.p2() - edgeOffset;
+        sourcePoint = line.p1();
+        destPoint = line.p2();
     } else {
         sourcePoint = destPoint = line.p1();
     }
@@ -130,11 +132,11 @@ void Edge::paint(QPainter *painter, const QStyleOptionGraphicsItem *, QWidget *)
 
 //! [5]
     // Draw the line itself
-    painter->setPen(QPen(Qt::black, 1, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin));
+    painter->setPen(QPen(Qt::black, 3, Qt::DashLine, Qt::RoundCap, Qt::RoundJoin));
     painter->drawLine(line);
 //! [5]
 
-    QRectF edgeRect = this->boundingRect();
+    /*QRectF edgeRect = this->boundingRect();
 
     int xCoord = edgeRect.left() + (edgeRect.right() - edgeRect.left())/2 - 5;
     int yCoord = edgeRect.top() + (edgeRect.bottom() - edgeRect.top())/2 - 5;
@@ -147,6 +149,6 @@ void Edge::paint(QPainter *painter, const QStyleOptionGraphicsItem *, QWidget *)
     font.setPointSize(10);
     painter->setFont(font);
     painter->setPen(Qt::blue);
-    painter->drawText(textRect, lengthStr);
+    painter->drawText(textRect, lengthStr);*/
 }
 
