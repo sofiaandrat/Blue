@@ -26,8 +26,9 @@ void MainWindow::on_pushButton_clicked()
     Parser.Pars(Socket.getterDoc());
     QVector <int> pointsOfGraph = Parser.getterPointsOfGraph();
     QVector <QVector <int> > Table = Parser.getterLayer0();
-    new GraphWidget(nullptr, Table, pointsOfGraph, this);
     Socket.SendMessage(MAP,{{"layer", 1}});
     Parser.Pars(Socket.getterDoc());
+    QVector <QVector <int> > pointsType = Parser.getterLayer1();
+    new GraphWidget(nullptr, Table, pointsOfGraph, pointsType, this);
     Socket.SendMessage(MAP,{{"layer", 10}});
 }
