@@ -61,7 +61,7 @@ class GraphWidget : public QGraphicsView
     Q_OBJECT
 
 public:
-    GraphWidget(QWidget *parent,QVector <QVector <int> > &Table,QVector <int> &pointsOfGraph,MainWindow *window);
+    GraphWidget(QWidget *parent,QVector <QVector <int> > &Table,QVector <int> &pointsOfGraph, QVector <QVector <int> >& pointsType,MainWindow *window);
 
     void itemMoved();
     void setParentWindow(MainWindow *window);
