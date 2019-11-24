@@ -1,7 +1,9 @@
-
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
-
+#include "ui_mainwindow.h"
+#include "sockettest.h"
+#include "graphwidget.h"
+#include "structs.h"
 #include <QMainWindow>
 
 QT_BEGIN_NAMESPACE
