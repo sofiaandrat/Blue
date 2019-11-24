@@ -24,12 +24,30 @@ enum Result
     INTERNAL_SERVER_ERROR = 500
 };
 
-/*struct ActionMessage
+enum PostType
 {
-    Action actionCode;
-    size_t dataLength;
-    QChar data[];
-};*/
+    TOWN = 1,
+    MARKET = 2,
+    STORAGE = 3
+};
+
+enum GameState
+{
+    INIT = 1,
+    RUN = 2,
+    FINISHED = 3
+};
+
+enum EventType
+{
+    TRAIN_COLLISION = 1,
+    HIJACKERS_ASSAULT = 2,
+    PARASITES_ASSAULT = 3,
+    REFUGEES_ARRIVAL = 4,
+    RESOURCE_OVERFLOW = 5,
+    RESOURCE_LACK = 6,
+    GAME_OVER = 100
+};
 
 
 #endif // COLLECTIONS_H

@@ -22,8 +22,8 @@ SOURCES += \
     main.cpp \
     mainwindow.cpp \
     node.cpp \
-    parser.cpp \
-    sockettest.cpp
+    sockettest.cpp \
+    structs.cpp
 
 HEADERS += \
     Collections.h \
@@ -31,8 +31,8 @@ HEADERS += \
     graphwidget.h \
     mainwindow.h \
     node.h \
-    parser.h \
-    sockettest.h
+    sockettest.h \
+    structs.h
 
 FORMS += \
     mainwindow.ui
