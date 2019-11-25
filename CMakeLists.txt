@@ -21,6 +21,7 @@ add_executable(graph
     node.cpp
     sockettest.cpp
     parser.cpp
+    dijkstrasalg.cpp
 )
 
 target_link_libraries(graph Qt5::Network)
