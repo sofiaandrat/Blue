@@ -4,6 +4,7 @@
 #include "sockettest.h"
 #include "graphwidget.h"
 #include "structs.h"
+#include "dijkstrasalg.h"
 #include <QMainWindow>
 
 QT_BEGIN_NAMESPACE
