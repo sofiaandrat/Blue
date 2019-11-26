@@ -23,7 +23,8 @@ SOURCES += \
     mainwindow.cpp \
     node.cpp \
     sockettest.cpp \
-    structs.cpp
+    structs.cpp \
+    dijkstrasalg.cpp
 
 HEADERS += \
     Collections.h \
@@ -32,7 +33,8 @@ HEADERS += \
     mainwindow.h \
     node.h \
     sockettest.h \
-    structs.h
+    structs.h \
+    dijkstrasalg.h
 
 FORMS += \
     mainwindow.ui
