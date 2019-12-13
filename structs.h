@@ -5,6 +5,53 @@
 #include <QJsonObject>
 #include <QJsonArray>
 
+struct town
+{
+    int idx;
+    int armor;
+    int armor_capacity;
+    QString name;
+    QString player_idx;
+    int point_idx;
+    int population;
+    int population_capacity;
+    int type;
+};
+
+struct player
+{
+    QString idx;
+    bool in_game;
+    QString name;
+    int rating;
+    int home_idx;
+    int home_post_idx;
+};
+
+struct train
+{
+    QString player_idx;
+    int idx;
+    int goods;
+    int goods_capacity;
+    int goods_type;
+    int line_idx;
+    int position;
+    int speed;
+};
+
+class Player
+{
+private:
+    player playerData;
+    QVector<train> playerTrains;
+public:
+    Player(){}
+    void Pars(QJsonDocument doc);
+    player getPlayerData();
+    QVector <train> getPlayerTrains();
+};
+
 class Map0 //если будет нужно позже я добавлю те пункты, пока что их предназначение в это мире не ясно
 {
 private:
@@ -17,33 +64,38 @@ public:
     QVector <QVector <int> > getterTable();
 };
 
-struct post //когда нам понадобяться остальные данные придётся немного по-другому сделать, но идея та же
+struct market
 {
   QString name;
+  int idx;
   int point_idx;
   int product;
   int product_capacity;
   int replenishment;
   int type;
 };
-struct train
+
+struct post //когда нам понадобяться остальные данные придётся немного по-другому сделать, но идея та же
 {
-    int goods;
-    int goods_capacity;
-    int line_idx;
-    int speed;
+  int idx;
+  int point_idx;
+  int type;
 };
 
 class Map1
 {
 private:
     QVector <post> Posts;
-    QVector <train> Trains;
+    QVector <market> Markets;
+    QVector <train> AllTrains;
+    int tick;
 public:
     Map1(){}
     void Pars(QJsonDocument doc);
     QVector <post> getterPosts();
-    QVector <train> getterTrains();
+    QVector <train> getterAllTrains();
+    QVector <market> getterMarkets();
+    int getTick();
 };
 
 #endif // STRUCTS_H
