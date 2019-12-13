@@ -17,24 +17,28 @@ DEFINES += QT_DEPRECATED_WARNINGS
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 SOURCES += \
+    dijkstrasalg.cpp \
     edge.cpp \
+    gamelogic.cpp \
     graphwidget.cpp \
     main.cpp \
     mainwindow.cpp \
     node.cpp \
     sockettest.cpp \
     structs.cpp \
-    dijkstrasalg.cpp
+    train.cpp
 
 HEADERS += \
     Collections.h \
+    dijkstrasalg.h \
     edge.h \
+    gamelogic.h \
     graphwidget.h \
     mainwindow.h \
     node.h \
     sockettest.h \
     structs.h \
-    dijkstrasalg.h
+    train.h
 
 FORMS += \
     mainwindow.ui

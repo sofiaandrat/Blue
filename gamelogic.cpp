@@ -25,8 +25,8 @@ GameLogic::GameLogic(SocketTest *socket, QVector<Edge *> &edgeVec,Train *imageTr
     }
 
     DijkstrasAlg *dAlg = new DijkstrasAlg(townIdx,Table_sym,pointsOfGraph);
-    //this->curRoute = dAlg->PathToNearestMarket(layer1.getterMarkets()); //MAIN ALGO
-    this->curRoute = {0, 1, 2, 8, 2, 3};
+    this->curRoute = dAlg->PathToNearestMarket(layer1.getterMarkets()); //MAIN ALGO
+    //this->curRoute = {0, 1, 2, 8, 2, 3};
     this->playerTrain = player.getPlayerTrains()[0];
     qDebug() << curRoute;
     QTimer *timer = new QTimer(this->socket);
