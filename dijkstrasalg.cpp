@@ -1,21 +1,26 @@
 #include "dijkstrasalg.h"
+#include <iostream>
+
+
 
 DijkstrasAlg::DijkstrasAlg(int townIdx, QVector<QVector<int> > &Table, QVector<int> &pointsOfGraph)
 {
     int n = pointsOfGraph.size();
+    this->pointsOfGraph = pointsOfGraph;
+    qDebug() << pointsOfGraph;
     QVector <QVector <int> > shortestPaths(n, QVector <int>(2, INT_MAX));
     bool visited[n];
-    for(int i=0;i<n;i++)
-    {
-        if(Table[townIdx-1][i]>0)
+    for(int i=0;i<n;i++) {
+        if(Table[townIdx][i]>0)
         {
-            shortestPaths[i][0]=Table[townIdx-1][i];
+            shortestPaths[i][0]=Table[townIdx][i];
             shortestPaths[i][1]=townIdx;
         }
         visited[i]=false;
     }
-    shortestPaths[townIdx-1][0]=0;
-    shortestPaths[townIdx-1][1]=0;
+
+    shortestPaths[townIdx][0]=0;
+    shortestPaths[townIdx][1]=0;
     int index=0,u=0;
     for (int i=0;i<n;i++)
     {
@@ -35,7 +40,7 @@ DijkstrasAlg::DijkstrasAlg(int townIdx, QVector<QVector<int> > &Table, QVector<i
             if (!visited[j] && Table[u][j]!=0 && (shortestPaths[u][0]+Table[u][j]<shortestPaths[j][0]))
             {
                 shortestPaths[j][0]=shortestPaths[u][0]+Table[u][j];
-                shortestPaths[j][1]=u+1;
+                shortestPaths[j][1]=u;
             }
         }
     }
@@ -43,31 +48,42 @@ DijkstrasAlg::DijkstrasAlg(int townIdx, QVector<QVector<int> > &Table, QVector<i
     this->shortestPaths = shortestPaths;
     shortestPaths.clear();
 
-//    for(int i = 0;i<n;i++)
-//    {
-//        qDebug() << i+1 << ' ' << this->shortestPaths[i][0] << ' ' << this->shortestPaths[i][1];
-//    }
 }
 
 QVector<int> DijkstrasAlg::Path(bool fromTown, int pointIdx)
 {
     QVector <int> path;
-    path.append(pointIdx);
-    for(int i = pointIdx-1;shortestPaths[i][1]!=0;i = shortestPaths[i][1]-1)
+    path.append(pointsOfGraph.indexOf(pointIdx));
+    qDebug() << shortestPaths;
+    qDebug() << path;
+    for(int i = pointsOfGraph.indexOf(pointIdx);shortestPaths[i][1]!=0;i = shortestPaths[i][1])
     {
         path.append(shortestPaths[i][1]);
     }
+    path.append(0);
+
+    qDebug() << path;
     if(fromTown)
     {
-        int size = path.size();
-        QVector <int> temp;
-        for(int i = 0;i<size;i++)
-        {
-            temp.append(path[size-1-i]);
-        }
-        path.clear();
-        path = temp;
-        temp.clear();
+        std::reverse(path.begin(),path.end());
     }
     return path;
+}
+
+QVector<int>  DijkstrasAlg::PathToNearestMarket(QVector<market> markets){
+    int min_route = INT_MAX;
+    int market_idx = 0;
+
+
+    for(int i = 0; i<markets.size(); i++) {
+        if(shortestPaths[pointsOfGraph.indexOf(markets[i].point_idx)][0] < min_route) {
+            min_route = shortestPaths[pointsOfGraph.indexOf(markets[i].point_idx)][0];
+            market_idx = markets[i].point_idx;
+        }
+    }
+    return Path(1,market_idx);
+}
+
+QVector <QVector <int> > DijkstrasAlg::getPaths() {
+    return shortestPaths;
 }

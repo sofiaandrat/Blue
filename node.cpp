@@ -1,4 +1,3 @@
-  
 /****************************************************************************
 **
 ** Copyright (C) 2016 The Qt Company Ltd.
@@ -52,11 +51,6 @@
 #include "edge.h"
 #include "node.h"
 #include "graphwidget.h"
-
-#include <QGraphicsScene>
-#include <QGraphicsSceneMouseEvent>
-#include <QPainter>
-#include <QStyleOption>
 
 //! [0]
 Node::Node(GraphWidget *graphWidget,int idx,int node_type,QGraphicsPixmapItem *image)
@@ -152,11 +146,6 @@ bool Node::advancePosition()
 
     setPos(newPos);
     if(this->imageOnScene != nullptr) {
-        /*if(this->node_type == 1) {
-            this->imageOnScene->setPos(newPos.x()-36,newPos.y()-36);
-        } else {
-            this->imageOnScene->setPos(newPos.x()-25,newPos.y()-25);
-        }*/
         QRectF rect = this->imageOnScene->boundingRect();
         qreal width = rect.width();
         qreal height = rect.height();
@@ -234,7 +223,6 @@ int Node::getNodeIndex()
 {
     return this->index;
 }
-
 
 void Node::setNodeType(int node_type)
 {

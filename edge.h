@@ -59,18 +59,23 @@ class Node;
 class Edge : public QGraphicsItem
 {
 public:
-    Edge(Node *sourceNode, Node *destNode, int len);
+    Edge(Node *sourceNode, Node *destNode, int len,int idx);
 
     Node *sourceNode() const;
     Node *destNode() const;
 
+    QPointF getSourcePoint();
+    QPointF getDestPoint();
+
     void adjust();
+    int getIdx();
 
     enum { Type = UserType + 2 };
     int type() const override { return Type; }
 
-protected:
     QRectF boundingRect() const override;
+protected:
+    //QRectF boundingRect() const override;
     void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget) override;
 
 private:
@@ -80,6 +85,7 @@ private:
     QPointF destPoint;
     qreal arrowSize;
     int length;
+    int idx;
 };
 //! [0]
 
