@@ -8,6 +8,9 @@ void SocketTest::Connect()
     socket = new QTcpSocket(this);
     connect(socket,SIGNAL(readyRead()), this, SLOT(readyRead()));
     connect(socket, SIGNAL(disconnected()), this, SLOT(disconnect()));
+    qDebug() << socket->socketOption(QAbstractSocket::KeepAliveOption);
+    socket->setSocketOption(QAbstractSocket::LowDelayOption, 1);
+    qDebug() << socket->socketOption(QAbstractSocket::KeepAliveOption);
     socket->connectToHost("wgforge-srv.wargaming.net", 443);
     if(socket->waitForConnected(500))
     {
@@ -24,22 +27,19 @@ void SocketTest::SendMessage(Actions Action, QJsonObject jsonObj)
     if(socket->isOpen())
     {
         socket->write(toMessageFormat(Action,jsonObj));
-        qDebug()<< toMessageFormat(Action,jsonObj);
-        socket->waitForReadyRead(500);
+       socket->waitForReadyRead(900);
     } else {
         qDebug() << "socket is close";
     }
-    //socket->readyRead();
 }
 
 
 void SocketTest::readyRead()
 {
-
     QByteArray buffer = socket->readAll();
     while(buffer.size() < 8)
     {
-        if(socket->waitForReadyRead(500))
+        if(socket->waitForReadyRead(900))
         {
             buffer.append(socket->readAll());
         }
@@ -54,11 +54,13 @@ void SocketTest::readyRead()
     int int_sizeOfData;
     in >> int_sizeOfData;
 
+    qDebug() << resultCode;
     Data = data;
     while(Data.size() < int_sizeOfData) {
-        if(socket->waitForReadyRead(500))
+        if(socket->waitForReadyRead(900))
             Data.append(socket->readAll());
     }
+    qDebug() << Data;
     doc = QJsonDocument::fromJson(Data, &docError);
 }
 
@@ -76,14 +78,47 @@ QByteArray SocketTest::toMessageFormat(Actions Action,QJsonObject jsonObj) {
     int* action = &int_action;
     int int_jsonSize = jsonData.size();
     int* jsonSize = &int_jsonSize;
+    int zero_int = 0;
+    int* zero_size = &zero_int;
 
     QByteArray bytes_action((char*)action,4);
     QByteArray bytes_jsonSize((char*)jsonSize,4);
-
-    return bytes_action + bytes_jsonSize + jsonData;
+    QByteArray bytes_zeroSize((char*)zero_size,4);
+    if(int_jsonSize > 4)
+        return bytes_action + bytes_jsonSize + jsonData;
+    else
+        return bytes_action + bytes_zeroSize;
 }
 
 QJsonDocument SocketTest::getterDoc()
 {
     return this->doc;
+}
+
+void SocketTest::sendMoveMessage(int line_idx,int speed, int train_idx) {
+    QJsonObject moveObj;
+    moveObj.insert("line_idx",QJsonValue::fromVariant(line_idx));
+    moveObj.insert("speed",QJsonValue::fromVariant(speed));
+    moveObj.insert("train_idx",QJsonValue::fromVariant(train_idx));
+
+    SocketTest::SendMessageWOW(MOVE,moveObj);
+}
+
+void SocketTest::sendTurnMessage() {
+    SocketTest::SendMessageWOW(TURN,{});
+}
+
+SocketTest::~SocketTest() {
+    qDebug()<<"Destructed";
+}
+
+void SocketTest::SendMessageWOW(Actions Action, QJsonObject jsonObj)
+{
+    if(socket->isOpen())
+    {
+        socket->write(toMessageFormat(Action,jsonObj));
+        socket->waitForReadyRead(500);
+    } else {
+        qDebug() << "socket is close";
+    }
 }

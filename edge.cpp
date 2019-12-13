@@ -55,13 +55,14 @@
 #include <QPainter>
 
 //! [0]
-Edge::Edge(Node *sourceNode, Node *destNode, int len)
+Edge::Edge(Node *sourceNode, Node *destNode, int len, int idx)
     : arrowSize(10)
 {
     setAcceptedMouseButtons(0);
     source = sourceNode;
     dest = destNode;
     length = len;
+    this->idx = idx;
     source->addEdge(this);
     dest->addEdge(this);
     adjust();
@@ -92,9 +93,6 @@ void Edge::adjust()
     prepareGeometryChange();
 
     if (length > qreal(20.)) {
-        //QPointF edgeOffset((line.dx() * 10) / length, (line.dy() * 10) / length);
-        //sourcePoint = line.p1() + edgeOffset;
-        //destPoint = line.p2() - edgeOffset;
         sourcePoint = line.p1();
         destPoint = line.p2();
     } else {
@@ -109,13 +107,10 @@ QRectF Edge::boundingRect() const
     if (!source || !dest)
         return QRectF();
 
-    qreal penWidth = 1;
-    qreal extra = (penWidth + arrowSize) / 2.0;
 
     return QRectF(sourcePoint, QSizeF(destPoint.x() - sourcePoint.x(),
                                       destPoint.y() - sourcePoint.y()))
-        .normalized()
-        .adjusted(-extra, -extra, extra, extra);
+        .normalized();
 }
 //! [3]
 
@@ -136,13 +131,13 @@ void Edge::paint(QPainter *painter, const QStyleOptionGraphicsItem *, QWidget *)
     painter->drawLine(line);
 //! [5]
 
-    /*QRectF edgeRect = this->boundingRect();
+    QRectF edgeRect = this->boundingRect();
 
-    int xCoord = edgeRect.left() + (edgeRect.right() - edgeRect.left())/2 - 5;
+    /*int xCoord = edgeRect.left() + (edgeRect.right() - edgeRect.left())/2 - 5;
     int yCoord = edgeRect.top() + (edgeRect.bottom() - edgeRect.top())/2 - 5;
 
     QRectF textRect(xCoord, yCoord, edgeRect.width() - 4, edgeRect.height() - 4);
-    QString lengthStr = QString::number(this->length);
+    QString lengthStr = QString::number(this->idx);
 
     QFont font = painter->font();
     font.setBold(true);
@@ -152,3 +147,14 @@ void Edge::paint(QPainter *painter, const QStyleOptionGraphicsItem *, QWidget *)
     painter->drawText(textRect, lengthStr);*/
 }
 
+int Edge::getIdx() {
+    return this->idx;
+}
+
+QPointF Edge::getSourcePoint() {
+    return this->sourcePoint;
+}
+
+QPointF Edge::getDestPoint() {
+    return this->destPoint;
+}

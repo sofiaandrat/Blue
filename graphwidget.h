@@ -61,7 +61,7 @@ class GraphWidget : public QGraphicsView
     Q_OBJECT
 
 public:
-    GraphWidget(QWidget *parent,QVector <QVector <int> > &Table,QVector <int> &pointsOfGraph, QVector <QVector <int> >& pointsType,MainWindow *window);
+    GraphWidget(QWidget *parent,SocketTest &socket,QString loginText,MainWindow *window);
 
     void itemMoved();
     void setParentWindow(MainWindow *window);
@@ -71,6 +71,7 @@ public slots:
     void shuffle();
     void zoomIn();
     void zoomOut();
+    void startGameLogic();
 
 protected:
     void keyPressEvent(QKeyEvent *event) override;
@@ -83,7 +84,17 @@ protected:
     void scaleView(qreal scaleFactor);
 
 private:
+    SocketTest *socket;
+    QVector<Edge *> edgeVec;
+    Train *playerTrain;
+
+    Map0 layer0;
+    Map1 layer1;
+    Player player;
+
+
     int timerId;
+    int timerId_1;
     Node *centerNode;
     MainWindow *parent;
 };

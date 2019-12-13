@@ -54,6 +54,12 @@
 #include <QList>
 #include <QDebug>
 
+#include <QGraphicsScene>
+#include <QGraphicsSceneMouseEvent>
+#include <QPainter>
+#include <QStyleOption>
+
+
 class Edge;
 class GraphWidget;
 QT_BEGIN_NAMESPACE
