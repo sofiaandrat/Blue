@@ -1,4 +1,5 @@
 #include "structs.h"
+#include <QDebug>
 
 void Map0::Pars(QJsonDocument doc)
 {
@@ -29,8 +30,15 @@ void Map0::Pars(QJsonDocument doc)
                 j = i1;
             }
         }
-        this->Table[i][j] = obj["length"].toInt();
-        this->Table[j][i] = this->Table[i][j];
+
+        //3rd
+        if(i < j) {
+            this->Table[i][j] = obj["length"].toInt();
+            this->Table[j][i] = obj["idx"].toInt();
+        } else {
+            this->Table[j][i] = obj["length"].toInt();
+            this->Table[i][j] = obj["idx"].toInt()*(-1);
+        }
     }
 }
 QVector <int> Map0::getterPointsOfgraph()
@@ -51,12 +59,22 @@ void Map1::Pars(QJsonDocument doc)
         QJsonObject obj = value.toObject();
         post Post;
         Post.point_idx = obj["point_idx"].toInt();
-        Post.product = obj["product"].toInt();
-        Post.product_capacity = obj["product_capacity"].toInt();
-        Post.replenishment = obj["replenishment"].toInt();
+        Post.idx = obj["idx"].toInt();
         Post.type = obj["type"].toInt();
-        Post.name = obj["name"].isString();
         this->Posts.append(Post);
+
+        if(obj["type"].toInt() == 2) {
+            market Market;
+            Market.idx = obj["idx"].toInt();
+            Market.point_idx = obj["point_idx"].toInt();
+            Market.product = obj["product"].toInt();
+            Market.product_capacity = obj["product_capacity"].toInt();
+            Market.replenishment = obj["replenishment"].toInt();
+            Market.type = obj["type"].toInt();
+            Market.name = obj["name"].isString();
+            this->Markets.append(Market);
+        }
+
     }
     jsonArray = jsonObject["trains"].toArray();
     foreach(const QJsonValue & value, jsonArray)
@@ -68,4 +86,55 @@ void Map1::Pars(QJsonDocument doc)
         Train.line_idx = obj["line_idx"].toInt();
         Train.goods_capacity = obj["goods_capacity"].toInt();
     }
+
+}
+
+QVector <post> Map1::getterPosts()
+{
+    return Posts;
+}
+
+QVector <market> Map1::getterMarkets()
+{
+    return Markets;
+}
+
+void Player::Pars(QJsonDocument doc) {
+    QJsonObject jsonObject = doc.object();
+    //town Town;
+    QJsonObject jsonHomeObject = jsonObject["home"].toObject();
+    this->playerData.home_idx = jsonHomeObject["idx"].toInt();
+    this->playerData.home_post_idx = jsonHomeObject["post_idx"].toInt();
+
+    this->playerData.idx = jsonObject["idx"].toString();
+    this->playerData.in_game = jsonObject["in_game"].toBool();
+    this->playerData.name = jsonObject["name"].toString();
+    this->playerData.rating = jsonObject["rating"].toInt();
+
+    QJsonArray jsonArray = jsonObject["trains"].toArray();
+    foreach(const QJsonValue & value, jsonArray) {
+        QJsonObject obj = value.toObject();
+        train Train;
+        Train.player_idx = obj["player_idx"].toString();
+        Train.idx = obj["idx"].toInt();
+        Train.goods = obj["goods"].toInt();
+        Train.goods_capacity = obj["goods_capacity"].toInt();
+        Train.goods_type = obj["goods_type"].toInt();
+        Train.line_idx = obj["line_idx"].toInt();
+        Train.position = obj["position"].toInt();
+        Train.speed = obj["speed"].toInt();
+        this->playerTrains.append(Train);
+    }
+}
+
+player Player::getPlayerData() {
+    return playerData;
+}
+
+QVector<train> Player::getPlayerTrains() {
+    return playerTrains;
+}
+
+int Map1::getTick() {
+    return this->tick;
 }
