@@ -73,6 +73,7 @@ struct market
   int product_capacity;
   int replenishment;
   int type;
+  int mark;
 };
 
 struct post //когда нам понадобяться остальные данные придётся немного по-другому сделать, но идея та же
@@ -89,6 +90,9 @@ private:
     QVector <market> Markets;
     QVector <train> AllTrains;
     int tick;
+    int population;
+    int products;
+    int armor;
 public:
     Map1(){}
     void Pars(QJsonDocument doc);
@@ -96,6 +100,9 @@ public:
     QVector <train> getterAllTrains();
     QVector <market> getterMarkets();
     int getTick();
+    int getPopulation();
+    int getProducts();
+    int getArmor();
 };
 
 #endif // STRUCTS_H

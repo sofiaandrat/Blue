@@ -13,6 +13,7 @@ public:
       GameLogic(SocketTest *socket, QVector<Edge *> &edgeVec,Train *imageTrain,Map0 &layer0, Map1 &layer1, Player &player);
       //void gameLoop(DijkstrasAlg *alg);
       void setTrainOnRoute(SocketTest *socket,train playerTrain,QVector<int> &pathToMarket,QVector<QVector<int>> &Table);
+      void Alhoritm();
 public slots:
       void trainOneStep();
 private:

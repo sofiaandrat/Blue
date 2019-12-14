@@ -62,7 +62,12 @@ void Map1::Pars(QJsonDocument doc)
         Post.idx = obj["idx"].toInt();
         Post.type = obj["type"].toInt();
         this->Posts.append(Post);
-
+        if(obj["type"] == 1)
+        {
+            this->population = obj["population"].toInt();
+            this->products = obj["product"].toInt();
+            this->armor = obj["armor"].toInt();
+        }
         if(obj["type"].toInt() == 2) {
             market Market;
             Market.idx = obj["idx"].toInt();
@@ -72,6 +77,7 @@ void Map1::Pars(QJsonDocument doc)
             Market.replenishment = obj["replenishment"].toInt();
             Market.type = obj["type"].toInt();
             Market.name = obj["name"].isString();
+            Market.mark = 0;
             this->Markets.append(Market);
         }
 
@@ -138,3 +144,18 @@ QVector<train> Player::getPlayerTrains() {
 int Map1::getTick() {
     return this->tick;
 }
+
+int Map1::getPopulation()
+{
+    return this->population;
+}
+int Map1::getProducts()
+{
+    return this->products;
+}
+
+int Map1::getArmor()
+{
+    return this->armor;
+}
+

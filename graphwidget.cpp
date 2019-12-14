@@ -154,7 +154,7 @@ GraphWidget::GraphWidget(QWidget *parent,SocketTest &socket,QString loginText,Ma
         for(int j = i+1; j<Table[i].size();j++) {
             if(Table[i][j] != 0) {
                 edgeVec.push_back(new Edge(nodeVec[i],nodeVec[j],Table[i][j],Table[j][i]));
-                qDebug() << Table[i][j]<<" "<<Table[j][i];
+               // qDebug() << Table[i][j]<<" "<<Table[j][i];
                 scene->addItem(edgeVec.last());
             }
             Table_sym[i][j] = abs(Table[i][j]);
@@ -187,7 +187,7 @@ GraphWidget::GraphWidget(QWidget *parent,SocketTest &socket,QString loginText,Ma
     }
 
     for(int i = 0; i<nodes.size(); i++) {
-        qDebug() << nodes[i]->pos();
+       // qDebug() << nodes[i]->pos();
     }
 
     getParentWindow()->setCentralWidget(this);
@@ -247,7 +247,7 @@ void GraphWidget::keyPressEvent(QKeyEvent *event)
 //! [3]
 
 //! [4]
-void GraphWidget::timerEvent(QTimerEvent *event)
+void GraphWidget::timerEvent(QTimerEvent *event) //создади таймер эвэнт
 {
     Q_UNUSED(event);
     if(event->timerId() == timerId) {
@@ -272,11 +272,12 @@ void GraphWidget::timerEvent(QTimerEvent *event)
         }
     }
 
-    if(event->timerId() == timerId_1){
-        this->startGameLogic();
-        killTimer(timerId_1);
-        timerId_1 = 1;
-    }
+     if(event->timerId() == timerId_1) //100мс
+     {
+         this->startGameLogic(); //запускаем геймлоджик
+         killTimer(timerId_1);
+         timerId_1 = 1;
+     }
 }
 //! [4]
 
@@ -368,6 +369,8 @@ MainWindow* GraphWidget::getParentWindow() const
     return parent;
 }
 
-void GraphWidget::startGameLogic() {
-    new GameLogic(this->socket,this->edgeVec,this->playerTrain,this->layer0,this->layer1,this->player);
+void GraphWidget::startGameLogic() { //создаем гейм лоджик и запускаем алгоритм
+    GameLogic *alg = new GameLogic(this->socket,this->edgeVec,this->playerTrain,this->layer0,this->layer1,this->player);
+    while(true)
+        alg->Alhoritm();
 }
