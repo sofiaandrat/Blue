@@ -1,6 +1,6 @@
 #include "strategy.h"
 #include "dijkstrasalg.h"
-Strategy::Strategy(int townIdx,QVector <QVector <int> > &Table, QVector<int> &pointsOfGraph):alg(townIdx, Table, pointsOfGraph)
+Strategy::Strategy(int townIdx,QVector <QVector <int> > &Table, QVector<int> &pointsOfGraph, QVector<post> posts):alg(townIdx, Table, pointsOfGraph, posts)
 {
     this->pointsOfGraph = pointsOfGraph;
     this->shortestPaths = alg.getPaths();
