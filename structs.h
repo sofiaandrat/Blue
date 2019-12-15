@@ -76,7 +76,7 @@ struct market
   int mark;
 };
 
-struct post //когда нам понадобяться остальные данные придётся немного по-другому сделать, но идея та же
+struct post
 {
   int idx;
   int point_idx;

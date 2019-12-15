@@ -199,6 +199,7 @@ GraphWidget::GraphWidget(QWidget *parent,SocketTest &socket,QString loginText,Ma
     this->layer1 = layer1;
     this->player = player;
 
+
     Train *playerTrain = new Train(this,homeTown->pos(),scene->addPixmap(train.scaled(QSize(34,51),Qt::IgnoreAspectRatio,Qt::SmoothTransformation)));
     this->playerTrain = playerTrain;
     this->timerId_1 = startTimer(100);
@@ -371,6 +372,5 @@ MainWindow* GraphWidget::getParentWindow() const
 
 void GraphWidget::startGameLogic() { //создаем гейм лоджик и запускаем алгоритм
     GameLogic *alg = new GameLogic(this->socket,this->edgeVec,this->playerTrain,this->layer0,this->layer1,this->player);
-    while(true)
-        alg->Alhoritm();
+    alg->Alhoritm();
 }
