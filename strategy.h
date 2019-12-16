@@ -11,7 +11,7 @@ private:
     QVector<int> pointsOfGraph;
     DijkstrasAlg alg;
 public:
-    Strategy(int townIdx,QVector <QVector <int> > &Table, QVector<int> &pointsOfGraph);
+    Strategy(int townIdx,QVector <QVector <int> > &Table, QVector<int> &pointsOfGraph, QVector<post> posts);
     QVector <int> Moving(Map1 map);
     QVector <int> PathToNearestMarket(QVector<market> markets);
     QVector <int> BetterPath(Map1 map);

@@ -28,7 +28,7 @@ void GameLogic::Alhoritm()
     }
     int realTownIdx = this->player.getPlayerData().home_idx;
     int townIdx = pointsOfGraph.indexOf(realTownIdx);
-    Strategy *strategy = new Strategy(townIdx,Table_sym,pointsOfGraph);
+    Strategy *strategy = new Strategy(townIdx,Table_sym,pointsOfGraph, layer1.getterPosts());
     this->curRoute = strategy->Moving(layer1);
     this->playerTrain = player.getPlayerTrains()[0];
     QTimer *timer = new QTimer(this->socket);
