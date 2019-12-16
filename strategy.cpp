@@ -1,17 +1,46 @@
 #include "strategy.h"
 #include "dijkstrasalg.h"
-Strategy::Strategy(int townIdx,QVector <QVector <int> > &Table, QVector<int> &pointsOfGraph, QVector<post> posts):alg(townIdx, Table, pointsOfGraph, posts)
+#include "sockettest.h"
+Strategy::Strategy(int townIdx,QVector <QVector <int> > &Table, QVector<int> &pointsOfGraph, QVector<post> posts, SocketTest *socket)
+    :alg(townIdx, Table, pointsOfGraph, posts)
 {
     this->pointsOfGraph = pointsOfGraph;
     this->shortestPaths = alg.getPaths();
+    this->socket = socket;
 }
 
-QVector <int> Strategy::Moving(Map1 map)
+QVector <int> Strategy::Moving(Map1 map, Player player)
 {
     QVector <market> markets = map.getterMarkets();
     QVector <market> storages = map.getterStorages();
-    int needProducts = map.getPopulation() + (2 * shortestPaths[pointsOfGraph.indexOf(markets[i].point_idx)][0] / 30);
-    if()
+    QVector <train> upgradeTrains;
+    market Market = BestPost(map, markets);
+    market Storage = BestPost(map, storages);
+    qDebug() << storages.size();
+    int lengthOfPathToMarket = shortestPaths[pointsOfGraph.indexOf(Market.point_idx)][0];
+    qDebug() << pointsOfGraph.indexOf(Market.point_idx) << " " << shortestPaths.size();
+    int lengthOfPathToStorage = shortestPaths[pointsOfGraph.indexOf(Storage.point_idx)][0];
+    if(map.getLevel() < player.getPlayerTrains()[0].level)
+    {
+        if(map.getPrice() <= map.getArmor())
+        {
+            if(map.getArmor() - map.getPrice() > player.getPlayerTrains()[0].price)
+                upgradeTrains.push_back(player.getPlayerTrains()[0]);
+            socket->sendUpgradeMessage(true, upgradeTrains, player.getPlayerData().home_idx);
+        } else if (player.getPlayerTrains()[0].price < map.getArmor())
+        {
+            upgradeTrains.push_back(player.getPlayerTrains()[0]);
+            socket->sendUpgradeMessage(true, upgradeTrains, player.getPlayerData().home_idx);
+        }
+        map = *new Map1();
+        map.Pars(socket->getterDoc());
+    }
+    int needProducts = (map.getPopulation() + (2 * (lengthOfPathToMarket + lengthOfPathToStorage) / 30)) * (lengthOfPathToMarket + lengthOfPathToStorage);
+    if(map.getProducts() > needProducts)
+        return alg.Path(1, Storage.point_idx);
+    else
+        return alg.Path(1, Market.point_idx);
+
 }
 
 QVector<int>  Strategy::PathToNearestMarket(QVector<market> markets)
@@ -31,9 +60,8 @@ QVector<int>  Strategy::PathToNearestMarket(QVector<market> markets)
     return alg.Path(1,market_idx);
 }
 
-QVector <int> Strategy::BetterPath(Map1 map)
+market Strategy::BestPost(Map1 map, QVector <market> posts)
 {
-    QVector <market> posts(1);
     QVector <market> rating(1);
     QVector <market> black_rating(1);
     for (int i = 0; i < posts.size(); i++)
@@ -71,7 +99,7 @@ QVector <int> Strategy::BetterPath(Map1 map)
     for(int i = 0; i < rating.size(); i++)
         qDebug() << rating[i].mark;
     if(rating.isEmpty())
-        return alg.Path(1,black_rating[0].point_idx);
+        return black_rating[0];
     else
-        return alg.Path(1,rating[0].point_idx);
+        return rating[0];
 }

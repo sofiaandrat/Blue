@@ -3,18 +3,19 @@
 #include <QVector>
 #include "structs.h"
 #include "dijkstrasalg.h"
-
+#include "sockettest.h"
 class Strategy
 {
 private:
     QVector <QVector <int> > shortestPaths;
     QVector<int> pointsOfGraph;
     DijkstrasAlg alg;
+    SocketTest *socket;
 public:
-    Strategy(int townIdx,QVector <QVector <int> > &Table, QVector<int> &pointsOfGraph, QVector<post> posts);
-    QVector <int> Moving(Map1 map);
+    Strategy(int townIdx,QVector <QVector <int> > &Table, QVector<int> &pointsOfGraph, QVector<post> posts, SocketTest *socket);
+    QVector <int> Moving(Map1 map, Player player);
     QVector <int> PathToNearestMarket(QVector<market> markets);
-    QVector <int> BetterPath(Map1 map);
+    market BestPost(Map1 map, QVector <market> posts);
 };
 
 #endif // STRATEGY_H

@@ -20,7 +20,7 @@ void GameLogic::Alhoritm()
     QVector <QVector <int> > Table_sym = Table;
     for(int i = 0; i < Table.size()-1; i++)
     {
-        for(int j = i+1; j<Table[i].size();j++)
+        for(int j = i+1; j < Table[i].size();j++)
         {
             Table_sym[i][j] = abs(Table[i][j]);
             Table_sym[j][i] = abs(Table[i][j]);
@@ -28,8 +28,9 @@ void GameLogic::Alhoritm()
     }
     int realTownIdx = this->player.getPlayerData().home_idx;
     int townIdx = pointsOfGraph.indexOf(realTownIdx);
-    Strategy *strategy = new Strategy(townIdx,Table_sym,pointsOfGraph, layer1.getterPosts());
-    this->curRoute = strategy->Moving(layer1);
+    QVector <post> Posts = layer1.getterPosts();
+    Strategy *strategy = new Strategy(townIdx, Table_sym, pointsOfGraph, Posts, socket);
+    this->curRoute = strategy->Moving(layer1, player);
     this->playerTrain = player.getPlayerTrains()[0];
     QTimer *timer = new QTimer(this->socket);
     connect(timer, SIGNAL(timeout()), this, SLOT(trainOneStep()));
@@ -75,6 +76,8 @@ void GameLogic::trainOneStep() {
                 socket->SendMessage(MAP,{{"layer", 1}});
                 this->layer1 = *new Map1();
                 layer1.Pars(socket->getterDoc());
+                this->player = *new Player();
+                player.Pars(socket->getterDoc());
                 if((curLengh - destDiff) == curLengh) {
                     playerTrain.position++;
                     imageTrain->advancePosition(edgeVec[curEdge],curLengh,curSpeed,playerTrain.position);

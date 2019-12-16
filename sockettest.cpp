@@ -122,3 +122,17 @@ void SocketTest::SendMessageWOW(Actions Action, QJsonObject jsonObj)
         qDebug() << "socket is close";
     }
 }
+
+void SocketTest::sendUpgradeMessage(bool upgradeTown, QVector <train> Trains, int home_idx)
+{
+    QJsonArray arrayOfTrains;
+    QJsonArray arrayOfTown;
+    QJsonObject upgradeObj;
+    for(int i = 0; i < Trains.size(); i++)
+        arrayOfTrains.push_back(Trains[i].idx);
+    if(upgradeTown)
+        arrayOfTown.push_back(home_idx);
+    upgradeObj.insert("posts", arrayOfTown);
+    upgradeObj.insert("trains", arrayOfTrains);
+    SendMessageWOW(UPGRADE, upgradeObj);
+}

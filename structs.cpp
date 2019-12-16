@@ -62,13 +62,15 @@ void Map1::Pars(QJsonDocument doc)
         Post.idx = obj["idx"].toInt();
         Post.type = obj["type"].toInt();
         this->Posts.append(Post);
-        if(obj["type"] == 1)
+        if(obj["type"] == TOWN)
         {
             this->population = obj["population"].toInt();
             this->products = obj["product"].toInt();
             this->armor = obj["armor"].toInt();
+            this->level = obj["level"].toInt();
+            this->price = obj["next_level_price"].toInt();
         }
-        if(obj["type"].toInt() == 2) {
+        if(obj["type"].toInt() == MARKET) {
             market Market;
             Market.idx = obj["idx"].toInt();
             Market.point_idx = obj["point_idx"].toInt();
@@ -80,7 +82,7 @@ void Map1::Pars(QJsonDocument doc)
             Market.mark = 0;
             this->Markets.append(Market);
         }
-        if(obj["type"].toInt() == 3) {
+        if(obj["type"].toInt() == STORAGE) {
             market Storage;
             Storage.idx = obj["idx"].toInt();
             Storage.point_idx = obj["point_idx"].toInt();
@@ -149,7 +151,8 @@ void Player::Pars(QJsonDocument doc) {
     }
 }
 
-player Player::getPlayerData() {
+player Player::getPlayerData()
+{
     return playerData;
 }
 
@@ -175,3 +178,12 @@ int Map1::getArmor()
     return this->armor;
 }
 
+int Map1::getLevel()
+{
+    return this->level;
+}
+
+int Map1::getPrice()
+{
+    return this->price;
+}
