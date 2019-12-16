@@ -14,6 +14,7 @@ public:
     Strategy(int townIdx,QVector <QVector <int> > &Table, QVector<int> &pointsOfGraph);
     QVector <int> Moving(Map1 map);
     QVector <int> PathToNearestMarket(QVector<market> markets);
+    QVector <int> BetterPath(Map1 map);
 };
 
 #endif // STRATEGY_H

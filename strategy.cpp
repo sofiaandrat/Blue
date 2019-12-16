@@ -8,50 +8,10 @@ Strategy::Strategy(int townIdx,QVector <QVector <int> > &Table, QVector<int> &po
 
 QVector <int> Strategy::Moving(Map1 map)
 {
-    QVector <market> markets;
-    markets = map.getterMarkets();
-    QVector <market> rating_shops(1);
-    QVector <market> black_rating_shops(1);
-    QVector <int> storage_shops;
-    qDebug() << markets.size();
-    for (int i = 0; i < markets.size(); i++)
-    {
-        markets[i].mark = markets[i].product / shortestPaths[pointsOfGraph.indexOf(markets[i].point_idx)][0];
-        for(int j = 0; j < rating_shops.size(); j++)
-        {
-            if (markets[i].mark == 0)
-            {
-                rating_shops.push_back(markets[i]);
-                break;
-            }
-            if (map.getProducts() < shortestPaths[pointsOfGraph.indexOf(markets[i].point_idx)][0] * (map.getPopulation() + ((2 * shortestPaths[pointsOfGraph.indexOf(markets[i].point_idx)][0]) / 30)))
-            {
-                black_rating_shops.insert(j,markets[i]);
-                break;
-            }
-            if(rating_shops[j].mark < markets[i].mark)
-            {
-                rating_shops.insert(j,markets[i]);
-                break;
-            }
-            if(rating_shops[j].mark == markets[i].mark)
-            {
-                if(shortestPaths[pointsOfGraph.indexOf(markets[i].point_idx)][0] < shortestPaths[pointsOfGraph.indexOf(rating_shops[j].point_idx)][0])
-                    rating_shops.insert(j,markets[i]);
-                else
-                    rating_shops.insert(j + 1,markets[i]);
-                break;
-            }
-        }
-    }
-    rating_shops.pop_back();
-    black_rating_shops.pop_back();
-    for(int i = 0; i < rating_shops.size(); i++)
-        qDebug() << rating_shops[i].mark;
-    if(rating_shops.isEmpty())
-        return alg.Path(1,black_rating_shops[0].point_idx);
-    else
-        return alg.Path(1,rating_shops[0].point_idx);
+    QVector <market> markets = map.getterMarkets();
+    QVector <market> storages = map.getterStorages();
+    int needProducts = map.getPopulation() + (2 * shortestPaths[pointsOfGraph.indexOf(markets[i].point_idx)][0] / 30);
+    if()
 }
 
 QVector<int>  Strategy::PathToNearestMarket(QVector<market> markets)
@@ -69,4 +29,49 @@ QVector<int>  Strategy::PathToNearestMarket(QVector<market> markets)
         }
     }
     return alg.Path(1,market_idx);
+}
+
+QVector <int> Strategy::BetterPath(Map1 map)
+{
+    QVector <market> posts(1);
+    QVector <market> rating(1);
+    QVector <market> black_rating(1);
+    for (int i = 0; i < posts.size(); i++)
+    {
+        posts[i].mark = posts[i].goods / shortestPaths[pointsOfGraph.indexOf(posts[i].point_idx)][0]; //не надо дальноглядности, тчобы не посадить себя на крючок
+        for(int j = 0; j < rating.size(); j++)
+        {
+            if (posts[i].mark == 0)
+            {
+                rating.push_back(posts[i]);
+                break;
+            }
+            if (map.getProducts() < shortestPaths[pointsOfGraph.indexOf(posts[i].point_idx)][0] * (map.getPopulation() + ((2 * shortestPaths[pointsOfGraph.indexOf(posts[i].point_idx)][0]) / 30)))
+            {
+                black_rating.insert(j,posts[i]);
+                break;
+            }
+            if(rating[j].mark < posts[i].mark)
+            {
+                rating.insert(j,posts[i]);
+                break;
+            }
+            if(rating[j].mark == posts[i].mark)
+            {
+                if(shortestPaths[pointsOfGraph.indexOf(posts[i].point_idx)][0] < shortestPaths[pointsOfGraph.indexOf(rating[j].point_idx)][0])
+                    rating.insert(j,posts[i]);
+                else
+                    rating.insert(j + 1,posts[i]);
+                break;
+            }
+        }
+    }
+    rating.pop_back();
+    black_rating.pop_back();
+    for(int i = 0; i < rating.size(); i++)
+        qDebug() << rating[i].mark;
+    if(rating.isEmpty())
+        return alg.Path(1,black_rating[0].point_idx);
+    else
+        return alg.Path(1,rating[0].point_idx);
 }

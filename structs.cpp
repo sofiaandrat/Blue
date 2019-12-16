@@ -72,13 +72,25 @@ void Map1::Pars(QJsonDocument doc)
             market Market;
             Market.idx = obj["idx"].toInt();
             Market.point_idx = obj["point_idx"].toInt();
-            Market.product = obj["product"].toInt();
-            Market.product_capacity = obj["product_capacity"].toInt();
+            Market.goods = obj["product"].toInt();
+            Market.goods_capacity = obj["product_capacity"].toInt();
             Market.replenishment = obj["replenishment"].toInt();
             Market.type = obj["type"].toInt();
             Market.name = obj["name"].isString();
             Market.mark = 0;
             this->Markets.append(Market);
+        }
+        if(obj["type"].toInt() == 3) {
+            market Storage;
+            Storage.idx = obj["idx"].toInt();
+            Storage.point_idx = obj["point_idx"].toInt();
+            Storage.goods = obj["product"].toInt();
+            Storage.goods_capacity = obj["product_capacity"].toInt();
+            Storage.replenishment = obj["replenishment"].toInt();
+            Storage.type = obj["type"].toInt();
+            Storage.name = obj["name"].isString();
+            Storage.mark = 0;
+            this->Storages.append(Storage);
         }
 
     }
@@ -97,14 +109,18 @@ void Map1::Pars(QJsonDocument doc)
 
 QVector <post> Map1::getterPosts()
 {
-    return Posts;
+    return this->Posts;
 }
 
 QVector <market> Map1::getterMarkets()
 {
-    return Markets;
+    return this->Markets;
 }
 
+QVector <market> Map1::getterStorages()
+{
+    return this->Storages;
+}
 void Player::Pars(QJsonDocument doc) {
     QJsonObject jsonObject = doc.object();
     //town Town;

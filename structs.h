@@ -69,8 +69,8 @@ struct market
   QString name;
   int idx;
   int point_idx;
-  int product;
-  int product_capacity;
+  int goods;
+  int goods_capacity;
   int replenishment;
   int type;
   int mark;
@@ -88,6 +88,7 @@ class Map1
 private:
     QVector <post> Posts;
     QVector <market> Markets;
+    QVector <market> Storages;
     QVector <train> AllTrains;
     int tick;
     int population;
@@ -99,6 +100,7 @@ public:
     QVector <post> getterPosts();
     QVector <train> getterAllTrains();
     QVector <market> getterMarkets();
+    QVector <market> getterStorages();
     int getTick();
     int getPopulation();
     int getProducts();
