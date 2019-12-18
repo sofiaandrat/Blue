@@ -39,11 +39,11 @@ void Train::advancePosition(Edge *edge,double coef,int curSpeed,int curPos) {
         posForDraw = coef - curPos;
     }
 
-    if (edge->getSourcePoint().x() > edge->getDestPoint().x()){
+    if (sourcePoint.x() > destPoint.x()){
             stepW = -stepW;
     }
 
-    if (edge->getSourcePoint().y() > edge->getDestPoint().y()){
+    if (sourcePoint.y() > destPoint.y()){
             stepH = -stepH;
     }
 

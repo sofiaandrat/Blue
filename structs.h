@@ -4,7 +4,6 @@
 #include <QJsonDocument>
 #include <QJsonObject>
 #include <QJsonArray>
-#include "Collections.h"
 
 struct town
 {
@@ -17,8 +16,6 @@ struct town
     int population;
     int population_capacity;
     int type;
-    int level;
-    int price;
 };
 
 struct player
@@ -41,8 +38,6 @@ struct train
     int line_idx;
     int position;
     int speed;
-    int level;
-    int price;
 };
 
 class Player
@@ -74,8 +69,8 @@ struct market
   QString name;
   int idx;
   int point_idx;
-  int goods;
-  int goods_capacity;
+  int product;
+  int product_capacity;
   int replenishment;
   int type;
   int mark;
@@ -86,8 +81,6 @@ struct post
   int idx;
   int point_idx;
   int type;
-  int level;
-  int price;
 };
 
 class Map1
@@ -95,26 +88,21 @@ class Map1
 private:
     QVector <post> Posts;
     QVector <market> Markets;
-    QVector <market> Storages;
     QVector <train> AllTrains;
     int tick;
     int population;
     int products;
     int armor;
-    int level;
-    int price;
 public:
     Map1(){}
     void Pars(QJsonDocument doc);
     QVector <post> getterPosts();
+    QVector <train> getterAllTrains();
     QVector <market> getterMarkets();
-    QVector <market> getterStorages();
     int getTick();
     int getPopulation();
     int getProducts();
     int getArmor();
-    int getLevel();
-    int getPrice();
 };
 
 #endif // STRUCTS_H

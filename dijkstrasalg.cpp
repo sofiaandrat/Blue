@@ -15,15 +15,15 @@ DijkstrasAlg::DijkstrasAlg(int townIdx, QVector<QVector<int> > &Table, QVector<i
         }
     }
     //qDebug() << pointsOfGraph;
-    this->shortestPaths = new QVector<QVector<int>>(mktAndStg.size()+1);
+    this->shortestPaths = new QVector<QVector<int>>[mktAndStg.size()+1];
     shPathsFunc(0,Table);
     QVector<QVector<int>> tempTable = Table;
     int pSize = pointsOfGraph.size();
     int mSize = mktAndStg.size();
-    for(int i = 0; i < mSize; i++)
+    for(int i = 0;i<mSize;i++)
     {
         int index = pointsOfGraph.indexOf(mktAndStg[i].point_idx);
-        for(int k = 0; k < pSize; k++)
+        for(int k = 0;k<pSize;k++)
         {
             tempTable[index][k] = 0;
             tempTable[k][index] = 0;
@@ -95,7 +95,7 @@ void DijkstrasAlg::shPathsFunc(int index, QVector<QVector<int> > &Table)
 {
     int n = pointsOfGraph.size();
     QVector <QVector <int> > shortestPaths(n, QVector <int>(2, INT_MAX));
-    QVector <bool> visited(n);
+    bool visited[n];
     for(int i=0;i<n;i++) {
         if(Table[townIdx][i]>0)
         {

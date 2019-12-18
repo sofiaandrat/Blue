@@ -62,37 +62,23 @@ void Map1::Pars(QJsonDocument doc)
         Post.idx = obj["idx"].toInt();
         Post.type = obj["type"].toInt();
         this->Posts.append(Post);
-        if(obj["type"] == TOWN)
+        if(obj["type"] == 1)
         {
             this->population = obj["population"].toInt();
             this->products = obj["product"].toInt();
             this->armor = obj["armor"].toInt();
-            this->level = obj["level"].toInt();
-            this->price = obj["next_level_price"].toInt();
         }
-        if(obj["type"].toInt() == MARKET) {
+        if(obj["type"].toInt() == 2) {
             market Market;
             Market.idx = obj["idx"].toInt();
             Market.point_idx = obj["point_idx"].toInt();
-            Market.goods = obj["product"].toInt();
-            Market.goods_capacity = obj["product_capacity"].toInt();
+            Market.product = obj["product"].toInt();
+            Market.product_capacity = obj["product_capacity"].toInt();
             Market.replenishment = obj["replenishment"].toInt();
             Market.type = obj["type"].toInt();
             Market.name = obj["name"].isString();
             Market.mark = 0;
             this->Markets.append(Market);
-        }
-        if(obj["type"].toInt() == STORAGE) {
-            market Storage;
-            Storage.idx = obj["idx"].toInt();
-            Storage.point_idx = obj["point_idx"].toInt();
-            Storage.goods = obj["product"].toInt();
-            Storage.goods_capacity = obj["product_capacity"].toInt();
-            Storage.replenishment = obj["replenishment"].toInt();
-            Storage.type = obj["type"].toInt();
-            Storage.name = obj["name"].isString();
-            Storage.mark = 0;
-            this->Storages.append(Storage);
         }
 
     }
@@ -111,18 +97,14 @@ void Map1::Pars(QJsonDocument doc)
 
 QVector <post> Map1::getterPosts()
 {
-    return this->Posts;
+    return Posts;
 }
 
 QVector <market> Map1::getterMarkets()
 {
-    return this->Markets;
+    return Markets;
 }
 
-QVector <market> Map1::getterStorages()
-{
-    return this->Storages;
-}
 void Player::Pars(QJsonDocument doc) {
     QJsonObject jsonObject = doc.object();
     //town Town;
@@ -151,8 +133,7 @@ void Player::Pars(QJsonDocument doc) {
     }
 }
 
-player Player::getPlayerData()
-{
+player Player::getPlayerData() {
     return playerData;
 }
 
@@ -178,12 +159,3 @@ int Map1::getArmor()
     return this->armor;
 }
 
-int Map1::getLevel()
-{
-    return this->level;
-}
-
-int Map1::getPrice()
-{
-    return this->price;
-}

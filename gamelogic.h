@@ -29,6 +29,7 @@ private:
       QVector <QVector <int>> Table;
       QVector<int> curRoute;
       QVector<int> pointsOfGraph;
+      QTimer* time;
       //int destDiff;
 };
 #endif // GAMELOGIC_H
