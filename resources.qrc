@@ -1,0 +1,8 @@
+<RCC>
+    <qresource prefix="/resources">
+        <file>market.png</file>
+        <file>storage_1.png</file>
+        <file>town.png</file>
+        <file>train.png</file>
+    </qresource>
+</RCC>

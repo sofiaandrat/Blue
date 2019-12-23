@@ -51,6 +51,8 @@
 #include "graphwidget.h"
 #include "edge.h"
 #include "node.h"
+#include "train.h"
+#include "gamelogic.h"
 
 #include <math.h>
 
@@ -58,10 +60,11 @@
 #include <QVector>
 #include <QRandomGenerator>
 #include <QDebug>
+#include <QThread>
 
 //! [0]
-GraphWidget::GraphWidget(QWidget *parent,QVector <QVector <int> >& Table,QVector <int>& pointsOfGraph,MainWindow* window)
-    : QGraphicsView(parent), timerId(0)
+GraphWidget::GraphWidget(QWidget *parent,SocketTest &socket,QString loginText,MainWindow* window)
+    : QGraphicsView(parent), timerId(0), timerId_1(1)
 {
     QGraphicsScene *scene = new QGraphicsScene(this);
     scene->setItemIndexMethod(QGraphicsScene::NoIndex);
@@ -71,25 +74,91 @@ GraphWidget::GraphWidget(QWidget *parent,QVector <QVector <int> >& Table,QVector
     setViewportUpdateMode(BoundingRectViewportUpdate);
     setRenderHint(QPainter::Antialiasing);
     setTransformationAnchor(AnchorUnderMouse);
-    scale(qreal(0.8), qreal(0.8));
+    scale(qreal(0.6), qreal(0.6));
     setMinimumSize(400, 400);
-    setWindowTitle(tr("Elastic Nodes"));
+    setWindowTitle(tr("Train Simulator 2020"));
 //! [0]
+
+    QPixmap storage;
+    QPixmap town;
+    QPixmap market;
+    QPixmap train;
+
+    storage.load(":/resources/storage_1.png");
+    town.load(":/resources/town.png");
+    market.load(":/resources/market.png");
+    train.load(":/resources/train.png");
+
+//! Get initial info from server
+    socket.SendMessage(LOGIN,{{"name", loginText}});
+    Player player;
+    player.Pars(socket.getterDoc());
+
+    socket.SendMessage(MAP,{{"layer", 0}});
+    Map0 layer0;
+    layer0.Pars(socket.getterDoc());
+
+    socket.SendMessage(MAP,{{"layer", 1}});
+    Map1 layer1;
+    layer1.Pars(socket.getterDoc());
 
 //! [1]
     QVector<Node *> nodeVec;
-    for(int i = 0; i < Table.size(); i++) {
-            nodeVec.append(new Node(this,pointsOfGraph[i]));
-            scene->addItem(nodeVec.last());
-            nodeVec.last()->setPos(0,0);
+    QVector<Edge *> edgeVec;
+    Node* homeTown;
+
+    QVector<int> pointsOfGraph = layer0.getterPointsOfgraph();
+
+    QVector <post> posts = layer1.getterPosts();
+
+    for(int i = 0; i < pointsOfGraph.size(); i++) {
+        int a = -2;
+        for(int j = 0; j < posts.size(); j++) {
+            if(posts[j].point_idx == pointsOfGraph[i]) {
+                a = posts[j].type;
+                break;
+            } else {
+                a = -1;
+            }
+        }
+
+        if(a == 1) {
+            nodeVec.append(new Node(this,pointsOfGraph[i],a,scene->addPixmap(town.scaled(QSize(76,76),Qt::IgnoreAspectRatio,Qt::SmoothTransformation))));
+            if(pointsOfGraph[i] == player.getPlayerData().home_idx) {
+                homeTown = nodeVec.last();
+            }
+        } else if(a == 2) {
+            nodeVec.append(new Node(this,pointsOfGraph[i],a,scene->addPixmap(market.scaled(QSize(50,50),Qt::IgnoreAspectRatio,Qt::SmoothTransformation))));
+        } else if(a == 3) {
+            nodeVec.append(new Node(this,pointsOfGraph[i],a,scene->addPixmap(storage.scaled(QSize(50,50),Qt::IgnoreAspectRatio,Qt::SmoothTransformation))));
+        } else {
+            nodeVec.append(new Node(this,pointsOfGraph[i],a,nullptr));
+        }
+
+        scene->addItem(nodeVec.last());
+        nodeVec.last()->setPos(0,0);
     }
 
+    QVector <QVector <int> > Table = layer0.getterTable();
+    QVector <QVector <int> > Table_sym = Table;
+
+    QDebug deb = qDebug();
+    for(int i = 0; i < Table.size(); i++) {
+        for(int j = 0; j<Table[i].size();j++) {
+            deb<<Table[i][j];
+        }
+        deb<<endl;
+    }
 
     for(int i = 0; i < Table.size()-1; i++) {
         for(int j = i+1; j<Table[i].size();j++) {
             if(Table[i][j] != 0) {
-                scene->addItem(new Edge(nodeVec[i],nodeVec[j],Table[i][j]));
+                edgeVec.push_back(new Edge(nodeVec[i],nodeVec[j],Table[i][j],Table[j][i]));
+               // qDebug() << Table[i][j]<<" "<<Table[j][i];
+                scene->addItem(edgeVec.last());
             }
+            Table_sym[i][j] = abs(Table[i][j]);
+            Table_sym[j][i] = abs(Table[i][j]);
         }
     }
 
@@ -116,7 +185,25 @@ GraphWidget::GraphWidget(QWidget *parent,QVector <QVector <int> >& Table,QVector
     if(pointsOfGraph.size() > 50) {
         scaleView(1/qreal(1.2*4.5));
     }
+
+    for(int i = 0; i<nodes.size(); i++) {
+       // qDebug() << nodes[i]->pos();
+    }
+
     getParentWindow()->setCentralWidget(this);
+
+    this->socket = &socket;
+    this->edgeVec = edgeVec;
+
+    this->layer0 = layer0;
+    this->layer1 = layer1;
+    this->player = player;
+
+
+    Train *playerTrain = new Train(this,homeTown->pos(),scene->addPixmap(train.scaled(QSize(34,51),Qt::IgnoreAspectRatio,Qt::SmoothTransformation)));
+    this->playerTrain = playerTrain;
+    this->timerId_1 = startTimer(100);
+
 }
 //! [1]
 
@@ -124,7 +211,6 @@ GraphWidget::GraphWidget(QWidget *parent,QVector <QVector <int> >& Table,QVector
 void GraphWidget::itemMoved()
 {
     if (!timerId)
-        //timerId = startTimer(1000 / 25);
        timerId = startTimer(0);
 }
 //! [2]
@@ -162,30 +248,37 @@ void GraphWidget::keyPressEvent(QKeyEvent *event)
 //! [3]
 
 //! [4]
-void GraphWidget::timerEvent(QTimerEvent *event)
+void GraphWidget::timerEvent(QTimerEvent *event) //создади таймер эвэнт
 {
     Q_UNUSED(event);
+    if(event->timerId() == timerId) {
+        QList<Node *> nodes;
+        foreach (QGraphicsItem *item, scene()->items()) {
+            if (Node *node = qgraphicsitem_cast<Node *>(item))
+                nodes << node;
+         }
 
-    QList<Node *> nodes;
-    foreach (QGraphicsItem *item, scene()->items()) {
-        if (Node *node = qgraphicsitem_cast<Node *>(item))
-            nodes << node;
+        foreach (Node *node, nodes)
+            node->calculateForces();
+
+        bool itemsMoved = false;
+        foreach (Node *node, nodes) {
+            if (node->advancePosition())
+                itemsMoved = true;
+        }
+
+        if (!itemsMoved) {
+            killTimer(timerId);
+            timerId = 0;
+        }
     }
 
-    foreach (Node *node, nodes)
-        node->calculateForces();
-
-    bool itemsMoved = false;
-    foreach (Node *node, nodes) {
-        if (node->advancePosition())
-            itemsMoved = true;
-    }
-
-    if (!itemsMoved) {
-        killTimer(timerId);
-        timerId = 0;
-        //getParentWindow()->setCentralWidget(this);
-    }
+     if(event->timerId() == timerId_1) //100мс
+     {
+         this->startGameLogic(); //запускаем геймлоджик
+         killTimer(timerId_1);
+         timerId_1 = 1;
+     }
 }
 //! [4]
 
@@ -275,4 +368,9 @@ void GraphWidget::setParentWindow(MainWindow *window)
 MainWindow* GraphWidget::getParentWindow() const
 {
     return parent;
+}
+
+void GraphWidget::startGameLogic() { //создаем гейм лоджик и запускаем алгоритм
+    GameLogic *alg = new GameLogic(this->socket,this->edgeVec,this->playerTrain,this->layer0,this->layer1,this->player);
+    alg->Alhoritm();
 }

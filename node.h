@@ -47,12 +47,18 @@
 ** $QT_END_LICENSE$
 **
 ****************************************************************************/
-
 #ifndef NODE_H
 #define NODE_H
 
 #include <QGraphicsItem>
 #include <QList>
+#include <QDebug>
+
+#include <QGraphicsScene>
+#include <QGraphicsSceneMouseEvent>
+#include <QPainter>
+#include <QStyleOption>
+
 
 class Edge;
 class GraphWidget;
@@ -64,7 +70,7 @@ QT_END_NAMESPACE
 class Node : public QGraphicsItem
 {
 public:
-    Node(GraphWidget *graphWidget, int idx);
+    Node(GraphWidget *graphWidget, int idx,int node_type,QGraphicsPixmapItem *image);
 
     void addEdge(Edge *edge);
     QList<Edge *> edges() const;
@@ -82,6 +88,11 @@ public:
     int getNodeIndex();
     void setNodeIndex(int idx);
 
+    int getNodeType();
+    void setNodeType(int idx);
+
+    void setImage(QGraphicsPixmapItem *image);
+
 protected:
     QVariant itemChange(GraphicsItemChange change, const QVariant &value) override;
 
@@ -92,7 +103,9 @@ private:
     QList<Edge *> edgeList;
     QPointF newPos;
     GraphWidget *graph;
+    QGraphicsPixmapItem* imageOnScene;
     int index;
+    int node_type;
 };
 //! [0]
 

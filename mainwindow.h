@@ -1,14 +1,15 @@
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
-
+#include "ui_mainwindow.h"
+#include "sockettest.h"
+//#include "graphwidget.h"
+#include "structs.h"
+#include "edge.h"
+#include "train.h"
+#include "node.h"
+#include "dijkstrasalg.h"
 #include <QMainWindow>
-#include <QJsonObject>
-#include <QJsonArray>
-#include <QJsonParseError>
-#include <QFile>
-#include <QFileDialog>
-#include <QStandardItem>
-#include <QMessageBox>
+#include <QTimer>
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
@@ -22,16 +23,8 @@ public:
     MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
 
-    QJsonDocument doc;
-    QJsonArray docAr;
-    QJsonParseError docError;
-
-    QString globpath;
-    QFile file;
-
-
 private slots:
-    void on_actionOpen_json_file_triggered();
+    void on_pushButton_clicked();
 
 private:
     Ui::MainWindow *ui;
