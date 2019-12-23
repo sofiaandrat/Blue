@@ -95,7 +95,7 @@ void DijkstrasAlg::shPathsFunc(int index, QVector<QVector<int> > &Table)
 {
     int n = pointsOfGraph.size();
     QVector <QVector <int> > shortestPaths(n, QVector <int>(2, INT_MAX));
-    bool visited[n];
+    QVector <bool> visited(n);
     for(int i=0;i<n;i++) {
         if(Table[townIdx][i]>0)
         {

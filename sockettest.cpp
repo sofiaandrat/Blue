@@ -84,6 +84,7 @@ QByteArray SocketTest::toMessageFormat(Actions Action,QJsonObject jsonObj) {
     QByteArray bytes_action((char*)action,4);
     QByteArray bytes_jsonSize((char*)jsonSize,4);
     QByteArray bytes_zeroSize((char*)zero_size,4);
+    qDebug() << jsonData;
     if(int_jsonSize > 4)
         return bytes_action + bytes_jsonSize + jsonData;
     else
@@ -122,3 +123,18 @@ void SocketTest::SendMessageWOW(Actions Action, QJsonObject jsonObj)
         qDebug() << "socket is close";
     }
 }
+
+void SocketTest::sendUpgradeMessage(bool upgradeTown, QVector <train> Trains, int home_idx)
+{
+    QJsonArray arrayOfTrains;
+    QJsonArray arrayOfTown;
+    QJsonObject upgradeObj;
+    for(int i = 0; i < Trains.size(); i++)
+        arrayOfTrains.push_back(Trains[i].idx);
+    if(upgradeTown)
+        arrayOfTown.push_back(home_idx);
+    upgradeObj.insert("posts", arrayOfTown);
+    upgradeObj.insert("trains", arrayOfTrains);
+    SendMessageWOW(UPGRADE, upgradeObj);
+}
+

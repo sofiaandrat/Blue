@@ -13,6 +13,7 @@ GameLogic::GameLogic(SocketTest *socket, QVector<Edge *> &edgeVec,Train *imageTr
     this->pointsOfGraph = layer0.getterPointsOfgraph();
     this->Table = layer0.getterTable();
     this->playerTrain = player.getPlayerTrains()[0];
+
 }
 
 void GameLogic::Alhoritm()
@@ -28,13 +29,11 @@ void GameLogic::Alhoritm()
     }
     int realTownIdx = this->player.getPlayerData().home_idx;
     int townIdx = pointsOfGraph.indexOf(realTownIdx);
-    Strategy *strategy = new Strategy(townIdx,Table_sym,pointsOfGraph, layer1.getterPosts());
-    this->curRoute = strategy->Moving(layer1);
+    Strategy *strategy = new Strategy(townIdx,Table_sym,pointsOfGraph, layer1.getterPosts(), socket);
+    this->curRoute = strategy->Moving(layer1, player);
     this->playerTrain = player.getPlayerTrains()[0];
     if(Table[std::max(curRoute[0],curRoute[1])][std::min(curRoute[0],curRoute[1])] < 0) {
-        qDebug() <<"I'M HERE YOU MOTHERFUCKER";
         playerTrain.position = Table[std::min(curRoute[0],curRoute[1])][std::max(curRoute[0],curRoute[1])];
-        qDebug() <<"AND HERE IS YOUR MOTHERFUCKING POSITION"<<playerTrain.position;
     }
     QTimer *timer = new QTimer(this->socket);
     this->time = timer;
@@ -74,12 +73,7 @@ void GameLogic::trainOneStep() {
             curSpeed = 1;
             destDiff = 0;
          }
-        qDebug() << "CURRENT FUCKING POSITION AGANE" << playerTrain.position;
-        qDebug() << "CURRENT LENGTH YOU FAT BITCH" << curLengh;
-        qDebug() << "CURRENT SPEEEEEED" << curSpeed;
-        qDebug() << "CURRENT DestDiff" << destDiff;
         if(playerTrain.position != (curLengh - destDiff)) {
-                qDebug() << "I MUST BE HERE YOU DUMBASS!!!!!";
                 socket->sendMoveMessage(curEdgeIdx,curSpeed,playerTrain.idx);
                 socket->sendTurnMessage();
                 socket->SendMessage(MAP,{{"layer", 1}});
