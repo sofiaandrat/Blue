@@ -49,7 +49,6 @@ QVector<int> DijkstrasAlg::manipPaths(int startpIdx, int endpIdx, const QVector<
     bool visited[points.size()]{false};
     int z = pointsOfGraph.indexOf(points[0]);
     visited[0] = true;
-    qDebug() << "z = " << z << endl;
     for(int i = 0;i<points.size()-1;i++)
     {
         QVector<QVector<int>> shPaths = shPathsFunc2(z,tempTable); //shortest paths from the point z
@@ -73,7 +72,6 @@ QVector<int> DijkstrasAlg::manipPaths(int startpIdx, int endpIdx, const QVector<
     z = pointsOfGraph.indexOf(endpIdx);
     resultPath.append(Path2(z,shPaths));
     resultPath.append(z);
-    qDebug() << "seemsgood" << endl;
     return resultPath;
 }
 
