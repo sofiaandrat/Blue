@@ -2,111 +2,94 @@
 #include <iostream>
 #include <QDebug>
 
+
 DijkstrasAlg::DijkstrasAlg(int townIdx, QVector<QVector<int> > &Table, QVector<int> &pointsOfGraph, QVector<post> posts)
 {
-    this->townIdx = townIdx;
+    this->Table = Table;
     this->pointsOfGraph = pointsOfGraph;
-    this->mktAndStg = posts;
-    for(int i = 0;i<mktAndStg.size();i++)
-    {
-        if(mktAndStg[i].type == 1){
-            mktAndStg.remove(i);
-            i--;
-        }
-    }
-    //qDebug() << pointsOfGraph;
-    this->shortestPaths = new QVector<QVector<int>>[mktAndStg.size()+1];
-    shPathsFunc(0,Table);
-    QVector<QVector<int>> tempTable = Table;
-    int pSize = pointsOfGraph.size();
-    int mSize = mktAndStg.size();
-    for(int i = 0;i<mSize;i++)
-    {
-        int index = pointsOfGraph.indexOf(mktAndStg[i].point_idx);
-        for(int k = 0;k<pSize;k++)
-        {
-            tempTable[index][k] = 0;
-            tempTable[k][index] = 0;
-        }
-    }
-    for(int i = 0;i<mSize;i++)
-    {
-        int index = pointsOfGraph.indexOf(mktAndStg[i].point_idx);
-        for(int k = 0;k<pSize;k++)
-        {
-            tempTable[index][k] = Table[index][k];
-            tempTable[k][index] = Table[k][index];
-        }
-        shPathsFunc(i+1,tempTable);
-        for(int k = 0;k<pSize;k++)
-        {
-            tempTable[index][k] = 0;
-            tempTable[k][index] = 0;
-        }
-    }
+    this->shortestPaths = shPathsFunc2(townIdx, Table);
 }
 
 QVector<int> DijkstrasAlg::Path(bool fromTown, int pointIdx)
 {
     QVector <int> path;
     path.append(pointsOfGraph.indexOf(pointIdx));
-    if(fromTown)
+    for(int i = pointsOfGraph.indexOf(pointIdx);shortestPaths[i][1]!=0;i = shortestPaths[i][1])
     {
-        bool flag = false;
-        int idx;
-        for(int i = 0;i<mktAndStg.size();i++) if(mktAndStg[i].point_idx == pointIdx)
-        {
-            flag = true;
-            idx = i;
-            break;
-        }
-        if(flag){
-            for(int i = pointsOfGraph.indexOf(pointIdx);shortestPaths[idx+1][i][1]!=0;i = shortestPaths[idx+1][i][1])
-            {
-                path.append(shortestPaths[idx+1][i][1]);
-            }
-        }
-        else
-        {
-            for(int i = pointsOfGraph.indexOf(pointIdx);shortestPaths[0][i][1]!=0;i = shortestPaths[0][i][1])
-            {
-                path.append(shortestPaths[0][i][1]);
-            }
-        }
-        path.append(0);
-        std::reverse(path.begin(),path.end());
+        path.append(shortestPaths[i][1]);
     }
-    else
+    path.append(0);
+    if(fromTown) std::reverse(path.begin(),path.end());
+    return path;
+}
+
+QVector<int> DijkstrasAlg::Path2(int rawIdx, const QVector<QVector<int> > &shPaths)
+{
+    QVector <int> path;
+    for(int i = rawIdx;shPaths[i][1]!=INT_MAX;i = shPaths[i][1])
     {
-        for(int i = pointsOfGraph.indexOf(pointIdx);shortestPaths[0][i][1]!=0;i = shortestPaths[0][i][1])
-        {
-            path.append(shortestPaths[0][i][1]);
-        }
-        path.append(0);
+        path.append(shPaths[i][1]);
     }
+    std::reverse(path.begin(),path.end());
     return path;
 }
 
 QVector <QVector <int> > DijkstrasAlg::getPaths() {
-    return shortestPaths[0];
+    return shortestPaths;
 }
 
-void DijkstrasAlg::shPathsFunc(int index, QVector<QVector<int> > &Table)
+QVector<int> DijkstrasAlg::manipPaths(int startpIdx, int endpIdx, const QVector<int> &postsToVisit, const QVector<int> &postsToAvoid)
+{
+    QVector<int> points;
+    QVector<int> resultPath;
+    QVector<QVector<int>> tempTable = Table;
+    removePosts(postsToAvoid, tempTable);
+    points.append(startpIdx);
+    points.append(postsToVisit);
+    bool visited[points.size()]{false};
+    int z = pointsOfGraph.indexOf(points[0]);
+    visited[0] = true;
+    for(int i = 0;i<points.size()-1;i++)
+    {
+        QVector<QVector<int>> shPaths = shPathsFunc2(z,tempTable); //shortest paths from the point z
+        int min = INT_MAX;
+        int jSave=0;
+        for(int j = 0;j<points.size();j++)
+        {
+            if(visited[j]==true) continue;
+            int tempIdx = pointsOfGraph.indexOf(points[j]);
+            if(min>shPaths[tempIdx][0])
+            {
+                 min = shPaths[tempIdx][0];
+                 z = tempIdx;
+                 jSave = j;
+            }
+        }
+        visited[jSave] = true;
+        resultPath.append(Path2(z,shPaths));
+    }
+    QVector<QVector<int>> shPaths = shPathsFunc2(z,tempTable);
+    z = pointsOfGraph.indexOf(endpIdx);
+    resultPath.append(Path2(z,shPaths));
+    resultPath.append(z);
+    return resultPath;
+}
+
+QVector <QVector <int> > DijkstrasAlg::shPathsFunc2(int rawIdx, QVector<QVector<int> > &Table)
 {
     int n = pointsOfGraph.size();
     QVector <QVector <int> > shortestPaths(n, QVector <int>(2, INT_MAX));
     QVector <bool> visited(n);
     for(int i=0;i<n;i++) {
-        if(Table[townIdx][i]>0)
+        if(Table[rawIdx][i]>0)
         {
-            shortestPaths[i][0]=Table[townIdx][i];
-            shortestPaths[i][1]=townIdx;
+            shortestPaths[i][0]=Table[rawIdx][i];
+            shortestPaths[i][1]=rawIdx;
         }
         visited[i]=false;
     }
-
-    shortestPaths[townIdx][0]=0;
-    shortestPaths[townIdx][1]=0;
+    shortestPaths[rawIdx][0]=0;
+    //shortestPaths[rawIdx][1]=0;
     int index1=0,u=0;
     for (int i=0;i<n;i++)
     {
@@ -130,5 +113,21 @@ void DijkstrasAlg::shPathsFunc(int index, QVector<QVector<int> > &Table)
             }
         }
     }
-    this->shortestPaths[index] = shortestPaths;
+    return shortestPaths;
+}
+
+//nulls edges to passed posts by way of avoiding them
+void DijkstrasAlg::removePosts(const QVector<int> &postsToRemove, QVector<QVector<int> > &tempTable)
+{
+    int pSize = pointsOfGraph.size();
+    int mSize = postsToRemove.size();
+    for(int i = 0;i<mSize;i++)
+    {
+        int index = pointsOfGraph.indexOf(postsToRemove[i]);
+        for(int k = 0;k<pSize;k++)
+        {
+            tempTable[index][k] = 0;
+            tempTable[k][index] = 0;
+        }
+    }
 }
