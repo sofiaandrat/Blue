@@ -9,15 +9,16 @@ class DijkstrasAlg
 {
 public:
     DijkstrasAlg(int townIdx,QVector <QVector <int> > &Table, QVector<int> &pointsOfGraph, QVector<post> posts);
-
     QVector <QVector <int> > getPaths();
-    QVector <QVector <int> > *shortestPaths;
+    QVector <int> manipPaths(int startpIdx, int endpIdx, const QVector<int> &postsToVisit, const QVector<int> &postsToAvoid);
+    QVector <QVector <int> > shortestPaths;
     QVector <int> Path(bool fromTown, int pointIdx);
 private:
-    void shPathsFunc(int index, QVector<QVector<int> > &Table);
-    QVector<post> mktAndStg;
-    int townIdx;
+    QVector<QVector<int>> shPathsFunc2(int rawIdx, QVector<QVector<int> > &Table);
+    QVector <int> Path2(int rawIdx, const QVector<QVector<int> > &shPaths);
+    void removePosts(const QVector<int> &postsToRemove,QVector <QVector <int> > &tempTable);
     QVector<int> pointsOfGraph;
+    QVector<QVector<int>> Table;
 };
 
 #endif // DIJKSTRASALG_H
