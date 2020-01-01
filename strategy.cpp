@@ -57,7 +57,7 @@ market Strategy::BestPost(Map1 map, QVector <market> posts)
         {
             if (posts[i].mark == 0)
             {
-                rating.insert(rating.size() - 2, posts[i]);
+                rating.insert(rating.size() - 1, posts[i]);
                 break;
             }
             if (map.getProducts() < this->shortestPaths[pointsOfGraph.indexOf(posts[i].point_idx)][0] * (map.getPopulation() + ((2 * shortestPaths[pointsOfGraph.indexOf(posts[i].point_idx)][0]) / 30)))
