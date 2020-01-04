@@ -3,6 +3,7 @@
 
 #include "mainwindow.h"
 #include "edge.h"
+#include "strategy.h"
 //#include <stdlib.h>
 #include <QObject>
 
@@ -30,6 +31,7 @@ private:
       QVector<int> curRoute;
       QVector<int> pointsOfGraph;
       QTimer* time;
+      Strategy *strategy;
       //int destDiff;
 };
 #endif // GAMELOGIC_H

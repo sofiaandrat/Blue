@@ -146,7 +146,7 @@ void Player::Pars(QJsonDocument doc) {
     this->playerData.home_idx = jsonHomeObject["idx"].toInt();
     this->playerData.home_post_idx = jsonHomeObject["post_idx"].toInt();
 
-    this->playerData.idx = jsonObject["idx"].toString();
+    //this->playerData.idx = jsonObject["idx"].toString();
     this->playerData.in_game = jsonObject["in_game"].toBool();
     this->playerData.name = jsonObject["name"].toString();
     this->playerData.rating = jsonObject["rating"].toInt();

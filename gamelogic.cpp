@@ -14,6 +14,7 @@ GameLogic::GameLogic(SocketTest *socket, QVector<Edge *> &edgeVec,Train *imageTr
     this->Table = layer0.getterTable();
     this->playerTrain = player.getPlayerTrains()[0];
 
+
 }
 
 void GameLogic::Alhoritm()
@@ -29,7 +30,7 @@ void GameLogic::Alhoritm()
     }
     int realTownIdx = this->player.getPlayerData().home_idx;
     int townIdx = pointsOfGraph.indexOf(realTownIdx);
-    Strategy *strategy = new Strategy(townIdx,Table_sym,pointsOfGraph, layer1.getterPosts(), socket);
+    this->strategy = new Strategy(townIdx,Table_sym,pointsOfGraph, layer1.getterPosts(), socket);
     this->curRoute = strategy->Moving(layer1, player);
     this->playerTrain = player.getPlayerTrains()[0];
     if(Table[std::max(curRoute[0],curRoute[1])][std::min(curRoute[0],curRoute[1])] < 0) {

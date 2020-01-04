@@ -50,9 +50,18 @@ QVector <int> Strategy::Moving(Map1 map, Player player)
     player.setTrains(NewTrainsInfo);
     int needProducts = (map.getHome(player.getPlayerData().player_idx).population + (2 * (lengthOfPathToMarket + lengthOfPathToStorage) / 25)) * (lengthOfPathToMarket + lengthOfPathToStorage) * 2;
     if(map.getHome(player.getPlayerData().player_idx).products > needProducts)
+    {
+        for(int i = 0; i < markets.size(); i++)
+            pointsToAvoid.append(markets[i].point_idx);
         return alg.manipPaths(player.getPlayerData().home_idx, Storage.point_idx,pointsToVisit,pointsToAvoid);
+    }
     else
-        return alg.manipPaths(player.getPlayerData().home_idx, Storage.point_idx,pointsToVisit,pointsToAvoid);
+    {
+        for(int i = 0; i <storages.size(); i++)
+            pointsToAvoid.append(storages[i].point_idx);
+        return alg.manipPaths(player.getPlayerData().home_idx, Market.point_idx,pointsToVisit,pointsToAvoid);
+    }
+
 }
 
 market Strategy::BestPost(Map1 map, QVector <market> posts, Player player)
