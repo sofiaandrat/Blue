@@ -150,7 +150,7 @@ void Player::Pars(QJsonDocument doc) {
     this->playerData.in_game = jsonObject["in_game"].toBool();
     this->playerData.name = jsonObject["name"].toString();
     this->playerData.rating = jsonObject["rating"].toInt();
-    this->playerData.player_idx = jsonObject["player_idx"].toString();
+    this->playerData.player_idx = jsonObject["idx"].toString();
 
     QJsonArray jsonArray = jsonObject["trains"].toArray();
     foreach(const QJsonValue & value, jsonArray) {

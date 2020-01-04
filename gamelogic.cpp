@@ -28,7 +28,7 @@ void GameLogic::Alhoritm()
         }
     }
     int realTownIdx = this->player.getPlayerData().home_idx;
-     int townIdx = pointsOfGraph.indexOf(realTownIdx);
+    int townIdx = pointsOfGraph.indexOf(realTownIdx);
     Strategy *strategy = new Strategy(townIdx,Table_sym,pointsOfGraph, layer1.getterPosts(), socket);
     this->curRoute = strategy->Moving(layer1, player);
     this->playerTrain = player.getPlayerTrains()[0];
@@ -120,8 +120,7 @@ void GameLogic::trainOneStep() {
                     trainOneStep();
                 }
                 } else {
-                    //if(iter == curRoute.size() - 1 && playerTrain.position == 3)
-                    if(curRoute[iter] == 0)
+                    if(curRoute[iter] == pointsOfGraph.indexOf(player.getPlayerData().home_idx))
                     {
                         this->time->stop();
                         GameLogic *alg = new GameLogic(socket,edgeVec,imageTrain,layer0,layer1,player);
