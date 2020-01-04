@@ -38,7 +38,7 @@ QVector <QVector <int> > DijkstrasAlg::getPaths() {
     return shortestPaths;
 }
 
-QVector<int> DijkstrasAlg::manipPaths(int startpIdx, int endpIdx, const QVector<int> &postsToVisit, const QVector<int> &postsToAvoid)
+QVector<int> DijkstrasAlg::manipPaths(int startpIdx, int endpIdx, QVector<int> &postsToVisit, QVector<int> &postsToAvoid)
 {
     QVector<int> points;
     QVector<int> resultPath;
@@ -46,7 +46,7 @@ QVector<int> DijkstrasAlg::manipPaths(int startpIdx, int endpIdx, const QVector<
     removePosts(postsToAvoid, tempTable);
     points.append(startpIdx);
     points.append(postsToVisit);
-    bool visited[points.size()]{false};
+    QVector <bool> visited(points.size(), false);
     int z = pointsOfGraph.indexOf(points[0]);
     visited[0] = true;
     for(int i = 0;i<points.size()-1;i++)

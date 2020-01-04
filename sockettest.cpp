@@ -110,6 +110,7 @@ void SocketTest::sendTurnMessage() {
 }
 
 SocketTest::~SocketTest() {
+    this->socket->close();
     qDebug()<<"Destructed";
 }
 

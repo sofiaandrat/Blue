@@ -60,6 +60,7 @@
 #include <QVector>
 #include <QRandomGenerator>
 #include <QDebug>
+#include <QHBoxLayout>
 #include <QThread>
 
 //! [0]
@@ -70,13 +71,16 @@ GraphWidget::GraphWidget(QWidget *parent,SocketTest &socket,QString loginText,Ma
     scene->setItemIndexMethod(QGraphicsScene::NoIndex);
     scene->setSceneRect(-2000, -2000, 4000, 4000);
     setScene(scene);
+
     setCacheMode(CacheBackground);
     setViewportUpdateMode(BoundingRectViewportUpdate);
     setRenderHint(QPainter::Antialiasing);
     setTransformationAnchor(AnchorUnderMouse);
     scale(qreal(0.6), qreal(0.6));
-    setMinimumSize(400, 400);
+    //setMinimumSize(400, 400);
+    setMinimumSize(800, 600);
     setWindowTitle(tr("Train Simulator 2020"));
+
 //! [0]
 
     QPixmap storage;
@@ -90,7 +94,7 @@ GraphWidget::GraphWidget(QWidget *parent,SocketTest &socket,QString loginText,Ma
     train.load(":/resources/train.png");
 
 //! Get initial info from server
-    socket.SendMessage(LOGIN,{{"name", loginText}});
+    socket.SendMessage(LOGIN,{{"name", loginText}, {"game", "Blue2"}});
     Player player;
     player.Pars(socket.getterDoc());
 
@@ -190,7 +194,20 @@ GraphWidget::GraphWidget(QWidget *parent,SocketTest &socket,QString loginText,Ma
        // qDebug() << nodes[i]->pos();
     }
 
+    QLabel *label = new QLabel(this);
+    label->setText("Random String");
+
     getParentWindow()->setCentralWidget(this);
+
+    //label->setParent(this);
+    label->setGeometry(0,0,100,14);
+    label->show();
+    //getParentWindow()->addDockWidget(Qt::TopDockWidgetArea,);
+
+    QLabel *label2 = new QLabel(this);
+    label2->setText("Random String 2");
+    label2->setGeometry(0,14,100,14);
+    label2->show();
 
     this->socket = &socket;
     this->edgeVec = edgeVec;

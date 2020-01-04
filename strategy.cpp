@@ -14,39 +14,48 @@ QVector <int> Strategy::Moving(Map1 map, Player player)
     QVector <market> markets = map.getterMarkets();
     QVector <market> storages = map.getterStorages();
     QVector <train> upgradeTrains;
-    QVector <market> GoodMarkets = GoodPosts(map, markets);
+    QVector <market> GoodMarkets = GoodPosts(map, markets, player);
+    QVector <int> pointsToVisit(0);
+    QVector <int> pointsToAvoid(0);
     if(GoodMarkets.empty())
         GoodMarkets = markets;
-    market Market = BestPost(map, GoodMarkets);
-    market Storage = BestPost(map, storages);
+    market Market = BestPost(map, GoodMarkets, player);
+    market Storage = BestPost(map, storages, player);
     int lengthOfPathToMarket = shortestPaths[pointsOfGraph.indexOf(Market.point_idx)][0];
     int lengthOfPathToStorage = shortestPaths[pointsOfGraph.indexOf(Storage.point_idx)][0];
-    if(map.getLevel() < map.getTrains()[0].level && map.getPrice() != 0)
+    if(map.getHome(player.getPlayerData().player_idx).level < player.getPlayerTrains()[0].level && map.getHome(player.getPlayerData().player_idx).price != 0)
     {
-        if(map.getPrice() <= map.getArmor())
+        if(map.getHome(player.getPlayerData().player_idx).price <= map.getHome(player.getPlayerData().player_idx).armor)
         {
-            if(map.getArmor() - map.getPrice() > map.getTrains()[0].price &&
-                    map.getTrains()[0].price != 0)
-                upgradeTrains.push_back(map.getTrains()[0]);
+            if(map.getHome(player.getPlayerData().player_idx).armor - map.getHome(player.getPlayerData().player_idx).price > player.getPlayerTrains()[0].price && player.getPlayerTrains()[0].price != 0)
+                upgradeTrains.push_back(player.getPlayerTrains()[0]);
             socket->sendUpgradeMessage(true, upgradeTrains, player.getPlayerData().home_post_idx);
         }
-    } else if (map.getTrains()[0].price <= map.getArmor() && map.getTrains()[0].price != 0)
+    } else if (player.getPlayerTrains()[0].price <= map.getHome(player.getPlayerData().player_idx).armor && player.getPlayerTrains()[0].price != 0)
     {
-        qDebug() << map.getTrains()[0].price << " " << map.getArmor();
-        upgradeTrains.push_back(map.getTrains()[0]);
+        qDebug() << player.getPlayerTrains()[0].price << " " << map.getHome(player.getPlayerData().player_idx).armor;
+        upgradeTrains.push_back(player.getPlayerTrains()[0]);
         socket->sendUpgradeMessage(false, upgradeTrains, player.getPlayerData().home_idx);
     }
     socket->SendMessage(MAP,{{"layer", 1}});
     map = *new Map1();
     map.Pars(socket->getterDoc());
-    int needProducts = (map.getPopulation() + (2 * (lengthOfPathToMarket + lengthOfPathToStorage) / 30)) * (lengthOfPathToMarket + lengthOfPathToStorage) * 2;
-    if(map.getProducts() > needProducts)
-        return alg.Path(1, Storage.point_idx);
+    QVector <train> Trains = map.getTrains();
+    QVector <train> NewTrainsInfo;
+    for(int i = 0; i < Trains.size(); i++)
+    {
+        if(Trains[i].player_idx == player.getPlayerData().player_idx)
+            NewTrainsInfo.append(Trains[i]);
+    }
+    player.setTrains(NewTrainsInfo);
+    int needProducts = (map.getHome(player.getPlayerData().player_idx).population + (2 * (lengthOfPathToMarket + lengthOfPathToStorage) / 25)) * (lengthOfPathToMarket + lengthOfPathToStorage) * 2;
+    if(map.getHome(player.getPlayerData().player_idx).products > needProducts)
+        return alg.manipPaths(player.getPlayerData().home_idx, Storage.point_idx,pointsToVisit,pointsToAvoid);
     else
-        return alg.Path(1, Market.point_idx);
+        return alg.manipPaths(player.getPlayerData().home_idx, Storage.point_idx,pointsToVisit,pointsToAvoid);
 }
 
-market Strategy::BestPost(Map1 map, QVector <market> posts)
+market Strategy::BestPost(Map1 map, QVector <market> posts, Player player)
 {
     QVector <market> rating(1);
     QVector <market> black_rating(1);
@@ -60,7 +69,7 @@ market Strategy::BestPost(Map1 map, QVector <market> posts)
                 rating.insert(rating.size() - 1, posts[i]);
                 break;
             }
-            if (map.getProducts() < this->shortestPaths[pointsOfGraph.indexOf(posts[i].point_idx)][0] * (map.getPopulation() + ((2 * shortestPaths[pointsOfGraph.indexOf(posts[i].point_idx)][0]) / 30)))
+            if (map.getHome(player.getPlayerData().player_idx).products < this->shortestPaths[pointsOfGraph.indexOf(posts[i].point_idx)][0] * (map.getHome(player.getPlayerData().player_idx).population + ((2 * shortestPaths[pointsOfGraph.indexOf(posts[i].point_idx)][0]) / 25)))
             {
                 black_rating.insert(j,posts[i]);
                 break;
@@ -72,10 +81,16 @@ market Strategy::BestPost(Map1 map, QVector <market> posts)
             }
             if(rating[j].mark == posts[i].mark)
             {
-                if(this->shortestPaths[pointsOfGraph.indexOf(posts[i].point_idx)][0] < this->shortestPaths[pointsOfGraph.indexOf(rating[j].point_idx)][0])
+                if(this->shortestPaths[pointsOfGraph.indexOf(posts[i].point_idx)][0] < this->shortestPaths[pointsOfGraph.indexOf(rating[j].point_idx)][0]) {
                     rating.insert(j,posts[i]);
-                else
-                    rating.insert(j + 1,posts[i]);
+                }
+                else {
+                    if((j+1) == rating.size()) {
+                        rating.push_back(posts[i]);
+                    } else {
+                        rating.insert(j + 1,posts[i]);
+                    }
+                }
                 break;
             }
         }
@@ -90,12 +105,12 @@ market Strategy::BestPost(Map1 map, QVector <market> posts)
        return rating[0];
 }
 
-QVector <market> Strategy::GoodPosts(Map1 map, QVector <market> posts)
+QVector <market> Strategy::GoodPosts(Map1 map, QVector <market> posts, Player player)
 {
     QVector <market> rating;
     for(int i = 0; i < posts.size(); i++)
     {
-        posts[i].mark = map.getPopulation() * shortestPaths[pointsOfGraph.indexOf(posts[i].point_idx)][0] * 2;
+        posts[i].mark = map.getHome(player.getPlayerData().player_idx).population * shortestPaths[pointsOfGraph.indexOf(posts[i].point_idx)][0] * 2;
         if(posts[i].mark < posts[i].goods)
         {
             rating.append(posts[i]);

@@ -28,7 +28,7 @@ void GameLogic::Alhoritm()
         }
     }
     int realTownIdx = this->player.getPlayerData().home_idx;
-    int townIdx = pointsOfGraph.indexOf(realTownIdx);
+     int townIdx = pointsOfGraph.indexOf(realTownIdx);
     Strategy *strategy = new Strategy(townIdx,Table_sym,pointsOfGraph, layer1.getterPosts(), socket);
     this->curRoute = strategy->Moving(layer1, player);
     this->playerTrain = player.getPlayerTrains()[0];
@@ -79,6 +79,14 @@ void GameLogic::trainOneStep() {
                 socket->SendMessage(MAP,{{"layer", 1}});
                 this->layer1 = *new Map1();
                 layer1.Pars(socket->getterDoc());
+                QVector <train> Trains = layer1.getTrains();
+                QVector <train> NewTrainsInfo;
+                for(int i = 0; i < Trains.size(); i++)
+                {
+                    if(Trains[i].player_idx == player.getPlayerData().player_idx)
+                        NewTrainsInfo.append(Trains[i]);
+                }
+                player.setTrains(NewTrainsInfo);
                 if((curLengh - destDiff) == curLengh) {
                     playerTrain.position++;
                     imageTrain->advancePosition(edgeVec[curEdge],curLengh,curSpeed,playerTrain.position);

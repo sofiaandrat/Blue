@@ -25,6 +25,8 @@ SOURCES += \
     mainwindow.cpp \
     node.cpp \
     sockettest.cpp \
+    statshandler.cpp \
+    statslabel.cpp \
     strategy.cpp \
     structs.cpp \
     train.cpp
@@ -38,6 +40,8 @@ HEADERS += \
     mainwindow.h \
     node.h \
     sockettest.h \
+    statshandler.h \
+    statslabel.h \
     strategy.h \
     structs.h \
     train.h

@@ -13,10 +13,10 @@ private:
     SocketTest *socket;
 public:
     Strategy(int townIdx,QVector <QVector <int> > &Table, QVector<int> &pointsOfGraph, QVector<post> posts, SocketTest *socket);
-    market BestPost(Map1 map, QVector <market> posts);
+    market BestPost(Map1 map, QVector <market> posts, Player player);
     QVector <int> Moving(Map1 map, Player player);
     QVector <int> PathToNearestMarket(QVector<market> markets);
-    QVector <market> GoodPosts(Map1 map, QVector <market> posts);
+    QVector <market> GoodPosts(Map1 map, QVector <market> posts, Player player);
 };
 
 #endif // STRATEGY_H

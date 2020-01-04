@@ -28,5 +28,6 @@ private slots:
 
 private:
     Ui::MainWindow *ui;
+    SocketTest *Socket;
 };
 #endif // MAINWINDOW_H

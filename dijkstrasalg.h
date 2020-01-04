@@ -10,7 +10,7 @@ class DijkstrasAlg
 public:
     DijkstrasAlg(int townIdx,QVector <QVector <int> > &Table, QVector<int> &pointsOfGraph, QVector<post> posts);
     QVector <QVector <int> > getPaths();
-    QVector <int> manipPaths(int startpIdx, int endpIdx, const QVector<int> &postsToVisit, const QVector<int> &postsToAvoid);
+    QVector <int> manipPaths(int startpIdx, int endpIdx, QVector<int> &postsToVisit, QVector<int> &postsToAvoid);
     QVector <QVector <int> > shortestPaths;
     QVector <int> Path(bool fromTown, int pointIdx);
 private:

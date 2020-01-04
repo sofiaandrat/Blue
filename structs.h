@@ -11,12 +11,13 @@ struct town
     int idx;
     int armor;
     int armor_capacity;
+    int products;
+    int products_capacity;
     QString name;
     QString player_idx;
     int point_idx;
     int population;
     int population_capacity;
-    int type;
     int level;
     int price;
 };
@@ -29,6 +30,7 @@ struct player
     int rating;
     int home_idx;
     int home_post_idx;
+    QString player_idx;
 };
 
 struct train
@@ -55,6 +57,7 @@ public:
     void Pars(QJsonDocument doc);
     player getPlayerData();
     QVector <train> getPlayerTrains();
+    void setTrains(QVector <train> Trains);
 };
 
 class Map0 //если будет нужно позже я добавлю те пункты, пока что их предназначение в это мире не ясно
@@ -86,8 +89,6 @@ struct post
   int idx;
   int point_idx;
   int type;
-  int level;
-  int price;
 };
 
 class Map1
@@ -96,6 +97,7 @@ private:
     QVector <post> Posts;
     QVector <market> Markets;
     QVector <market> Storages;
+    QVector <town> Towns;
     QVector <train> AllTrains;
     int tick;
     int population;
@@ -110,12 +112,8 @@ public:
     QVector <market> getterMarkets();
     QVector <market> getterStorages();
     int getTick();
-    int getPopulation();
-    int getProducts();
-    int getArmor();
-    int getLevel();
-    int getPrice();
     QVector <train> getTrains();
+    town getHome(QString player_idx);
 };
 
 #endif // STRUCTS_H

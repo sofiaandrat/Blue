@@ -4,6 +4,7 @@
 void Map0::Pars(QJsonDocument doc)
 {
     QJsonObject jsonObject = doc.object();
+    qDebug() << jsonObject;
     QJsonArray jsonArray = jsonObject["points"].toArray();
     foreach(const QJsonValue & value, jsonArray)
     {
@@ -64,11 +65,20 @@ void Map1::Pars(QJsonDocument doc)
         this->Posts.append(Post);
         if(obj["type"] == TOWN)
         {
-            this->population = obj["population"].toInt();
-            this->products = obj["product"].toInt();
-            this->armor = obj["armor"].toInt();
-            this->level = obj["level"].toInt();
-            this->price = obj["next_level_price"].toInt();
+            town Town;
+            Town.population = obj["population"].toInt();
+            Town.products = obj["product"].toInt();
+            Town.armor = obj["armor"].toInt();
+            Town.level = obj["level"].toInt();
+            Town.price = obj["next_level_price"].toInt();
+            Town.idx = Post.idx;
+            Town.name = obj["name"].toString();
+            Town.point_idx = Post.point_idx;
+            Town.player_idx = obj["player_idx"].toString();
+            Town.armor_capacity = obj["armor_capacity"].toInt();
+            Town.products_capacity = obj["products_capacity"].toInt();
+            Town.population_capacity = obj["population_capacity"].toInt();
+            this->Towns.append(Town);
         }
         if(obj["type"].toInt() == MARKET) {
             market Market;
@@ -140,6 +150,7 @@ void Player::Pars(QJsonDocument doc) {
     this->playerData.in_game = jsonObject["in_game"].toBool();
     this->playerData.name = jsonObject["name"].toString();
     this->playerData.rating = jsonObject["rating"].toInt();
+    this->playerData.player_idx = jsonObject["player_idx"].toString();
 
     QJsonArray jsonArray = jsonObject["trains"].toArray();
     foreach(const QJsonValue & value, jsonArray) {
@@ -168,35 +179,25 @@ QVector<train> Player::getPlayerTrains() {
     return playerTrains;
 }
 
+void Player::setTrains(QVector <train> Trains)
+{
+    this->playerTrains = Trains;
+}
+
 int Map1::getTick() {
     return this->tick;
-}
-
-int Map1::getPopulation()
-{
-    return this->population;
-}
-int Map1::getProducts()
-{
-    return this->products;
-}
-
-int Map1::getArmor()
-{
-    return this->armor;
-}
-
-int Map1::getLevel()
-{
-    return this->level;
-}
-
-int Map1::getPrice()
-{
-    return this->price;
 }
 
 QVector <train> Map1::getTrains()
 {
     return this->AllTrains;
+}
+
+town Map1::getHome(QString player_idx)
+{
+    for(int i = 0; i < Towns.size(); i++)
+    {
+        if(Towns[i].player_idx == player_idx)
+            return Towns[i];
+    }
 }
