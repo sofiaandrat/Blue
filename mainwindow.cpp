@@ -13,3 +13,17 @@ MainWindow::~MainWindow()
 {
    // delete ui;
 }
+
+game MainWindow::getGame()
+{
+    this->Socket = new SocketTest(this);
+    this->Socket->Connect();
+    this->Socket->SendMessage(GAMES,{});
+    ExistingGames games;
+    QVector <game> Games = games.getGames();
+    for(int i = 0; i < Games.size(); i++)
+    {
+        if(Games[i].gameName == this->Game.gameName)
+            return Games[i];
+    }
+}
