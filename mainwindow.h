@@ -23,11 +23,8 @@ public:
     MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
 
-private slots:
-    void on_pushButton_clicked();
-
-private:
-    Ui::MainWindow *ui;
+protected:
     SocketTest *Socket;
+    //Ui::MainWindow *ui;
 };
 #endif // MAINWINDOW_H

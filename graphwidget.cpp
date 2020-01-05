@@ -64,7 +64,7 @@
 #include <QThread>
 
 //! [0]
-GraphWidget::GraphWidget(QWidget *parent,SocketTest &socket,QString loginText,MainWindow* window)
+GraphWidget::GraphWidget(QWidget *parent,SocketTest &socket,MainWindow *window,QString loginText, QString gameName, int numberOfPlayers, int numberOfTurns)
     : QGraphicsView(parent), timerId(0), timerId_1(1)
 {
     QGraphicsScene *scene = new QGraphicsScene(this);
@@ -94,7 +94,12 @@ GraphWidget::GraphWidget(QWidget *parent,SocketTest &socket,QString loginText,Ma
     train.load(":/resources/train.png");
 
 //! Get initial info from server
-    socket.SendMessage(LOGIN,{{"name", loginText}, {"game", "Blue2"}});
+    if(gameName == "")
+        socket.SendMessage(LOGIN,{{"name", loginText}});
+    else if(numberOfPlayers == 0)
+        socket.SendMessage(LOGIN,{{"name", loginText},{"game", gameName}});
+    else
+        socket.SendMessage(LOGIN,{{"name", loginText}, {"game", gameName}, {"num_turns", numberOfTurns}, {"num_players", numberOfPlayers}});
     Player player;
     player.Pars(socket.getterDoc());
 

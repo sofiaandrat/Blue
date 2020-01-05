@@ -47,31 +47,6 @@ struct train
     int price;
 };
 
-class Player
-{
-private:
-    player playerData;
-    QVector<train> playerTrains;
-public:
-    Player(){}
-    void Pars(QJsonDocument doc);
-    player getPlayerData();
-    QVector <train> getPlayerTrains();
-    void setTrains(QVector <train> Trains);
-};
-
-class Map0 //если будет нужно позже я добавлю те пункты, пока что их предназначение в это мире не ясно
-{
-private:
-    QVector <int> pointsOfGraph;
-    QVector <QVector <int> > Table;
-public:
-    Map0(){}
-    void Pars(QJsonDocument doc);
-    QVector <int> getterPointsOfgraph();
-    QVector <QVector <int> > getterTable();
-};
-
 struct market
 {
   QString name;
@@ -89,6 +64,41 @@ struct post
   int idx;
   int point_idx;
   int type;
+};
+
+struct game
+{
+    QString gameName;
+    int numberOfPlayers;
+    int numberOfTurns;
+    GameState gameState;
+};
+
+class Player
+{
+private:
+    player playerData;
+    QVector<train> playerTrains;
+public:
+    Player(){}
+    ~Player(){}
+    void Pars(QJsonDocument doc);
+    player getPlayerData();
+    QVector <train> getPlayerTrains();
+    void setTrains(QVector <train> Trains);
+};
+
+class Map0 //если будет нужно позже я добавлю те пункты, пока что их предназначение в это мире не ясно
+{
+private:
+    QVector <int> pointsOfGraph;
+    QVector <QVector <int> > Table;
+public:
+    Map0(){}
+    ~Map0(){}
+    void Pars(QJsonDocument doc);
+    QVector <int> getterPointsOfgraph();
+    QVector <QVector <int> > getterTable();
 };
 
 class Map1
@@ -114,6 +124,18 @@ public:
     int getTick();
     QVector <train> getTrains();
     town getHome(QString player_idx);
+    ~Map1(){}
+};
+
+class ExistingGames
+{
+private:
+    QVector <game> games;
+public:
+    ExistingGames(){}
+    ~ExistingGames(){}
+    void Pars(QJsonDocument doc);
+    QVector <game> getGames();
 };
 
 #endif // STRUCTS_H

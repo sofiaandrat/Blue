@@ -141,12 +141,10 @@ QVector <market> Map1::getterStorages()
 }
 void Player::Pars(QJsonDocument doc) {
     QJsonObject jsonObject = doc.object();
-    //town Town;
     QJsonObject jsonHomeObject = jsonObject["home"].toObject();
     this->playerData.home_idx = jsonHomeObject["idx"].toInt();
     this->playerData.home_post_idx = jsonHomeObject["post_idx"].toInt();
 
-    //this->playerData.idx = jsonObject["idx"].toString();
     this->playerData.in_game = jsonObject["in_game"].toBool();
     this->playerData.name = jsonObject["name"].toString();
     this->playerData.rating = jsonObject["rating"].toInt();
@@ -199,5 +197,26 @@ town Map1::getHome(QString player_idx)
     {
         if(Towns[i].player_idx == player_idx)
             return Towns[i];
+    }
+}
+
+QVector <game> ExistingGames::getGames()
+{
+    return this->games;
+}
+
+void ExistingGames::Pars(QJsonDocument doc)
+{
+    QJsonObject jsonObject = doc.object();
+    QJsonArray jsonArray = jsonObject["games"].toArray();
+    foreach(const QJsonValue & value, jsonArray)
+    {
+        QJsonObject obj = value.toObject();
+        game Game;
+        Game.gameName = obj["name"].toString();
+        Game.gameState = static_cast<GameState>(obj["state"].toInt());
+        Game.numberOfTurns = obj["num_turns"].toInt();
+        Game.numberOfPlayers = obj["num_players"].toInt();
+        this->games.append(Game);
     }
 }

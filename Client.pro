@@ -17,12 +17,16 @@ DEFINES += QT_DEPRECATED_WARNINGS
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 SOURCES += \
+    askselect.cpp \
     dijkstrasalg.cpp \
     edge.cpp \
     gamelogic.cpp \
     graphwidget.cpp \
     main.cpp \
     mainwindow.cpp \
+    mainwindowforcreatemultigame.cpp \
+    mainwindowforenterexistinggame.cpp \
+    mainwindowforsingleplay.cpp \
     node.cpp \
     sockettest.cpp \
     statshandler.cpp \
@@ -33,11 +37,15 @@ SOURCES += \
 
 HEADERS += \
     Collections.h \
+    askselect.h \
     dijkstrasalg.h \
     edge.h \
     gamelogic.h \
     graphwidget.h \
     mainwindow.h \
+    mainwindowforcreatemultigame.h \
+    mainwindowforenterexistinggame.h \
+    mainwindowforsingleplay.h \
     node.h \
     sockettest.h \
     statshandler.h \
@@ -47,7 +55,10 @@ HEADERS += \
     train.h
 
 FORMS += \
-    mainwindow.ui
+    askselect.ui \
+    mainwindowforcreatemultigame.ui \
+    mainwindowforenterexistinggame.ui \
+    mainwindowforsingleplay.ui
 
 
 # Default rules for deployment.
