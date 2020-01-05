@@ -91,6 +91,7 @@ private:
     Map0 layer0;
     Map1 layer1;
     Player player;
+    game currentGame;
 
 
     int timerId;

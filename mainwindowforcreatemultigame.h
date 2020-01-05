@@ -14,7 +14,7 @@ class MainWindowForCreateMultigame : public MainWindow
 
 public:
     explicit MainWindowForCreateMultigame(QWidget *parent = nullptr);
-    ~MainWindowForCreateMultigame();
+    ~MainWindowForCreateMultigame() override;
 
 private slots:
     void on_loginButton_clicked();

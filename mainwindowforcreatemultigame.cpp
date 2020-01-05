@@ -28,3 +28,4 @@ void MainWindowForCreateMultigame::on_loginButton_clicked()
     new GraphWidget(nullptr, *(this->Socket), this, ui->login->text(), ui->gameName->text(), ui->numberOfPlayers->text().toInt(),
                     ui->numberOfTurns->text().toInt());
 }
+

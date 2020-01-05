@@ -126,6 +126,7 @@ void GameLogic::trainOneStep() {
                         this->time->stop();
                         GameLogic *alg = new GameLogic(socket,edgeVec,imageTrain,layer0,layer1,player);
                         alg->Alhoritm();
+                        delete this;
 
                     }
                     std::reverse(curRoute.begin(),curRoute.end());

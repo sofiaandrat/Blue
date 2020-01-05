@@ -199,20 +199,20 @@ GraphWidget::GraphWidget(QWidget *parent,SocketTest &socket,MainWindow *window,Q
        // qDebug() << nodes[i]->pos();
     }
 
-    QLabel *label = new QLabel(this);
-    label->setText("Random String");
+    //QLabel *label = new QLabel(this);
+    //label->setText("Random String");
 
     getParentWindow()->setCentralWidget(this);
 
     //label->setParent(this);
-    label->setGeometry(0,0,100,14);
-    label->show();
+    //label->setGeometry(0,0,100,14);
+    //label->show();
     //getParentWindow()->addDockWidget(Qt::TopDockWidgetArea,);
 
-    QLabel *label2 = new QLabel(this);
-    label2->setText("Random String 2");
-    label2->setGeometry(0,14,100,14);
-    label2->show();
+    //QLabel *label2 = new QLabel(this);
+   // label2->setText("Random String 2");
+    //label2->setGeometry(0,14,100,14);
+    //label2->show();
 
     this->socket = &socket;
     this->edgeVec = edgeVec;
@@ -224,6 +224,7 @@ GraphWidget::GraphWidget(QWidget *parent,SocketTest &socket,MainWindow *window,Q
 
     Train *playerTrain = new Train(this,homeTown->pos(),scene->addPixmap(train.scaled(QSize(34,51),Qt::IgnoreAspectRatio,Qt::SmoothTransformation)));
     this->playerTrain = playerTrain;
+   // while(Gam)
     this->timerId_1 = startTimer(100);
 
 }
