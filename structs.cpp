@@ -1,10 +1,8 @@
 #include "structs.h"
-#include <QDebug>
 
 void Map0::Pars(QJsonDocument doc)
 {
     QJsonObject jsonObject = doc.object();
-    qDebug() << jsonObject;
     QJsonArray jsonArray = jsonObject["points"].toArray();
     foreach(const QJsonValue & value, jsonArray)
     {

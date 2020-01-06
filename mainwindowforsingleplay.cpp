@@ -25,5 +25,6 @@ void MainWindowForSinglePlay::on_pushButton_clicked()
     label->setAlignment(Qt::AlignBottom | Qt::AlignRight);
     label->setText("Something");
     label->setGeometry(QRect(10,10,30,80));
+    Game.gameName = "Game of " + loginText;
     new GraphWidget(nullptr, *(this->Socket), this, loginText);
 }

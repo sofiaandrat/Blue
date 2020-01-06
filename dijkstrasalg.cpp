@@ -1,6 +1,6 @@
+
 #include "dijkstrasalg.h"
 #include <iostream>
-#include <QDebug>
 
 
 DijkstrasAlg::DijkstrasAlg(int townIdx, QVector<QVector<int> > &Table, QVector<int> &pointsOfGraph, QVector<post> posts)

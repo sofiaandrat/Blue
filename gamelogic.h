@@ -33,6 +33,7 @@ private:
       QVector<int> pointsOfGraph;
       QTimer* time;
       Strategy *strategy;
+      QJsonDocument prevMap;
       //int destDiff;
 };
 #endif // GAMELOGIC_H

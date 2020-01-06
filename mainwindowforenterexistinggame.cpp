@@ -50,5 +50,6 @@ void MainWindowForEnterExistingGame::on_login_clicked()
     label->setAlignment(Qt::AlignBottom | Qt::AlignRight);
     label->setText("Something");
     label->setGeometry(QRect(10,10,30,80));
+    Game.gameName = ui->gameList->currentText();
     new GraphWidget(nullptr, *(this->Socket), this, ui->login->text(), ui->gameList->currentText());
 }

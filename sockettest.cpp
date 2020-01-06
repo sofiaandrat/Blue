@@ -107,6 +107,8 @@ void SocketTest::sendMoveMessage(int line_idx,int speed, int train_idx) {
 
 void SocketTest::sendTurnMessage() {
     SocketTest::SendMessageWOW(TURN,{});
+    while(this->doc.isEmpty())
+        socket->waitForReadyRead(500);
 }
 
 SocketTest::~SocketTest() {

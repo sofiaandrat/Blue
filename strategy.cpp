@@ -33,7 +33,6 @@ QVector <int> Strategy::Moving(Map1 map, Player player)
         }
     } else if (player.getPlayerTrains()[0].price <= map.getHome(player.getPlayerData().player_idx).armor && player.getPlayerTrains()[0].price != 0)
     {
-        qDebug() << player.getPlayerTrains()[0].price << " " << map.getHome(player.getPlayerData().player_idx).armor;
         upgradeTrains.push_back(player.getPlayerTrains()[0]);
         socket->sendUpgradeMessage(false, upgradeTrains, player.getPlayerData().home_idx);
     }
@@ -106,8 +105,6 @@ market Strategy::BestPost(Map1 map, QVector <market> posts, Player player)
     }
     rating.pop_back();
     black_rating.pop_back();
-    for(int i = 0; i < rating.size(); i++)
-        qDebug() << rating[i].mark;
     if(rating.isEmpty())
         return black_rating[0];
     else

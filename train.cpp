@@ -1,6 +1,5 @@
 #include "train.h"
 #include "edge.h"
-#include <QDebug>
 #include <QTimeLine>
 #include <QGraphicsItemAnimation>
 #include <QObject>

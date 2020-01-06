@@ -72,6 +72,7 @@ public slots:
     void zoomIn();
     void zoomOut();
     void startGameLogic();
+    void checkGameState();
 
 protected:
     void keyPressEvent(QKeyEvent *event) override;
@@ -93,7 +94,7 @@ private:
     Player player;
     game currentGame;
 
-
+    QTimer *timer;
     int timerId;
     int timerId_1;
     Node *centerNode;

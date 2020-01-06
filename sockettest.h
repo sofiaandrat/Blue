@@ -21,6 +21,7 @@ public:
     void sendMoveMessage(int line_idx, int speed, int train_idx);
     void sendTurnMessage();
     void sendUpgradeMessage(bool upgradeTown, QVector <train> Trains, int home_idx);
+    void sendMap1Message();
     ~SocketTest();
 signals:
 

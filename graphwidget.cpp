@@ -151,13 +151,13 @@ GraphWidget::GraphWidget(QWidget *parent,SocketTest &socket,MainWindow *window,Q
     QVector <QVector <int> > Table = layer0.getterTable();
     QVector <QVector <int> > Table_sym = Table;
 
-    QDebug deb = qDebug();
+   /* QDebug deb = qDebug();
     for(int i = 0; i < Table.size(); i++) {
         for(int j = 0; j<Table[i].size();j++) {
             deb<<Table[i][j];
         }
         deb<<endl;
-    }
+    }*/
 
     for(int i = 0; i < Table.size()-1; i++) {
         for(int j = i+1; j<Table[i].size();j++) {
@@ -225,8 +225,13 @@ GraphWidget::GraphWidget(QWidget *parent,SocketTest &socket,MainWindow *window,Q
     Train *playerTrain = new Train(this,homeTown->pos(),scene->addPixmap(train.scaled(QSize(34,51),Qt::IgnoreAspectRatio,Qt::SmoothTransformation)));
     this->playerTrain = playerTrain;
    // while(Gam)
-    this->timerId_1 = startTimer(100);
-
+    //this->timerId_1 = startTimer(100);
+    //QTimer *timer = new QTimer(parent);
+    //connect(timer, SIGNAL(timeout()), this, SLOT(checkGameState()));
+    //timer->start(1000);
+    this->timer = new QTimer(parent);
+    connect(this->timer, SIGNAL(timeout()), this, SLOT(checkGameState()));
+    this->timer->start(1000);
 }
 //! [1]
 
@@ -273,7 +278,7 @@ void GraphWidget::keyPressEvent(QKeyEvent *event)
 //! [4]
 void GraphWidget::timerEvent(QTimerEvent *event) //создади таймер эвэнт
 {
-    Q_UNUSED(event);
+    Q_UNUSED(event)
     if(event->timerId() == timerId) {
         QList<Node *> nodes;
         foreach (QGraphicsItem *item, scene()->items()) {
@@ -296,12 +301,12 @@ void GraphWidget::timerEvent(QTimerEvent *event) //создади таймер �
         }
     }
 
-     if(event->timerId() == timerId_1) //100мс
+     /*if(event->timerId() == timerId_1) //100мс
      {
          this->startGameLogic(); //запускаем геймлоджик
          killTimer(timerId_1);
          timerId_1 = 1;
-     }
+     }*/
 }
 //! [4]
 
@@ -317,7 +322,7 @@ void GraphWidget::wheelEvent(QWheelEvent *event)
 //! [6]
 void GraphWidget::drawBackground(QPainter *painter, const QRectF &rect)
 {
-    Q_UNUSED(rect);
+    Q_UNUSED(rect)
 
     // Shadow
     QRectF sceneRect = this->sceneRect();
@@ -396,4 +401,12 @@ MainWindow* GraphWidget::getParentWindow() const
 void GraphWidget::startGameLogic() { //создаем гейм лоджик и запускаем алгоритм
     GameLogic *alg = new GameLogic(this->socket,this->edgeVec,this->playerTrain,this->layer0,this->layer1,this->player);
     alg->Alhoritm();
+}
+
+void GraphWidget::checkGameState() {
+    qDebug() << "THIS!";
+    if(this->parent->getGame().gameState == RUN) {
+        this->startGameLogic();
+        timer->stop();
+    }
 }

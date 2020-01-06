@@ -16,10 +16,11 @@ MainWindow::~MainWindow()
 
 game MainWindow::getGame()
 {
-    this->Socket = new SocketTest(this);
-    this->Socket->Connect();
+    //this->Socket = new SocketTest(this);
+    //this->Socket->Connect();
     this->Socket->SendMessage(GAMES,{});
     ExistingGames games;
+    games.Pars(this->Socket->getterDoc());
     QVector <game> Games = games.getGames();
     for(int i = 0; i < Games.size(); i++)
     {
