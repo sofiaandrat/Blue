@@ -35,11 +35,13 @@ void GameLogic::Alhoritm()
     if(Table[std::max(curRoute[0],curRoute[1])][std::min(curRoute[0],curRoute[1])] < 0) {
         playerTrain.position = Table[std::min(curRoute[0],curRoute[1])][std::max(curRoute[0],curRoute[1])];
     }
-    QTimer *timer = new QTimer(this->socket);
-    this->time = timer;
-    connect(timer, SIGNAL(timeout()), this, SLOT(trainOneStep()));
+   // QTimer *timer = new QTimer(this->socket);
+   // this->time = timer;
+    connect(&*(this->socket), SIGNAL(TurnFinished()), this, SLOT(someFunc()));
+    trainOneStep();
+ //   connect(timer, SIGNAL(timeout()), this, SLOT(trainOneStep()));
     //timer->setSingleShot(true);
-    timer->start(1000);
+   // timer->start(1000);
     //return;
 }
 
@@ -83,7 +85,9 @@ void GameLogic::trainOneStep() {
 
             if(playerTrain.position != (curLengh - destDiff)) {
                 socket->sendMoveMessage(curEdgeIdx,curSpeed,playerTrain.idx);
-              //  socket->
+                //this->time->stop();
+                socket->sendTurnMessage();
+                //this->time->start();
                 socket->SendMessage(MAP,{{"layer", 1}});
 
                 prevMap = newMap;
@@ -147,4 +151,9 @@ void GameLogic::trainOneStep() {
 
             }
         }
+}
+
+void GameLogic::someFunc()
+{
+    qDebug() << "Hello Ivan";
 }

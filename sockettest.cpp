@@ -26,7 +26,7 @@ void SocketTest::SendMessage(Actions Action, QJsonObject jsonObj)
 {
     if(socket->isOpen())
     {
-        socket->write(toMessageFormat(Action,jsonObj));
+       socket->write(toMessageFormat(Action,jsonObj));
        socket->waitForReadyRead(900);
     } else {
         qDebug() << "socket is close";
@@ -54,6 +54,12 @@ void SocketTest::readyRead()
     int int_sizeOfData;
     in >> int_sizeOfData;
 
+    QDataStream code(resultCode);
+    code.setByteOrder(QDataStream::LittleEndian);
+    int int_code;
+    code >> int_code;
+    this->code = static_cast<Result>(int_code);
+
     qDebug() << resultCode;
     Data = data;
     while(Data.size() < int_sizeOfData) {
@@ -62,6 +68,7 @@ void SocketTest::readyRead()
     }
     qDebug() << Data;
     doc = QJsonDocument::fromJson(Data, &docError);
+    //code = QJsonA::fromJson(resultCode, &codeError);
 }
 
 
@@ -107,8 +114,15 @@ void SocketTest::sendMoveMessage(int line_idx,int speed, int train_idx) {
 
 void SocketTest::sendTurnMessage() {
     SocketTest::SendMessageWOW(TURN,{});
-    while(this->doc.isEmpty())
+  /*  if(this->socket->isOpen())
+    {
+        this->socket->write(toMessageFormat(TURN,{}));
+    }
+    while(code != OKEY) {
+        qDebug() << code;
+        qDebug() <<"Number";
         socket->waitForReadyRead(500);
+    }*/
 }
 
 SocketTest::~SocketTest() {
@@ -125,6 +139,8 @@ void SocketTest::SendMessageWOW(Actions Action, QJsonObject jsonObj)
     } else {
         qDebug() << "socket is close";
     }
+    if(Action == TURN && this->code == OKEY)
+        emit TurnFinished();
 }
 
 void SocketTest::sendUpgradeMessage(bool upgradeTown, QVector <train> Trains, int home_idx)
@@ -140,4 +156,3 @@ void SocketTest::sendUpgradeMessage(bool upgradeTown, QVector <train> Trains, in
     upgradeObj.insert("trains", arrayOfTrains);
     SendMessageWOW(UPGRADE, upgradeObj);
 }
-

@@ -24,14 +24,19 @@ public:
     void sendMap1Message();
     ~SocketTest();
 signals:
+    void TurnFinished();
 
 public slots:
     void readyRead();
     void disconnect();
+
 private:
     QTcpSocket *socket;
     QByteArray Data;
     QJsonDocument doc;
+    Result code;
+    //QJsonDocument code;
+    //QJsonParseError codeError;
     QJsonParseError docError;
     QByteArray toMessageFormat(Actions Action,QJsonObject jsonObj);
 };
