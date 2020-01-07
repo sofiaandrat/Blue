@@ -218,3 +218,39 @@ void ExistingGames::Pars(QJsonDocument doc)
         this->games.append(Game);
     }
 }
+
+void Player::ParsEnemies(Map1 layer1)
+{
+    QVector <town> Towns = layer1.getTown();
+    QVector <train> Trains = layer1.getTrains();
+    for(int i = 0; i < Towns.size(); i++)
+    {
+        enemy Enemy;
+        if(Towns[i].player_idx != playerData.player_idx)
+        {
+            Enemy.towns = Towns[i];
+            for(int j = 0; j < layer1.getTrains().size(); j++)
+            {
+                if(Trains[j].player_idx == Towns[i].player_idx)
+                    Enemy.trains.append(Trains[j]);
+            }
+        }
+        Enemies.append(Enemy);
+    }
+}
+
+QVector <train> Map1::getEnemyTrains(QString player_idx)
+{
+    QVector <train> Trains;
+    for(int i = 0; i < AllTrains.size(); i++)
+    {
+        if(AllTrains[i].player_idx != player_idx)
+            Trains.append(AllTrains[i]);
+    }
+    return Trains;
+}
+
+QVector <town> Map1::getTown()
+{
+    return Towns;
+}

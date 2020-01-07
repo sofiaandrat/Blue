@@ -74,18 +74,10 @@ struct game
     GameState gameState;
 };
 
-class Player
+struct enemy
 {
-private:
-    player playerData;
-    QVector<train> playerTrains;
-public:
-    Player(){}
-    ~Player(){}
-    void Pars(QJsonDocument doc);
-    player getPlayerData();
-    QVector <train> getPlayerTrains();
-    void setTrains(QVector <train> Trains);
+    town towns;
+    QVector <train> trains;
 };
 
 class Map0 //если будет нужно позже я добавлю те пункты, пока что их предназначение в это мире не ясно
@@ -123,8 +115,26 @@ public:
     QVector <market> getterStorages();
     int getTick();
     QVector <train> getTrains();
+    QVector <town> getTown();
+    QVector <train> getEnemyTrains(QString player_idx);
     town getHome(QString player_idx);
     ~Map1(){}
+};
+
+class Player
+{
+private:
+    player playerData;
+    QVector<train> playerTrains;
+    QVector <enemy> Enemies;
+public:
+    Player(){}
+    ~Player(){}
+    void Pars(QJsonDocument doc);
+    player getPlayerData();
+    QVector <train> getPlayerTrains();
+    void setTrains(QVector <train> Trains);
+    void ParsEnemies(Map1 layer1);
 };
 
 class ExistingGames

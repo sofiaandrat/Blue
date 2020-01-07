@@ -1,5 +1,7 @@
 #include "sockettest.h"
 #include "Collections.h"
+#include <QTimer>
+
 SocketTest::SocketTest(QObject *parent) : QObject(parent)
 {}
 
@@ -114,11 +116,11 @@ void SocketTest::sendMoveMessage(int line_idx,int speed, int train_idx) {
 
 void SocketTest::sendTurnMessage() {
     SocketTest::SendMessageWOW(TURN,{});
-  /*  if(this->socket->isOpen())
+    /*if(this->socket->isOpen())
     {
         this->socket->write(toMessageFormat(TURN,{}));
-    }
-    while(code != OKEY) {
+    }*/
+    /*while(code != OKEY) {
         qDebug() << code;
         qDebug() <<"Number";
         socket->waitForReadyRead(500);
@@ -132,15 +134,33 @@ SocketTest::~SocketTest() {
 
 void SocketTest::SendMessageWOW(Actions Action, QJsonObject jsonObj)
 {
-    if(socket->isOpen())
+    /*if(socket->isOpen())
     {
         socket->write(toMessageFormat(Action,jsonObj));
         socket->waitForReadyRead(500);
     } else {
         qDebug() << "socket is close";
     }
-    if(Action == TURN && this->code == OKEY)
-        emit TurnFinished();
+    if(Action == TURN  && this->code == OKEY) {
+        qDebug() << "TURN FINISHED MOTHERFUCKER";
+        QTimer::singleShot(500,this,SLOT(Finished()));
+        //emit TurnFinished();
+        qDebug() << "TURN FINISHED MOTHERFUCKER 2";
+    }*/
+    if(socket->isOpen())
+    {
+        if(Action == TURN)
+        {
+            socket->write(toMessageFormat(Action,jsonObj));
+            socket->waitForReadyRead(10000);
+            QTimer::singleShot(500,this,SLOT(Finished()));
+        } else {
+            socket->write(toMessageFormat(Action,jsonObj));
+            socket->waitForReadyRead(500);
+        }
+    } else {
+        qDebug() << "socket is close";
+    }
 }
 
 void SocketTest::sendUpgradeMessage(bool upgradeTown, QVector <train> Trains, int home_idx)
@@ -155,4 +175,8 @@ void SocketTest::sendUpgradeMessage(bool upgradeTown, QVector <train> Trains, in
     upgradeObj.insert("posts", arrayOfTown);
     upgradeObj.insert("trains", arrayOfTrains);
     SendMessageWOW(UPGRADE, upgradeObj);
+}
+
+void SocketTest::Finished() {
+    emit TurnFinished();
 }

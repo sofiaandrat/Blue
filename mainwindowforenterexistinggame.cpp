@@ -19,6 +19,7 @@ MainWindowForEnterExistingGame::MainWindowForEnterExistingGame(QWidget *parent) 
         GameList.append(this->gameList[i].gameName);
     }
     ui->gameList->addItems(GameList);
+    this->show();
 
 }
 
@@ -52,4 +53,11 @@ void MainWindowForEnterExistingGame::on_login_clicked()
     label->setGeometry(QRect(10,10,30,80));
     Game.gameName = ui->gameList->currentText();
     new GraphWidget(nullptr, *(this->Socket), this, ui->login->text(), ui->gameList->currentText());
+}
+
+void MainWindowForEnterExistingGame::on_back_clicked()
+{
+    AskSelect *askSelect = new AskSelect();
+    askSelect->show();
+    this->close();
 }

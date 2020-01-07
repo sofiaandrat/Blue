@@ -28,3 +28,7 @@ game MainWindow::getGame()
             return Games[i];
     }
 }
+SocketTest* MainWindow::getSocket()
+{
+    return this->Socket;
+}

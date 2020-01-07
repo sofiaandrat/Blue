@@ -35,14 +35,17 @@ void GameLogic::Alhoritm()
     if(Table[std::max(curRoute[0],curRoute[1])][std::min(curRoute[0],curRoute[1])] < 0) {
         playerTrain.position = Table[std::min(curRoute[0],curRoute[1])][std::max(curRoute[0],curRoute[1])];
     }
-   // QTimer *timer = new QTimer(this->socket);
-   // this->time = timer;
-    connect(&*(this->socket), SIGNAL(TurnFinished()), this, SLOT(someFunc()));
-    trainOneStep();
- //   connect(timer, SIGNAL(timeout()), this, SLOT(trainOneStep()));
+
+    //QTimer *timer = new QTimer(this->socket);
+    //this->time = timer;
+    //connect(timer, SIGNAL(timeout()), this, SLOT(trainOneStep()));
     //timer->setSingleShot(true);
-   // timer->start(1000);
+    //timer->start(1000);
     //return;
+    //connect(&*(this->socket),SIGNAL(TurnFinished()),this,SLOT(someFunc()));
+    trainOneStep();
+    connect(&*(this->socket),SIGNAL(TurnFinished()),this,SLOT(trainOneStep()));
+
 }
 
 void GameLogic::trainOneStep() {
@@ -85,9 +88,7 @@ void GameLogic::trainOneStep() {
 
             if(playerTrain.position != (curLengh - destDiff)) {
                 socket->sendMoveMessage(curEdgeIdx,curSpeed,playerTrain.idx);
-                //this->time->stop();
-                socket->sendTurnMessage();
-                //this->time->start();
+                //socket->sendTurnMessage();
                 socket->SendMessage(MAP,{{"layer", 1}});
 
                 prevMap = newMap;
@@ -110,7 +111,7 @@ void GameLogic::trainOneStep() {
                     playerTrain.position--;
                     imageTrain->advancePosition(edgeVec[curEdge],curLengh,curSpeed,playerTrain.position);
                 }
-
+                socket->sendTurnMessage();
             } else {
 // Разбор стыка рёбер. Не оч красиво, но работает.
                 if(iter + 1 < curRoute.size()) {
@@ -138,22 +139,21 @@ void GameLogic::trainOneStep() {
                 } else {
                     if(curRoute[iter] == pointsOfGraph.indexOf(player.getPlayerData().home_idx))
                     {
-                        this->time->stop();
+                        //this->time->stop();
                         GameLogic *alg = new GameLogic(socket,edgeVec,imageTrain,layer0,layer1,player);
                         alg->Alhoritm();
                         delete this;
 
-                    }
+                    } else{
                     std::reverse(curRoute.begin(),curRoute.end());
                     iter = 1;
-                    //trainOneStep();
+                    trainOneStep();}
                 }
 
             }
         }
 }
 
-void GameLogic::someFunc()
-{
-    qDebug() << "Hello Ivan";
+void GameLogic::someFunc() {
+    qDebug() << "EMITTED";
 }

@@ -24,10 +24,12 @@ SOURCES += \
     graphwidget.cpp \
     main.cpp \
     mainwindow.cpp \
+    mainwindowchangingpresenter.cpp \
     mainwindowforcreatemultigame.cpp \
     mainwindowforenterexistinggame.cpp \
     mainwindowforsingleplay.cpp \
     node.cpp \
+    singlgamepresenter.cpp \
     sockettest.cpp \
     statshandler.cpp \
     statslabel.cpp \
@@ -43,10 +45,12 @@ HEADERS += \
     gamelogic.h \
     graphwidget.h \
     mainwindow.h \
+    mainwindowchangingpresenter.h \
     mainwindowforcreatemultigame.h \
     mainwindowforenterexistinggame.h \
     mainwindowforsingleplay.h \
     node.h \
+    singlgamepresenter.h \
     sockettest.h \
     statshandler.h \
     statslabel.h \

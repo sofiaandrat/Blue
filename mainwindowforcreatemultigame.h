@@ -3,6 +3,7 @@
 
 #include <QMainWindow>
 #include "mainwindow.h"
+#include "askselect.h"
 
 namespace Ui {
 class MainWindowForCreateMultigame;
@@ -19,8 +20,11 @@ public:
 private slots:
     void on_loginButton_clicked();
 
+    void on_back_clicked();
+
 private:
     Ui::MainWindowForCreateMultigame *ui;
+
 };
 
 #endif // MAINWINDOWFORCREATEMULTIGAME_H

@@ -2,7 +2,7 @@
 #include "ui_mainwindowforsingleplay.h"
 #include "graphwidget.h"
 
-MainWindowForSinglePlay::MainWindowForSinglePlay(QWidget *parent) :
+MainWindowForSinglePlay::MainWindowForSinglePlay(QMainWindow *parent) :
     MainWindow(parent),
     ui(new Ui::MainWindowForSinglePlay)
 {
@@ -10,6 +10,8 @@ MainWindowForSinglePlay::MainWindowForSinglePlay(QWidget *parent) :
     this->Socket->Connect();
     this->Socket->SendMessage(GAMES,{});
     ui->setupUi(this);
+    this->show();
+    SinglGamePresenter *presenter = new SinglGamePresenter(this);
 }
 
 MainWindowForSinglePlay::~MainWindowForSinglePlay()
@@ -20,11 +22,19 @@ MainWindowForSinglePlay::~MainWindowForSinglePlay()
 void MainWindowForSinglePlay::on_pushButton_clicked()
 {
     QString loginText = ui->login->text();
-    QLabel *label = new QLabel(this);
-    label->setFrameStyle(QFrame::Panel | QFrame::Sunken);
-    label->setAlignment(Qt::AlignBottom | Qt::AlignRight);
-    label->setText("Something");
-    label->setGeometry(QRect(10,10,30,80));
-    Game.gameName = "Game of " + loginText;
-    new GraphWidget(nullptr, *(this->Socket), this, loginText);
+    Game.gameName = "Game of " + ui->login->text();
+    new GraphWidget(nullptr, *(this->getSocket()), this, loginText);
+   //emit StartGame();
+}
+
+QString MainWindowForSinglePlay::getLoginText()
+{
+    return ui->login->text();
+}
+
+void MainWindowForSinglePlay::on_back_clicked()
+{
+    AskSelect *askSelect = new AskSelect();
+    askSelect->show();
+    this->close();
 }

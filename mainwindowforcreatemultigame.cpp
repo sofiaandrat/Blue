@@ -10,6 +10,7 @@ MainWindowForCreateMultigame::MainWindowForCreateMultigame(QWidget *parent) :
     this->Socket->Connect();
     this->Socket->SendMessage(GAMES,{});
     ui->setupUi(this);
+    this->show();
 }
 
 MainWindowForCreateMultigame::~MainWindowForCreateMultigame()
@@ -30,3 +31,10 @@ void MainWindowForCreateMultigame::on_loginButton_clicked()
                     ui->numberOfTurns->text().toInt());
 }
 
+
+void MainWindowForCreateMultigame::on_back_clicked()
+{
+    AskSelect *askSelect = new AskSelect();
+    askSelect->show();
+    this->close();
+}

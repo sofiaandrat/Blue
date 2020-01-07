@@ -2,10 +2,7 @@
 #define ASKSELECT_H
 
 #include <QDialog>
-#include "mainwindow.h"
-#include "mainwindowforsingleplay.h"
-#include "mainwindowforcreatemultigame.h"
-#include "mainwindowforenterexistinggame.h"
+#include "mainwindowchangingpresenter.h"
 
 namespace Ui {
 class AskSelect;
@@ -18,7 +15,6 @@ class AskSelect : public QDialog
 public:
     explicit AskSelect(QWidget *parent = nullptr);
     ~AskSelect();
-    void setMainWindow(MainWindow *window);
 
 private slots:
     void on_single_clicked();
@@ -29,7 +25,10 @@ private slots:
 
 private:
     Ui::AskSelect *ui;
-    MainWindow *window;
+signals:
+    void SinglePlayerChoosen();
+    void EnterToExistingMultiplayerChoosen();
+    void CreateMultiplayerChoosen();
 };
 
 #endif // ASKSELECT_H

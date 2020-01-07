@@ -110,6 +110,7 @@ GraphWidget::GraphWidget(QWidget *parent,SocketTest &socket,MainWindow *window,Q
     socket.SendMessage(MAP,{{"layer", 1}});
     Map1 layer1;
     layer1.Pars(socket.getterDoc());
+    player.ParsEnemies(layer1);
 
 //! [1]
     QVector<Node *> nodeVec;
@@ -221,7 +222,7 @@ GraphWidget::GraphWidget(QWidget *parent,SocketTest &socket,MainWindow *window,Q
     this->layer1 = layer1;
     this->player = player;
 
-
+    //this->socket->sendTurnMessage();
     Train *playerTrain = new Train(this,homeTown->pos(),scene->addPixmap(train.scaled(QSize(34,51),Qt::IgnoreAspectRatio,Qt::SmoothTransformation)));
     this->playerTrain = playerTrain;
    // while(Gam)
@@ -229,6 +230,7 @@ GraphWidget::GraphWidget(QWidget *parent,SocketTest &socket,MainWindow *window,Q
     //QTimer *timer = new QTimer(parent);
     //connect(timer, SIGNAL(timeout()), this, SLOT(checkGameState()));
     //timer->start(1000);
+
     this->timer = new QTimer(parent);
     connect(this->timer, SIGNAL(timeout()), this, SLOT(checkGameState()));
     this->timer->start(1000);

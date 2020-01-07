@@ -22,6 +22,8 @@ public:
     MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
     game getGame();
+    SocketTest* getSocket();
+    //virtual auto getUi();
 
 protected:
     SocketTest *Socket;

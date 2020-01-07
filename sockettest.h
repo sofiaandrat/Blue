@@ -29,7 +29,7 @@ signals:
 public slots:
     void readyRead();
     void disconnect();
-
+    void Finished();
 private:
     QTcpSocket *socket;
     QByteArray Data;
