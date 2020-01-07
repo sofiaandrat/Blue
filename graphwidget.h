@@ -73,6 +73,7 @@ public slots:
     void zoomOut();
     void startGameLogic();
     void checkGameState();
+    void Update(town Town);
 
 protected:
     void keyPressEvent(QKeyEvent *event) override;
@@ -87,7 +88,9 @@ protected:
 private:
     SocketTest *socket;
     QVector<Edge *> edgeVec;
+    QVector<Node *> nodeVec;
     Train *playerTrain;
+    QGraphicsScene *scene;
 
     Map0 layer0;
     Map1 layer1;

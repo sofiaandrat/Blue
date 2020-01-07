@@ -29,7 +29,7 @@ SOURCES += \
     mainwindowforenterexistinggame.cpp \
     mainwindowforsingleplay.cpp \
     node.cpp \
-    singlgamepresenter.cpp \
+    socketservice.cpp \
     sockettest.cpp \
     statshandler.cpp \
     statslabel.cpp \
@@ -50,7 +50,7 @@ HEADERS += \
     mainwindowforenterexistinggame.h \
     mainwindowforsingleplay.h \
     node.h \
-    singlgamepresenter.h \
+    socketservice.h \
     sockettest.h \
     statshandler.h \
     statslabel.h \

@@ -3,7 +3,6 @@
 
 //#include <QMainWindow>
 #include "mainwindow.h"
-#include "singlgamepresenter.h"
 #include "askselect.h"
 
 QT_BEGIN_NAMESPACE
@@ -22,7 +21,6 @@ public:
     QString getLoginText();
 private slots:
     void on_pushButton_clicked();
-
     void on_back_clicked();
 
 private:

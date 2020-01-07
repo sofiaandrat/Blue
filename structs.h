@@ -76,7 +76,7 @@ struct game
 
 struct enemy
 {
-    town towns;
+    town Town;
     QVector <train> trains;
 };
 
@@ -135,6 +135,8 @@ public:
     QVector <train> getPlayerTrains();
     void setTrains(QVector <train> Trains);
     void ParsEnemies(Map1 layer1);
+    QVector <enemy> getEnemies();
+    QVector <town> getEnemiesTown();
 };
 
 class ExistingGames

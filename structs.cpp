@@ -223,19 +223,20 @@ void Player::ParsEnemies(Map1 layer1)
 {
     QVector <town> Towns = layer1.getTown();
     QVector <train> Trains = layer1.getTrains();
+    Enemies.clear();
     for(int i = 0; i < Towns.size(); i++)
     {
         enemy Enemy;
-        if(Towns[i].player_idx != playerData.player_idx)
+        if(Towns[i].player_idx != playerData.player_idx && Towns[i].player_idx != "")
         {
-            Enemy.towns = Towns[i];
+            Enemy.Town = Towns[i];
             for(int j = 0; j < layer1.getTrains().size(); j++)
             {
                 if(Trains[j].player_idx == Towns[i].player_idx)
                     Enemy.trains.append(Trains[j]);
             }
+            Enemies.append(Enemy);
         }
-        Enemies.append(Enemy);
     }
 }
 
@@ -252,5 +253,18 @@ QVector <train> Map1::getEnemyTrains(QString player_idx)
 
 QVector <town> Map1::getTown()
 {
+    return Towns;
+}
+
+QVector <enemy> Player::getEnemies()
+{
+    return Enemies;
+}
+
+QVector <town> Player::getEnemiesTown()
+{
+    QVector <town> Towns;
+    for(int i = 0; i < Enemies.size(); i++)
+        Towns.append(Enemies[i].Town);
     return Towns;
 }

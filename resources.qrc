@@ -4,5 +4,8 @@
         <file>storage_1.png</file>
         <file>town.png</file>
         <file>train.png</file>
+        <file>town_enemy.png</file>
+        <file>town_ghost.png</file>
+        <file>train_enemy.png</file>
     </qresource>
 </RCC>

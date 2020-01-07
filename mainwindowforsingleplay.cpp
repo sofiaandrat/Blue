@@ -11,7 +11,7 @@ MainWindowForSinglePlay::MainWindowForSinglePlay(QMainWindow *parent) :
     this->Socket->SendMessage(GAMES,{});
     ui->setupUi(this);
     this->show();
-    SinglGamePresenter *presenter = new SinglGamePresenter(this);
+  //  MainWindowForSinglePlay *presenter = new MainWindowForSinglePlay(this);
 }
 
 MainWindowForSinglePlay::~MainWindowForSinglePlay()
@@ -21,10 +21,10 @@ MainWindowForSinglePlay::~MainWindowForSinglePlay()
 
 void MainWindowForSinglePlay::on_pushButton_clicked()
 {
-    QString loginText = ui->login->text();
-    Game.gameName = "Game of " + ui->login->text();
+
+    QString loginText = this->getLoginText();
+    Game.gameName = "Game of " + this->getLoginText();
     new GraphWidget(nullptr, *(this->getSocket()), this, loginText);
-   //emit StartGame();
 }
 
 QString MainWindowForSinglePlay::getLoginText()

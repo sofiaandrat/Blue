@@ -134,29 +134,15 @@ SocketTest::~SocketTest() {
 
 void SocketTest::SendMessageWOW(Actions Action, QJsonObject jsonObj)
 {
-    /*if(socket->isOpen())
-    {
-        socket->write(toMessageFormat(Action,jsonObj));
-        socket->waitForReadyRead(500);
-    } else {
-        qDebug() << "socket is close";
-    }
-    if(Action == TURN  && this->code == OKEY) {
-        qDebug() << "TURN FINISHED MOTHERFUCKER";
-        QTimer::singleShot(500,this,SLOT(Finished()));
-        //emit TurnFinished();
-        qDebug() << "TURN FINISHED MOTHERFUCKER 2";
-    }*/
     if(socket->isOpen())
     {
         if(Action == TURN)
         {
+            connect(socket,SIGNAL(readyRead()),this,SLOT(dataArrived()));
             socket->write(toMessageFormat(Action,jsonObj));
-            socket->waitForReadyRead(10000);
-            QTimer::singleShot(500,this,SLOT(Finished()));
         } else {
             socket->write(toMessageFormat(Action,jsonObj));
-            socket->waitForReadyRead(500);
+            socket->waitForReadyRead(750);
         }
     } else {
         qDebug() << "socket is close";
@@ -179,4 +165,9 @@ void SocketTest::sendUpgradeMessage(bool upgradeTown, QVector <train> Trains, in
 
 void SocketTest::Finished() {
     emit TurnFinished();
+}
+
+void SocketTest::dataArrived() {
+    QObject::disconnect(socket,SIGNAL(readyRead()),this,SLOT(dataArrived()));
+    QTimer::singleShot(500,this,SLOT(Finished()));
 }
