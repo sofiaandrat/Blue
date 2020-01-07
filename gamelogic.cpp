@@ -35,122 +35,99 @@ void GameLogic::Alhoritm()
     if(Table[std::max(curRoute[0],curRoute[1])][std::min(curRoute[0],curRoute[1])] < 0) {
         playerTrain.position = Table[std::min(curRoute[0],curRoute[1])][std::max(curRoute[0],curRoute[1])];
     }
-   // QTimer *timer = new QTimer(this->socket);
-   // this->time = timer;
-    connect(&*(this->socket), SIGNAL(TurnFinished()), this, SLOT(someFunc()));
+
+    connect(&*(this->socket), SIGNAL(TurnFinished()), this, SLOT(trainOneStep()));//паттерн наблюдатель
     trainOneStep();
- //   connect(timer, SIGNAL(timeout()), this, SLOT(trainOneStep()));
-    //timer->setSingleShot(true);
-   // timer->start(1000);
-    //return;
 }
 
 void GameLogic::trainOneStep() {
-        socket->SendMessage(MAP,{{"layer",1}});
-        QJsonDocument newMap;
-        newMap = socket->getterDoc();
-
-        if(newMap != this->prevMap && !newMap.isNull()) {
-
-            qDebug() <<"CURRENT FUCKING ROUTE"<< curRoute;
-            int sourceEdgePoint = curRoute[iter - 1];
-            int destEdgePoint = curRoute[iter];
-            int curSpeed = 1;
-            int destDiff = 0;
-            int curEdgeInfo = Table[std::max(sourceEdgePoint, destEdgePoint)][std::min(sourceEdgePoint, destEdgePoint)];
-            int curEdgeIdx = std::abs(curEdgeInfo);
-            int curEdge;
-            for(int i = 0; i < edgeVec.size(); i++)
-            {
-                if(std::abs(edgeVec[i]->getIdx()) == curEdgeIdx)
-                {
-                    curEdge = i;
-                    break;
-                }
-            }
-            int curLengh = Table[std::min(sourceEdgePoint, destEdgePoint)][std::max(sourceEdgePoint, destEdgePoint)];
-            if((sourceEdgePoint < destEdgePoint) && (curEdgeInfo > 0)) {
-                curSpeed = 1;
-                destDiff = 0;
-            } else if((sourceEdgePoint > destEdgePoint) && (curEdgeInfo > 0)) {
-                curSpeed = -1;
-                destDiff = curLengh;
-            } else if((sourceEdgePoint < destEdgePoint) && (curEdgeInfo < 0)) {
-                curSpeed = -1;
-                destDiff = curLengh;
-            } else if((sourceEdgePoint > destEdgePoint) && (curEdgeInfo < 0)) {
-                curSpeed = 1;
-                destDiff = 0;
-            }
-
-            if(playerTrain.position != (curLengh - destDiff)) {
-                socket->sendMoveMessage(curEdgeIdx,curSpeed,playerTrain.idx);
-                //this->time->stop();
-                socket->sendTurnMessage();
-                //this->time->start();
-                socket->SendMessage(MAP,{{"layer", 1}});
-
-                prevMap = newMap;
-                newMap = socket->getterDoc();
-                this->layer1 = *new Map1();
-                layer1.Pars(newMap);
-
-                QVector <train> Trains = layer1.getTrains();
-                QVector <train> NewTrainsInfo;
-                for(int i = 0; i < Trains.size(); i++)
-                {
-                    if(Trains[i].player_idx == player.getPlayerData().player_idx)
-                        NewTrainsInfo.append(Trains[i]);
-                }
-                player.setTrains(NewTrainsInfo);
-                if((curLengh - destDiff) == curLengh) {
-                    playerTrain.position++;
-                    imageTrain->advancePosition(edgeVec[curEdge],curLengh,curSpeed,playerTrain.position);
-                } else if((curLengh - destDiff) == 0){
-                    playerTrain.position--;
-                    imageTrain->advancePosition(edgeVec[curEdge],curLengh,curSpeed,playerTrain.position);
-                }
-
-            } else {
-// Разбор стыка рёбер. Не оч красиво, но работает.
-                if(iter + 1 < curRoute.size()) {
-                    if((curRoute[iter] < curRoute[iter+1]) && (Table[std::max(curRoute[iter], curRoute[iter+1])][std::min(curRoute[iter], curRoute[iter+1])] > 0)) {
-                        playerTrain.position = 0;
-                        iter++;
-                        //continue;
-                        trainOneStep();
-                    } else if ((curRoute[iter] > curRoute[iter+1]) && (Table[std::max(curRoute[iter], curRoute[iter+1])][std::min(curRoute[iter], curRoute[iter+1])] > 0)) {
-                        playerTrain.position = Table[std::min(curRoute[iter], curRoute[iter+1])][std::max(curRoute[iter], curRoute[iter+1])];
-                        iter++;
-                        //continue;
-                        trainOneStep();
-                    } else if ((curRoute[iter] < curRoute[iter+1]) && (Table[std::max(curRoute[iter], curRoute[iter+1])][std::min(curRoute[iter], curRoute[iter+1])] < 0)) {
-                        playerTrain.position = Table[std::min(curRoute[iter], curRoute[iter+1])][std::max(curRoute[iter], curRoute[iter+1])];
-                        iter++;
-                        //continue;
-                        trainOneStep();
-                    } else if ((curRoute[iter] > curRoute[iter+1]) && (Table[std::max(curRoute[iter], curRoute[iter+1])][std::min(curRoute[iter], curRoute[iter+1])] < 0)) {
-                        playerTrain.position = 0;
-                        iter++;
-                        //continue;
-                        trainOneStep();
-                    }
-                } else {
-                    if(curRoute[iter] == pointsOfGraph.indexOf(player.getPlayerData().home_idx))
-                    {
-                        this->time->stop();
-                        GameLogic *alg = new GameLogic(socket,edgeVec,imageTrain,layer0,layer1,player);
-                        alg->Alhoritm();
-                        delete this;
-
-                    }
-                    std::reverse(curRoute.begin(),curRoute.end());
-                    iter = 1;
-                    //trainOneStep();
-                }
-
-            }
+    qDebug() <<"CURRENT FUCKING ROUTE"<< curRoute;
+    int sourceEdgePoint = curRoute[iter - 1];
+    int destEdgePoint = curRoute[iter];
+    int curSpeed = 1;
+    int destDiff = 0;
+    int curEdgeInfo = Table[std::max(sourceEdgePoint, destEdgePoint)][std::min(sourceEdgePoint, destEdgePoint)];
+    int curEdgeIdx = std::abs(curEdgeInfo);
+    int curEdge;
+    for(int i = 0; i < edgeVec.size(); i++)
+    {
+        if(std::abs(edgeVec[i]->getIdx()) == curEdgeIdx)
+        {
+            curEdge = i;
+            break;
         }
+    }
+    int curLengh = Table[std::min(sourceEdgePoint, destEdgePoint)][std::max(sourceEdgePoint, destEdgePoint)];
+    if((sourceEdgePoint < destEdgePoint) && (curEdgeInfo > 0)) {
+        curSpeed = 1;
+        destDiff = 0;
+    } else if((sourceEdgePoint > destEdgePoint) && (curEdgeInfo > 0)) {
+        curSpeed = -1;
+        destDiff = curLengh;
+    } else if((sourceEdgePoint < destEdgePoint) && (curEdgeInfo < 0)) {
+        curSpeed = -1;
+        destDiff = curLengh;
+    } else if((sourceEdgePoint > destEdgePoint) && (curEdgeInfo < 0)) {
+        curSpeed = 1;
+        destDiff = 0;
+    }
+    if(playerTrain.position != (curLengh - destDiff)) {
+        socket->sendMoveMessage(curEdgeIdx,curSpeed,playerTrain.idx);
+        QVector <train> Trains = layer1.getTrains();
+        QVector <train> NewTrainsInfo;
+        for(int i = 0; i < Trains.size(); i++)
+        {
+            if(Trains[i].player_idx == player.getPlayerData().player_idx)
+            NewTrainsInfo.append(Trains[i]);
+        }
+            player.setTrains(NewTrainsInfo);
+            if((curLengh - destDiff) == curLengh) {
+                playerTrain.position++;
+                imageTrain->advancePosition(edgeVec[curEdge],curLengh,curSpeed,playerTrain.position);
+            } else if((curLengh - destDiff) == 0){
+                playerTrain.position--;
+                imageTrain->advancePosition(edgeVec[curEdge],curLengh,curSpeed,playerTrain.position);
+            }
+            socket->sendTurnMessage();
+            socket->SendMessage(MAP,{{"layer", 1}});
+            layer1.Pars(socket->getterDoc());
+     } else {
+// Разбор стыка рёбер. Не оч красиво, но работает.
+        if(iter + 1 < curRoute.size()) {
+            if((curRoute[iter] < curRoute[iter+1]) && (Table[std::max(curRoute[iter], curRoute[iter+1])][std::min(curRoute[iter], curRoute[iter+1])] > 0)) {
+                playerTrain.position = 0;
+                iter++;
+                //continue;
+                trainOneStep();
+             } else if ((curRoute[iter] > curRoute[iter+1]) && (Table[std::max(curRoute[iter], curRoute[iter+1])][std::min(curRoute[iter], curRoute[iter+1])] > 0)) {
+                playerTrain.position = Table[std::min(curRoute[iter], curRoute[iter+1])][std::max(curRoute[iter], curRoute[iter+1])];
+                iter++;
+                //continue;
+                trainOneStep();
+             } else if ((curRoute[iter] < curRoute[iter+1]) && (Table[std::max(curRoute[iter], curRoute[iter+1])][std::min(curRoute[iter], curRoute[iter+1])] < 0)) {
+                playerTrain.position = Table[std::min(curRoute[iter], curRoute[iter+1])][std::max(curRoute[iter], curRoute[iter+1])];
+                iter++;
+                //continue;
+                trainOneStep();
+             } else if ((curRoute[iter] > curRoute[iter+1]) && (Table[std::max(curRoute[iter], curRoute[iter+1])][std::min(curRoute[iter], curRoute[iter+1])] < 0)) {
+                playerTrain.position = 0;
+                iter++;
+                //continue;
+                trainOneStep();
+             }
+         } else {
+            if(curRoute[iter] == pointsOfGraph.indexOf(player.getPlayerData().home_idx))
+            {
+                //this->time->stop();
+                GameLogic *alg = new GameLogic(socket,edgeVec,imageTrain,layer0,layer1,player);
+                alg->Alhoritm();
+                delete this;
+            }
+            std::reverse(curRoute.begin(),curRoute.end());
+            iter = 1;
+            //trainOneStep();
+         }
+     }
 }
 
 void GameLogic::someFunc()

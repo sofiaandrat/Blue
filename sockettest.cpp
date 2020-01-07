@@ -140,7 +140,10 @@ void SocketTest::SendMessageWOW(Actions Action, QJsonObject jsonObj)
         qDebug() << "socket is close";
     }
     if(Action == TURN && this->code == OKEY)
-        emit TurnFinished();
+    {
+        QTimer::singleShot(500,this,SLOT(readyDraw()));
+    }
+
 }
 
 void SocketTest::sendUpgradeMessage(bool upgradeTown, QVector <train> Trains, int home_idx)
@@ -155,4 +158,9 @@ void SocketTest::sendUpgradeMessage(bool upgradeTown, QVector <train> Trains, in
     upgradeObj.insert("posts", arrayOfTown);
     upgradeObj.insert("trains", arrayOfTrains);
     SendMessageWOW(UPGRADE, upgradeObj);
+}
+
+void SocketTest::readyDraw()
+{
+    emit TurnFinished();
 }

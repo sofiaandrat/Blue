@@ -9,6 +9,7 @@
 #include <QDataStream>
 #include "Collections.h"
 #include "structs.h"
+#include <QTimer>
 class SocketTest : public QObject
 {
     Q_OBJECT
@@ -29,7 +30,7 @@ signals:
 public slots:
     void readyRead();
     void disconnect();
-
+    void readyDraw();
 private:
     QTcpSocket *socket;
     QByteArray Data;
