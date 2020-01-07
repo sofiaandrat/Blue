@@ -236,5 +236,19 @@ int Node::getNodeType()
 
 void Node::setImage(QGraphicsPixmapItem* image)
 {
+    if(this->imageOnScene != nullptr) {
+        qDebug() << "IMAGE ON SCENE";
+        graph->getScene()->removeItem(this->imageOnScene);
+    }
     this->imageOnScene = image;
+    setImagePosition();
+}
+
+void Node::setImagePosition() {
+    if(imageOnScene != nullptr) {
+        QRectF rect = this->imageOnScene->boundingRect();
+        qreal width = rect.width();
+        qreal height = rect.height();
+        this->imageOnScene->setPos(newPos.x() - width/2,newPos.y() - height/2);
+    }
 }
