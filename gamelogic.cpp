@@ -30,19 +30,11 @@ void GameLogic::Alhoritm()
     int realTownIdx = this->player.getPlayerData().home_idx;
     int townIdx = pointsOfGraph.indexOf(realTownIdx);
     this->strategy = new Strategy(townIdx,Table_sym,pointsOfGraph, layer1.getterPosts(), socket);
-    this->curRoute = strategy->Moving(layer1, player);
+    this->curRoute = strategy->Moving(layer1, player, playerTrain);
     this->playerTrain = player.getPlayerTrains()[0];
     if(Table[std::max(curRoute[0],curRoute[1])][std::min(curRoute[0],curRoute[1])] < 0) {
         playerTrain.position = Table[std::min(curRoute[0],curRoute[1])][std::max(curRoute[0],curRoute[1])];
     }
-
-    //QTimer *timer = new QTimer(this->socket);
-    //this->time = timer;
-    //connect(timer, SIGNAL(timeout()), this, SLOT(trainOneStep()));
-    //timer->setSingleShot(true);
-    //timer->start(1000);
-    //return;
-    //connect(&*(this->socket),SIGNAL(TurnFinished()),this,SLOT(someFunc()));
     trainOneStep();
     connect(&*(this->socket),SIGNAL(TurnFinished()),this,SLOT(trainOneStep()));
 

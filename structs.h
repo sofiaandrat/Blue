@@ -45,6 +45,15 @@ struct train
     int speed;
     int level;
     int price;
+    QVector <int> route;
+    QVector <int> postsRoute;
+};
+
+struct post
+{
+  int idx;
+  int point_idx;
+  int type;
 };
 
 struct market
@@ -57,13 +66,6 @@ struct market
   int replenishment;
   int type;
   int mark;
-};
-
-struct post
-{
-  int idx;
-  int point_idx;
-  int type;
 };
 
 struct game
@@ -137,6 +139,8 @@ public:
     void ParsEnemies(Map1 layer1);
     QVector <enemy> getEnemies();
     QVector <town> getEnemiesTown();
+    void setRoute(int train_idx, QVector <int> route);
+    void setPostsRoute(int train_idx, QVector <int> route);
 };
 
 class ExistingGames

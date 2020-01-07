@@ -268,3 +268,27 @@ QVector <town> Player::getEnemiesTown()
         Towns.append(Enemies[i].Town);
     return Towns;
 }
+
+void Player::setRoute(int train_idx, QVector<int> route)
+{
+    for(int i = 0; i < playerTrains.size(); i++)
+    {
+        if(playerTrains[i].idx == train_idx)
+        {
+            playerTrains[i].route = route;
+            break;
+        }
+    }
+}
+
+void Player::setPostsRoute(int train_idx, QVector<int> route)
+{
+    for(int i = 0; i < playerTrains.size(); i++)
+    {
+        if(playerTrains[i].idx == train_idx)
+        {
+            playerTrains[i].postsRoute = route;
+            break;
+        }
+    }
+}
