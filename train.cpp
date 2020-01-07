@@ -50,7 +50,7 @@ void Train::advancePosition(Edge *edge,double coef,int curSpeed,int curPos) {
     double offsetH = this->image->boundingRect().height();
 
     QTimeLine *timer = new QTimeLine(500);
-    QGraphicsItemAnimation *animation = new QGraphicsItemAnimation(timer);
+    QGraphicsItemAnimation *animation = new QGraphicsItemAnimation();
 
     animation->setItem(this->image);
     animation->setTimeLine(timer);

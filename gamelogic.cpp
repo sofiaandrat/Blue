@@ -149,11 +149,6 @@ void GameLogic::trainOneStep() {
                     iter = 1;
                     trainOneStep();}
                 }
-
-            }
-        }
-}
-
-void GameLogic::someFunc() {
-    qDebug() << "EMITTED";
+          }
+	}
 }

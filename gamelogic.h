@@ -18,7 +18,6 @@ public:
       void Alhoritm();
 public slots:
       void trainOneStep();
-      void someFunc();
 private:
       Map0 layer0;
       Map1 layer1;
