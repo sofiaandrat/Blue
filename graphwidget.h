@@ -66,6 +66,7 @@ public:
     void itemMoved();
     void setParentWindow(MainWindow *window);
     MainWindow* getParentWindow() const;
+    QGraphicsScene* getScene();
 
 public slots:
     void shuffle();

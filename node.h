@@ -92,6 +92,7 @@ public:
     void setNodeType(int idx);
 
     void setImage(QGraphicsPixmapItem *image);
+    void setImagePosition();
 
 protected:
     QVariant itemChange(GraphicsItemChange change, const QVariant &value) override;
@@ -103,7 +104,7 @@ private:
     QList<Edge *> edgeList;
     QPointF newPos;
     GraphWidget *graph;
-    QGraphicsPixmapItem* imageOnScene;
+    QGraphicsPixmapItem* imageOnScene = nullptr;
     int index;
     int node_type;
 };

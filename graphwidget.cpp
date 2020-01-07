@@ -452,3 +452,8 @@ void GraphWidget::Update(town Town)
         }
     }
 }
+
+
+QGraphicsScene* GraphWidget::getScene() {
+    return this->scene;
+}
