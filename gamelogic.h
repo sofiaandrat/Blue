@@ -28,7 +28,7 @@ private:
       QVector<Edge *> edgeVec;
       Train *imageTrain;
       train playerTrain;
-      int iter;
+
       QVector <QVector <int>> Table;
       QVector<int> curRoute;
       QVector<int> pointsOfGraph;
