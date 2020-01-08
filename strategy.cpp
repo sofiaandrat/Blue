@@ -300,30 +300,37 @@ void Strategy::NotCrashFunction(Player &player, train Train)
             break;
         }
     }
+
+    QVector <int> postsToVisit = Train.postsRoute;
+    postsToVisit.pop_back();
+    QVector <int> postsToAvoid;
+
     for(int i = 0; i < player.getPlayerTrains().size(); i++)
     {
         if(i != idx)
         {
             bool wrong = true;
-            QVector <int> postsToVisit = Train.postsRoute;
-            postsToVisit.pop_back();
-            QVector <int> postsToAvoid;
             while(wrong)
             {
-                if(player.getPlayerTrains()[i].route.isEmpty())
+                if(player.getPlayerTrains()[i].route.isEmpty() || player.getPlayerTrains()[i].route.isEmpty() < postsToVisit.size())
                     wrong = false;
                 else {
-                    for(int j = 1; j < player.getPlayerTrains()[i].route.size(); j++)
+                    for(int j = 1; j < player.getPlayerTrains()[idx].route.size(); j++)
                     {
                         if(player.getPlayerTrains()[i].route.indexOf(player.getPlayerTrains()[idx].route[j]) != -1 && j != idx)
                         {
                             postsToAvoid.append(pointsOfGraph[player.getPlayerTrains()[idx].route[j]]);
                             player.setRoute(Train.idx, alg.manipPaths(pointsOfGraph[player.getPlayerTrains()[idx].route[0]],pointsOfGraph[player.getPlayerTrains()[idx].route.last()], postsToVisit,postsToAvoid));
+                            if(j == (player.getPlayerTrains()[idx].route.size() - 1) || j == (player.getPlayerTrains()[i].route.size() - 1))
+                                wrong = false;
                             break;
                         }
-                        qDebug() << (player.getPlayerTrains()[i].route.size() - 1);
-                        if(j == (player.getPlayerTrains()[i].route.size() - 1))
+                       // qDebug() << (player.getPlayerTrains()[i].route.size() - 1);
+                        if(j == (player.getPlayerTrains()[idx].route.size() - 1) || j == (player.getPlayerTrains()[i].route.size() - 1))
+                        {
                             wrong = false;
+                            break;
+                        }
                     }
                 }
             }
