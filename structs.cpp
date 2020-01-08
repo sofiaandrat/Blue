@@ -319,3 +319,15 @@ void Player::setWaitIteration(int train_idx, int iter)
         }
     }
 }
+
+void Player::setTrainImage(Train *trainImage, int index) {
+    this->playerTrains[index].imageTrain = trainImage;
+}
+
+train Player::getTrain(int idx) {
+    for(int i = 0; i < playerTrains.size(); i++){
+        if(idx == playerTrains[i].idx) {
+            return this->playerTrains[i];
+        }
+    }
+}
