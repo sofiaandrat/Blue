@@ -236,7 +236,7 @@ GraphWidget::GraphWidget(QWidget *parent,SocketTest &socket,MainWindow *window,Q
     this->player = player;
 
     //this->socket->sendTurnMessage();
-    Train *playerTrain = new Train(this,homeTown->pos(),scene->addPixmap(train.scaled(QSize(34,51),Qt::IgnoreAspectRatio,Qt::SmoothTransformation)));
+    //Train *playerTrain = new Train(this,homeTown->pos(),scene->addPixmap(train.scaled(QSize(34,51),Qt::IgnoreAspectRatio,Qt::SmoothTransformation)));
     this->playerTrain = playerTrain;
 
     for(int i = 0; i<this->player.getPlayerTrains().size(); i++) {

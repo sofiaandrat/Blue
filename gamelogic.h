@@ -6,6 +6,7 @@
 #include "strategy.h"
 //#include <stdlib.h>
 #include <QObject>
+#include <QTimeLine>
 
 class GameLogic : public QObject
 {
@@ -35,6 +36,7 @@ private:
       QTimer* time;
       Strategy *strategy;
       QJsonDocument prevMap;
+      QTimeLine *animTimer;
       //int destDiff;
 };
 #endif // GAMELOGIC_H
