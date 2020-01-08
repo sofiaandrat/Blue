@@ -13,91 +13,11 @@ void Strategy::Moving(Map1 &map, Player &player)
     this->shortestPaths = alg.getPaths();
     QVector <market> markets = map.getterMarkets();
     QVector <market> storages = map.getterStorages();
-    QVector <train> upgradeTrains;
     QVector <market> GoodMarkets = GoodPosts(map, markets, player);
     QVector <int> pointsToVisit(0);
-    QVector <int> pointsToAvoid(0);
-
     if(player.getEnemies().size() == 0)
     {
-
-        int currentArmor = map.getHome(player.getPlayerData().player_idx).armor;
-        if(map.getHome(player.getPlayerData().player_idx).level < player.getPlayerTrains()[player.getPlayerTrains().size() - 1].level &&
-                map.getHome(player.getPlayerData().player_idx).price <= currentArmor)
-        {
-            currentArmor -= map.getHome(player.getPlayerData().player_idx).price;
-            if(currentArmor > player.getPlayerTrains()[player.getPlayerTrains().size() - 1].price && player.getPlayerTrains()[player.getPlayerTrains().size() - 1].price != 0)
-            {
-                int start = 0;
-                for(int i = 0; i < player.getPlayerTrains().size() - 1; i++)
-                {
-                    if(player.getPlayerTrains()[i].level > player.getPlayerTrains()[i + 1].level)
-                    {
-                        start = i + 1;
-                        break;
-                    }
-                }
-                for(int i = start; i < player.getPlayerTrains().size(); i++)
-                {
-                    if(currentArmor > player.getPlayerTrains()[i].price)
-                    {
-                        currentArmor -= player.getPlayerTrains()[i].price;
-                        upgradeTrains.push_back(player.getPlayerTrains()[i]);
-                    } else
-                        break;
-                }
-                if(player.getPlayerTrains()[0].price != 0)
-                {
-                    for(int i = 0; i < start; i++)
-                    {
-                        if(currentArmor > player.getPlayerTrains()[i].price)
-                        {
-                            currentArmor -= player.getPlayerTrains()[i].price;
-                            upgradeTrains.push_back(player.getPlayerTrains()[i]);
-                        } else
-                            break;
-                    }
-                }
-            }
-            upgradeTrains.push_back(player.getPlayerTrains()[0]);
-            socket->sendUpgradeMessage(true, upgradeTrains, player.getPlayerData().home_post_idx);
-        } else if (player.getPlayerTrains()[player.getPlayerTrains().size() - 1].price <= currentArmor && player.getPlayerTrains()[player.getPlayerTrains().size() - 1].price != 0)
-        {
-            int start = 0;
-            for(int i = 0; i < player.getPlayerTrains().size() - 1; i++)
-            {
-                if(player.getPlayerTrains()[i].level > player.getPlayerTrains()[i + 1].level)
-                {
-                    start = i + 1;
-                    break;
-                }
-            }
-            for(int i = start; i < player.getPlayerTrains().size(); i++)
-            {
-                if(currentArmor > player.getPlayerTrains()[i].price)
-                {
-                    currentArmor -= player.getPlayerTrains()[i].price;
-                    upgradeTrains.push_back(player.getPlayerTrains()[i]);
-                } else
-                    break;
-            }
-            if(player.getPlayerTrains()[0].price != 0)
-            {
-                for(int i = 0; i < start; i++)
-                {
-                    if(currentArmor > player.getPlayerTrains()[i].price)
-                    {
-                        currentArmor -= player.getPlayerTrains()[i].price;
-                        upgradeTrains.push_back(player.getPlayerTrains()[i]);
-                    } else
-                        break;
-                }
-            }
-            socket->sendUpgradeMessage(false, upgradeTrains, player.getPlayerData().home_idx);
-        }
-        socket->SendMessage(MAP,{{"layer", 1}});
-        map = *new Map1();
-        map.Pars(socket->getterDoc());
+        Upgrade(map, player);
         QVector <train> Trains;
         for(int i = 0; i < map.getTrains().size(); i++)
         {
@@ -105,7 +25,7 @@ void Strategy::Moving(Map1 &map, Player &player)
                 Trains.append(map.getTrains()[i]);
         }
         player.setTrainsLevel(Trains);
-        this->indexOfFirstArmorTrain = player.getPlayerTrains().size();
+        this->indexOfFirstArmorTrain = player.getPlayerTrains().size();//определяем сколько поездов куда едет
         int sum = 0;
         for(int i = 0; i < map.getterStorages().size(); i++)
             sum += map.getterStorages()[i].goods;
@@ -127,9 +47,7 @@ void Strategy::Moving(Map1 &map, Player &player)
             sum += player.getPlayerTrains()[indexOfFirstArmorTrain - 1].goods_capacity;
             if(indexOfFirstArmorTrain == player.getPlayerTrains().size())
                 break;
-        }
-        if(GoodMarkets.empty())
-            GoodMarkets = markets;
+        }//определили
         for(int i = 0; i < player.getPlayerTrains().size(); i++)
         {
             if(player.getPlayerTrains()[i].route.isEmpty())
@@ -142,6 +60,20 @@ void Strategy::Moving(Map1 &map, Player &player)
                 }
                 if(!player.getPlayerTrains()[i].postsRoute.isEmpty())
                 {
+                    QVector <int> pointsToAvoid(0);
+                    if(i < indexOfFirstArmorTrain)
+                    {
+                        for(int i = 0; i < storages.size(); i++)
+                            pointsToAvoid.append(storages[i].point_idx);
+                        player.setPointsToAvoid(player.getPlayerTrains()[i], pointsToAvoid);
+                    }
+                    else
+
+                    {
+                        for(int i = 0; i < markets.size(); i++)
+                            pointsToAvoid.append(markets[i].point_idx);
+                        player.setPointsToAvoid(player.getPlayerTrains()[i], pointsToAvoid);
+                    }
                     QVector <int> route = alg.manipPaths(player.getPlayerData().home_idx,player.getPlayerTrains()[i].postsRoute.last(),pointsToVisit,pointsToAvoid);
                     player.setRoute(player.getPlayerTrains()[i].idx, route);
                     NotCrashFunction(player,player.getPlayerTrains()[i]);
@@ -158,8 +90,6 @@ market Strategy::BestPost(Map1 map, QVector <market> posts, Player player, int p
     QVector <market> black_rating(1);
     for (int i = 0; i < posts.size(); i++)
     {
-        qDebug() << this->shortestPaths[pointsOfGraph.indexOf(posts[i].point_idx)][0] -
-                this->shortestPaths[pointsOfGraph.indexOf(pos)][0] + 1;
         if(player.getPlayerData().home_idx != pos)
             posts[i].mark = posts[i].goods / (this->shortestPaths[pointsOfGraph.indexOf(posts[i].point_idx)][0] -
                 this->shortestPaths[pointsOfGraph.indexOf(pos)][0] + 1); //!!!!!
@@ -236,16 +166,19 @@ void Strategy::MakeRoute(Map1 map, Player &player, bool isMarket, train Train)
         posts = map.getterStorages();
         startTrain = indexOfFirstArmorTrain;
     }
-    for(int i = startTrain; i < lastTrain; i++)//и это вместо того чтобы перегрузить оператор ==, оторвите мне руки
+    for(int i = startTrain; i < lastTrain; i++)// чтобы не ездить туда куда уже кто-то едет
     {
         for(int j = 0; j < player.getPlayerTrains()[i].postsRoute.size(); j++)
         {
-            for(int k = 0; k < posts.size(); k++)
+            if(!(player.getPlayerTrains()[i] == Train))
             {
-                if(posts[k].point_idx == player.getPlayerTrains()[i].postsRoute[j])
+                for(int k = 0; k < posts.size(); k++)
                 {
-                    posts.erase(posts.begin() + k);//???
-                    break;
+                    if(posts[k].point_idx == player.getPlayerTrains()[i].postsRoute[j])
+                    {
+                        posts.erase(posts.begin() + k);
+                        break;
+                    }
                 }
             }
         }
@@ -253,9 +186,8 @@ void Strategy::MakeRoute(Map1 map, Player &player, bool isMarket, train Train)
     if(isMarket)
     {
         int goods_capacity = Train.goods_capacity;
-        QVector <market> markets = map.getterMarkets();
         market Market;
-        int numOfMarketPerTrain = markets.size() / indexOfFirstArmorTrain;
+        int numOfMarketPerTrain = map.getterMarkets().size() / indexOfFirstArmorTrain;
         int needProducts = 0;
         if(player.getPlayerTrains()[0].idx == Train.idx)
         {
@@ -281,7 +213,6 @@ void Strategy::MakeRoute(Map1 map, Player &player, bool isMarket, train Train)
                     }
                 }
                 posts.erase(posts.begin() + del);
-                //lengthOfPathToMarket = CalculateLengthOfRoute(path);
                 needProducts = (map.getHome(player.getPlayerData().player_idx).population + (2 * lengthOfPathToMarket / 25)) * lengthOfPathToMarket * 2;
             }
             player.setPostsRoute(Train.idx,path);
@@ -310,7 +241,7 @@ void Strategy::NotCrashFunction(Player &player, train Train)
 
     QVector <int> postsToVisit = Train.postsRoute;
     postsToVisit.pop_back();
-    QVector <int> postsToAvoid;
+    QVector <int> postsToAvoid = Train.pointsToAvoid;
     QVector <int> currentPath = Train.route;
 
     for(int i = 0; i < player.getPlayerTrains().size(); i++) //мммм алгоритмическая сложность куб, как мило
@@ -398,4 +329,86 @@ int Strategy::CalculateLengthOfRoute(QVector <int> route)
         length += abs(this->shortestPaths[route[i]][0] - this->shortestPaths[route[i + 1]][0]);
     }
     return length;
+}
+
+void Strategy::Upgrade(Map1 &map, Player &player)
+{
+    QVector <train> upgradeTrains;
+    int currentArmor = map.getHome(player.getPlayerData().player_idx).armor;
+    if(map.getHome(player.getPlayerData().player_idx).level < player.getPlayerTrains()[player.getPlayerTrains().size() - 1].level &&
+            map.getHome(player.getPlayerData().player_idx).price <= currentArmor)
+    {
+        currentArmor -= map.getHome(player.getPlayerData().player_idx).price;
+        if(currentArmor > player.getPlayerTrains()[player.getPlayerTrains().size() - 1].price && player.getPlayerTrains()[player.getPlayerTrains().size() - 1].price != 0)
+        {
+            int start = 0;
+            for(int i = 0; i < player.getPlayerTrains().size() - 1; i++)
+            {
+                if(player.getPlayerTrains()[i].level > player.getPlayerTrains()[i + 1].level)
+                {
+                    start = i + 1;
+                    break;
+                }
+            }
+            for(int i = start; i < player.getPlayerTrains().size(); i++)
+            {
+                if(currentArmor > player.getPlayerTrains()[i].price)
+                {
+                    currentArmor -= player.getPlayerTrains()[i].price;
+                    upgradeTrains.push_back(player.getPlayerTrains()[i]);
+                } else
+                    break;
+            }
+            if(player.getPlayerTrains()[0].price != 0)
+            {
+                for(int i = 0; i < start; i++)
+                {
+                    if(currentArmor > player.getPlayerTrains()[i].price)
+                    {
+                        currentArmor -= player.getPlayerTrains()[i].price;
+                        upgradeTrains.push_back(player.getPlayerTrains()[i]);
+                    } else
+                        break;
+                }
+            }
+        }
+        upgradeTrains.push_back(player.getPlayerTrains()[0]);
+        socket->sendUpgradeMessage(true, upgradeTrains, player.getPlayerData().home_post_idx);
+    } else if (player.getPlayerTrains()[player.getPlayerTrains().size() - 1].price <= currentArmor && player.getPlayerTrains()[player.getPlayerTrains().size() - 1].price != 0)
+    {
+        int start = 0;
+        for(int i = 0; i < player.getPlayerTrains().size() - 1; i++)
+        {
+            if(player.getPlayerTrains()[i].level > player.getPlayerTrains()[i + 1].level)
+            {
+                start = i + 1;
+                break;
+            }
+        }
+        for(int i = start; i < player.getPlayerTrains().size(); i++)
+        {
+            if(currentArmor > player.getPlayerTrains()[i].price)
+            {
+                currentArmor -= player.getPlayerTrains()[i].price;
+                upgradeTrains.push_back(player.getPlayerTrains()[i]);
+            } else
+                break;
+        }
+        if(player.getPlayerTrains()[0].price != 0)
+        {
+            for(int i = 0; i < start; i++)
+            {
+                if(currentArmor > player.getPlayerTrains()[i].price)
+                {
+                    currentArmor -= player.getPlayerTrains()[i].price;
+                    upgradeTrains.push_back(player.getPlayerTrains()[i]);
+                } else
+                    break;
+            }
+        }
+        socket->sendUpgradeMessage(false, upgradeTrains, player.getPlayerData().home_idx);
+    }
+    socket->SendMessage(MAP,{{"layer", 1}});
+    map = *new Map1();
+    map.Pars(socket->getterDoc());
 }

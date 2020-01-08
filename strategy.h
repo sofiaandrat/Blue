@@ -22,6 +22,7 @@ public:
     void NotCrashFunction(Player &player, train Train);
     void CreatePlanFunction(Map1 map, Player &player, train Train, QVector <market> posts);
     int CalculateLengthOfRoute(QVector <int> route);
+    void Upgrade(Map1 &map, Player &player);
 };
 
 #endif // STRATEGY_H

@@ -334,6 +334,18 @@ void Player::setTrainPosition(train Train)
     }
 }
 
+void Player::setTrainIter(int idx,int iter)
+{
+    for(int i = 0; i < playerTrains.size(); i++)
+    {
+        if(playerTrains[i].idx == idx)
+        {
+            playerTrains[i].iter = iter;
+            break;
+        }
+    }
+}
+
 void Player::setTrainImage(Train *trainImage, int index)
 {
     this->playerTrains[index].imageTrain = trainImage;
@@ -348,4 +360,17 @@ train Player::getTrain(int idx)
             return this->playerTrains[i];
         }
     }
+}
+
+void Player::setPointsToAvoid(train Train, QVector<int> pointsToAvoid)
+{
+    playerTrains[playerTrains.indexOf(Train)].pointsToAvoid = pointsToAvoid;
+}
+
+bool train::operator==(const train &anotherTrain)
+{
+    if(this->idx == anotherTrain.idx)
+        return true;
+    else
+        return false;
 }

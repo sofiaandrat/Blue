@@ -48,10 +48,13 @@ struct train
     int price;
     QVector <int> route;
     QVector <int> postsRoute;
+    QVector <int> pointsToAvoid;
     int waitIteration;
     int iter = 1;
     Train* imageTrain;
+    bool operator==(const train &anotherTrain);
 };
+
 
 struct post
 {
@@ -149,6 +152,8 @@ public:
     void setTrainImage(Train* trainImage,int index);
     train getTrain(int idx);
     void setTrainPosition(train Train);
+    void setTrainIter(int idx,int iter);
+    void setPointsToAvoid(train Train, QVector<int> pointsToAvoid);
 };
 
 class ExistingGames
