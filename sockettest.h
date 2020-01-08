@@ -31,6 +31,7 @@ public slots:
     void disconnect();
     void Finished();
     void dataArrived();
+
 private:
     QTcpSocket *socket;
     QByteArray Data;

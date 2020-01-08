@@ -53,6 +53,11 @@ void Map1::Pars(QJsonDocument doc)
 {
     QJsonObject jsonObject = doc.object();
     QJsonArray jsonArray = jsonObject["posts"].toArray();
+    Posts.clear();
+    Towns.clear();
+    Markets.clear();
+    Storages.clear();
+    AllTrains.clear();
     foreach(const QJsonValue & value, jsonArray)
     {
         QJsonObject obj = value.toObject();

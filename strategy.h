@@ -15,11 +15,12 @@ private:
 public:
     Strategy(int townIdx,QVector <QVector <int> > &Table, QVector<int> &pointsOfGraph, QVector<post> posts, SocketTest *socket);
     market BestPost(Map1 map, QVector <market> posts, Player player, int pos);
-    QVector <int> Moving(Map1 map, Player player, train currentTrain);
+    void Moving(Map1 &map, Player &player);
     QVector <int> PathToNearestMarket(QVector<market> markets);
     QVector <market> GoodPosts(Map1 map, QVector <market> posts, Player player);
-    void MakeRoute(Map1 map, Player player, bool market, train Train);
-   // int NewStrategy(Map1 map, Player player, train currentTrain);
+    void MakeRoute(Map1 map, Player &player, bool market, train Train);
+    void NotCrashFunction(Player &player, train Train);
+    void CreatePlanFunction(Map1 map, Player &player, train Train, QVector <market> posts);
 };
 
 #endif // STRATEGY_H
