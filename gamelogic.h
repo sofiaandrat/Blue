@@ -16,8 +16,9 @@ public:
       ~GameLogic(){}
       void setTrainOnRoute(SocketTest *socket,train playerTrain,QVector<int> &pathToMarket,QVector<QVector<int>> &Table);
       void Alhoritm();
+      void trainOneStep(train Train);
 public slots:
-      void trainOneStep();
+      void trainsOneStep();
 private:
       Map0 layer0;
       Map1 layer1;

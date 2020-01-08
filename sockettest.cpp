@@ -14,6 +14,7 @@ void SocketTest::Connect()
     socket->setSocketOption(QAbstractSocket::LowDelayOption, 1);
    // qDebug() << socket->socketOption(QAbstractSocket::KeepAliveOption);
     socket->connectToHost("wgforge-srv.wargaming.net", 443);
+    //TryConnect();
     if(socket->waitForConnected(500))
     {
         qDebug() << "Connected!";

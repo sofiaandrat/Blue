@@ -53,6 +53,11 @@ void Map1::Pars(QJsonDocument doc)
 {
     QJsonObject jsonObject = doc.object();
     QJsonArray jsonArray = jsonObject["posts"].toArray();
+    Posts.clear();
+    Towns.clear();
+    Markets.clear();
+    Storages.clear();
+    AllTrains.clear();
     foreach(const QJsonValue & value, jsonArray)
     {
         QJsonObject obj = value.toObject();
@@ -162,6 +167,7 @@ void Player::Pars(QJsonDocument doc) {
         Train.speed = obj["speed"].toInt();
         Train.level = obj["level"].toInt();
         Train.price = obj["next_level_price"].toInt();
+        Train.waitIteration = 0;
         this->playerTrains.append(Train);
     }
 }
@@ -175,9 +181,18 @@ QVector<train> Player::getPlayerTrains() {
     return playerTrains;
 }
 
-void Player::setTrains(QVector <train> Trains)
+void Player::setTrainsLevel(QVector <train> Trains)
 {
-    this->playerTrains = Trains;
+    for(int i = 0; i < Trains.size(); i++)
+    {
+        for(int j = 0; j < this->playerTrains.size(); j++)
+        {
+            if(Trains[i].idx == this->playerTrains[j].idx)
+            {
+                this->playerTrains[j].level = Trains[i].level;
+            }
+        }
+    }
 }
 
 int Map1::getTick() {
@@ -267,4 +282,40 @@ QVector <town> Player::getEnemiesTown()
     for(int i = 0; i < Enemies.size(); i++)
         Towns.append(Enemies[i].Town);
     return Towns;
+}
+
+void Player::setRoute(int train_idx, QVector<int> route)
+{
+    for(int i = 0; i < playerTrains.size(); i++)
+    {
+        if(playerTrains[i].idx == train_idx)
+        {
+            playerTrains[i].route = route;
+            break;
+        }
+    }
+}
+
+void Player::setPostsRoute(int train_idx, QVector<int> route)
+{
+    for(int i = 0; i < playerTrains.size(); i++)
+    {
+        if(playerTrains[i].idx == train_idx)
+        {
+            playerTrains[i].postsRoute = route;
+            break;
+        }
+    }
+}
+
+void Player::setWaitIteration(int train_idx, int iter)
+{
+    for(int i = 0; i < playerTrains.size(); i++)
+    {
+        if(playerTrains[i].idx == train_idx)
+        {
+            playerTrains[i].waitIteration = iter;
+            break;
+        }
+    }
 }
