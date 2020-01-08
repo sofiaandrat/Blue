@@ -47,6 +47,7 @@ struct train
     int price;
     QVector <int> route;
     QVector <int> postsRoute;
+    int waitIteration;
 };
 
 struct post
@@ -135,12 +136,13 @@ public:
     void Pars(QJsonDocument doc);
     player getPlayerData();
     QVector <train> getPlayerTrains();
-    void setTrains(QVector <train> Trains);
+    void setTrainsLevel(QVector <train> Trains);
     void ParsEnemies(Map1 layer1);
     QVector <enemy> getEnemies();
     QVector <town> getEnemiesTown();
     void setRoute(int train_idx, QVector <int> route);
     void setPostsRoute(int train_idx, QVector <int> route);
+    void setWaitIteration(int train_idx, int iter);
 };
 
 class ExistingGames

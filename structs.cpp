@@ -167,6 +167,7 @@ void Player::Pars(QJsonDocument doc) {
         Train.speed = obj["speed"].toInt();
         Train.level = obj["level"].toInt();
         Train.price = obj["next_level_price"].toInt();
+        Train.waitIteration = 0;
         this->playerTrains.append(Train);
     }
 }
@@ -180,9 +181,18 @@ QVector<train> Player::getPlayerTrains() {
     return playerTrains;
 }
 
-void Player::setTrains(QVector <train> Trains)
+void Player::setTrainsLevel(QVector <train> Trains)
 {
-    this->playerTrains = Trains;
+    for(int i = 0; i < Trains.size(); i++)
+    {
+        for(int j = 0; j < this->playerTrains.size(); j++)
+        {
+            if(Trains[i].idx == this->playerTrains[j].idx)
+            {
+                this->playerTrains[j].level = Trains[i].level;
+            }
+        }
+    }
 }
 
 int Map1::getTick() {
@@ -293,6 +303,18 @@ void Player::setPostsRoute(int train_idx, QVector<int> route)
         if(playerTrains[i].idx == train_idx)
         {
             playerTrains[i].postsRoute = route;
+            break;
+        }
+    }
+}
+
+void Player::setWaitIteration(int train_idx, int iter)
+{
+    for(int i = 0; i < playerTrains.size(); i++)
+    {
+        if(playerTrains[i].idx == train_idx)
+        {
+            playerTrains[i].waitIteration = iter;
             break;
         }
     }
