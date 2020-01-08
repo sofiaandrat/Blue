@@ -330,6 +330,15 @@ void Player::setTrainPosition(int train_idx, train Train)
             playerTrains[i].line_idx = Train.line_idx;
             playerTrains[i].position = Train.position;
             break;
+
+void Player::setTrainImage(Train *trainImage, int index) {
+    this->playerTrains[index].imageTrain = trainImage;
+}
+
+train Player::getTrain(int idx) {
+    for(int i = 0; i < playerTrains.size(); i++){
+        if(idx == playerTrains[i].idx) {
+            return this->playerTrains[i];
         }
     }
 }
