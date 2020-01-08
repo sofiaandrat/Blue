@@ -320,24 +320,31 @@ void Player::setWaitIteration(int train_idx, int iter)
     }
 }
 
-void Player::setTrainPosition(int train_idx, train Train)
+void Player::setTrainPosition(train Train)
 {
     for(int i = 0; i < playerTrains.size(); i++)
     {
-        if(playerTrains[i].idx == train_idx)
+        if(playerTrains[i].idx == Train.idx)
         {
             playerTrains[i].speed = Train.speed;
             playerTrains[i].line_idx = Train.line_idx;
             playerTrains[i].position = Train.position;
             break;
+        }
+    }
+}
 
-void Player::setTrainImage(Train *trainImage, int index) {
+void Player::setTrainImage(Train *trainImage, int index)
+{
     this->playerTrains[index].imageTrain = trainImage;
 }
 
-train Player::getTrain(int idx) {
-    for(int i = 0; i < playerTrains.size(); i++){
-        if(idx == playerTrains[i].idx) {
+train Player::getTrain(int idx)
+{
+    for(int i = 0; i < playerTrains.size(); i++)
+    {
+        if(idx == playerTrains[i].idx)
+        {
             return this->playerTrains[i];
         }
     }
