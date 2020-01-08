@@ -46,6 +46,7 @@ void GameLogic::trainOneStep(train Train) {
         newMap = socket->getterDoc();*/
         curRoute = Train.route;
         if(!Train.route.isEmpty()) {
+            qDebug() <<"ITERATORRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRR"<<Train.iter;
             qDebug() <<"CURRENT FUCKING ROUTE"<< curRoute;
             int sourceEdgePoint = curRoute[Train.iter - 1];
             int destEdgePoint = curRoute[Train.iter];
@@ -111,24 +112,28 @@ void GameLogic::trainOneStep(train Train) {
                     if((curRoute[Train.iter] < curRoute[Train.iter+1]) && (Table[std::max(curRoute[Train.iter], curRoute[Train.iter+1])][std::min(curRoute[Train.iter], curRoute[Train.iter+1])] > 0)) {
                         Train.position = 0;
                         Train.iter++;
+                        this->player.setTrainIter(Train.idx,Train.iter);
                         this->player.setTrainPosition(Train);
                         //continue;
                         trainOneStep(Train);
                     } else if ((curRoute[Train.iter] > curRoute[Train.iter+1]) && (Table[std::max(curRoute[Train.iter], curRoute[Train.iter+1])][std::min(curRoute[Train.iter], curRoute[Train.iter+1])] > 0)) {
                         Train.position = Table[std::min(curRoute[Train.iter], curRoute[Train.iter+1])][std::max(curRoute[Train.iter], curRoute[Train.iter+1])];
                         Train.iter++;
+                        this->player.setTrainIter(Train.idx,Train.iter);
                         this->player.setTrainPosition(Train);
                         //continue;
                         trainOneStep(Train);
                     } else if ((curRoute[Train.iter] < curRoute[Train.iter+1]) && (Table[std::max(curRoute[Train.iter], curRoute[Train.iter+1])][std::min(curRoute[Train.iter], curRoute[Train.iter+1])] < 0)) {
                         Train.position = Table[std::min(curRoute[Train.iter], curRoute[Train.iter+1])][std::max(curRoute[Train.iter], curRoute[Train.iter+1])];
                         Train.iter++;
+                        this->player.setTrainIter(Train.idx,Train.iter);
                         this->player.setTrainPosition(Train);
                         //continue;
                         trainOneStep(Train);
                     } else if ((curRoute[Train.iter] > curRoute[Train.iter+1]) && (Table[std::max(curRoute[Train.iter], curRoute[Train.iter+1])][std::min(curRoute[Train.iter], curRoute[Train.iter+1])] < 0)) {
                         Train.position = 0;
                         Train.iter++;
+                        this->player.setTrainIter(Train.idx,Train.iter);
                         this->player.setTrainPosition(Train);
                         //continue;
                         trainOneStep(Train);
@@ -139,12 +144,14 @@ void GameLogic::trainOneStep(train Train) {
                         Train.route.clear();
                         Train.postsRoute.clear();
                         Train.iter = 1;
+                        this->player.setTrainIter(Train.idx,Train.iter);
                         this->player.setTrainPosition(Train);
 
                     } else{
                     std::reverse(curRoute.begin(),curRoute.end());
                     player.setRoute(Train.idx,curRoute);
                     Train.iter = 1;
+                    this->player.setTrainIter(Train.idx,Train.iter);
                     this->player.setTrainPosition(Train);
                     trainOneStep(Train);}
                 }
