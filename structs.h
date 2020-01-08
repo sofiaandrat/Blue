@@ -149,6 +149,7 @@ public:
     void setTrainImage(Train* trainImage,int index);
     train getTrain(int idx);
     void setTrainPosition(train Train);
+    void setTrainIter(int idx,int iter);
 };
 
 class ExistingGames
