@@ -311,13 +311,14 @@ void Strategy::NotCrashFunction(Player &player, train Train)
     QVector <int> postsToVisit = Train.postsRoute;
     postsToVisit.pop_back();
     QVector <int> postsToAvoid;
+    QVector <int> currentPath = Train.route;
 
     for(int i = 0; i < player.getPlayerTrains().size(); i++) //мммм алгоритмическая сложность куб, как мило
     {
         if(i != idx && !player.getPlayerTrains()[idx].route.isEmpty())
         {
             bool wrong = true;
-            while(wrong)
+             while(wrong)
             {
                 if(player.getPlayerTrains()[i].route.isEmpty() || player.getPlayerTrains()[idx].route.size() < postsToVisit.size())
                     wrong = false;
@@ -333,17 +334,17 @@ void Strategy::NotCrashFunction(Player &player, train Train)
                                     CalculateLengthOfRoute(player.getPlayerTrains()[idx].route) < current_length)
                             {
                                 wrong = false;
-                                if(player.getPlayerTrains()[i].position == Train.position && player.getPlayerTrains()[i].line_idx == Train.line_idx)
+                                if(player.getPlayerTrains()[i].position == Train.position && player.getPlayerTrains()[i].line_idx == Train.line_idx) //переделать!!
                                 {
                                     player.setWaitIteration(Train.idx, player.getPlayerTrains()[idx].waitIteration + 1);
                                     player.setRoute(Train.idx, QVector <int> (0));
                                 } else{
                                     postsToAvoid.pop_back();
-                                    player.setRoute(Train.idx, alg.manipPaths(pointsOfGraph[player.getPlayerTrains()[idx].route[0]],
-                                            pointsOfGraph[player.getPlayerTrains()[idx].route.last()], postsToVisit,postsToAvoid));
+                                    player.setRoute(Train.idx, currentPath);
                                 }
                                 break;
                             }
+                            currentPath = player.getPlayerTrains()[i].route;
                             if(j == (player.getPlayerTrains()[idx].route.size() - 1) || j == (player.getPlayerTrains()[i].route.size() - 1))
                                 wrong = false;
                             break;

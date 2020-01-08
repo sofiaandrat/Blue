@@ -5,7 +5,7 @@
 #include <QJsonObject>
 #include <QJsonArray>
 #include "Collections.h"
-#include "train.h";
+#include "train.h"
 
 struct town
 {
@@ -146,8 +146,9 @@ public:
     void setRoute(int train_idx, QVector <int> route);
     void setPostsRoute(int train_idx, QVector <int> route);
     void setWaitIteration(int train_idx, int iter);
-    void setTrainImage(Train* trainImage,int idx);
+    void setTrainImage(Train* trainImage,int index);
     train getTrain(int idx);
+    void setTrainPosition(train Train);
 };
 
 class ExistingGames
