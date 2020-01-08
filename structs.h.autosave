@@ -143,6 +143,7 @@ public:
     void setRoute(int train_idx, QVector <int> route);
     void setPostsRoute(int train_idx, QVector <int> route);
     void setWaitIteration(int train_idx, int iter);
+    void setTrainPosition(train Train);
 };
 
 class ExistingGames

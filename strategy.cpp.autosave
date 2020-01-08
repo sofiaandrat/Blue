@@ -333,7 +333,7 @@ void Strategy::NotCrashFunction(Player &player, train Train)
                                     CalculateLengthOfRoute(player.getPlayerTrains()[idx].route) < current_length)
                             {
                                 wrong = false;
-                                if(player.getPlayerTrains()[i].position == Train.position && player.getPlayerTrains()[i].line_idx == Train.line_idx)
+                                if(player.getPlayerTrains()[i].position == Train.position && player.getPlayerTrains()[i].line_idx == Train.line_idx) //переделать!!
                                 {
                                     player.setWaitIteration(Train.idx, player.getPlayerTrains()[idx].waitIteration + 1);
                                     player.setRoute(Train.idx, QVector <int> (0));

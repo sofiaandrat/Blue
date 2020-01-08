@@ -4,7 +4,7 @@
 #include "structs.h"
 #include "dijkstrasalg.h"
 #include "sockettest.h"
-class Strategy
+class Strategy //бедный SOLID громко плачет
 {
 private:
     QVector <QVector <int> > shortestPaths;
@@ -21,6 +21,7 @@ public:
     void MakeRoute(Map1 map, Player &player, bool market, train Train);
     void NotCrashFunction(Player &player, train Train);
     void CreatePlanFunction(Map1 map, Player &player, train Train, QVector <market> posts);
+    int CalculateLengthOfRoute(QVector <int> route);
 };
 
 #endif // STRATEGY_H

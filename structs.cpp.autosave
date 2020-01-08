@@ -320,11 +320,11 @@ void Player::setWaitIteration(int train_idx, int iter)
     }
 }
 
-void Player::setTrainPosition(int train_idx, train Train)
+void Player::setTrainPosition(train Train)
 {
     for(int i = 0; i < playerTrains.size(); i++)
     {
-        if(playerTrains[i].idx == train_idx)
+        if(playerTrains[i].idx == Train.idx)
         {
             playerTrains[i].speed = Train.speed;
             playerTrains[i].line_idx = Train.line_idx;

@@ -97,9 +97,11 @@ void GameLogic::trainOneStep(train Train) {
                 player.setTrains(NewTrainsInfo);*/
                 if((curLengh - destDiff) == curLengh) {
                     Train.position++;
+                    this->player.setTrainPosition(Train);
                     imageTrain->advancePosition(edgeVec[curEdge],curLengh,curSpeed,Train.position);
                 } else if((curLengh - destDiff) == 0){
                     Train.position--;
+                    this->player.setTrainPosition(Train);
                     imageTrain->advancePosition(edgeVec[curEdge],curLengh,curSpeed,Train.position);
                 }
                 //socket->sendTurnMessage();
@@ -108,6 +110,7 @@ void GameLogic::trainOneStep(train Train) {
                 if(iter + 1 < curRoute.size()) {
                     if((curRoute[iter] < curRoute[iter+1]) && (Table[std::max(curRoute[iter], curRoute[iter+1])][std::min(curRoute[iter], curRoute[iter+1])] > 0)) {
                         Train.position = 0;
+                        this->player.setTrainPosition(Train);
                         iter++;
                         //continue;
                         trainOneStep(Train);
@@ -118,11 +121,13 @@ void GameLogic::trainOneStep(train Train) {
                         trainOneStep(Train);
                     } else if ((curRoute[iter] < curRoute[iter+1]) && (Table[std::max(curRoute[iter], curRoute[iter+1])][std::min(curRoute[iter], curRoute[iter+1])] < 0)) {
                         Train.position = Table[std::min(curRoute[iter], curRoute[iter+1])][std::max(curRoute[iter], curRoute[iter+1])];
+                        this->player.setTrainPosition(Train);
                         iter++;
                         //continue;
                         trainOneStep(Train);
                     } else if ((curRoute[iter] > curRoute[iter+1]) && (Table[std::max(curRoute[iter], curRoute[iter+1])][std::min(curRoute[iter], curRoute[iter+1])] < 0)) {
                         Train.position = 0;
+                        this->player.setTrainPosition(Train);
                         iter++;
                         //continue;
                         trainOneStep(Train);
