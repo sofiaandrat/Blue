@@ -168,6 +168,7 @@ void Player::Pars(QJsonDocument doc) {
         Train.level = obj["level"].toInt();
         Train.price = obj["next_level_price"].toInt();
         Train.waitIteration = 0;
+        Train.killer = false;
         this->playerTrains.append(Train);
     }
 }
@@ -394,4 +395,9 @@ QPair <int, int> Map0::getPoints(int line_idx)
                 return qMakePair(i, j);
         }
     }
+}
+
+void Player::setKiller(train Train, bool IsKiller)
+{
+    playerTrains[this->playerTrains.indexOf(Train)].killer = IsKiller;
 }

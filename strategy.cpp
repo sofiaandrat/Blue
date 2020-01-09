@@ -56,10 +56,10 @@ void Strategy::Moving(Map1 &map, Player &player)
                 player.setRoute(player.getPlayerTrains()[i].idx, route);
                 NotCrashFunction(player,player.getPlayerTrains()[i]);
             }
-           /* else if(player.getEnemies().size() != 0)
+            else if(player.getEnemies().size() != 0)
             {
                 void KillEnemy();
-            }*/
+            }
        }
     }
 }
@@ -420,16 +420,33 @@ void Strategy::CalculateArmorTrain(Map1 &map, Player &player)
     }
 }
 
-/*void Strategy::KillEnemy(Map1 &map, Player &player, train Train)
+void Strategy::KillEnemy(Map1 &map, Player &player, train Train)
 {
-    QVector <train> EnemyTrains = map.getEnemyTrains(player.getPlayerData().player_idx);
-    train unfortunateTrain;
-    int minRoute;
-    for(int i = 0; i < EnemyTrains.size(); i++)
+    player.setKiller(Train, true);
+    int maxRating = 0;
+    int enemy_idx;
+    QVector <int> empty(0);
+    for(int i = 0; i < player.getEnemies().size(); i++)
     {
-
+        if(player.getEnemies()[i].rating > maxRating)
+        {
+            maxRating = player.getEnemies()[i].rating;
+            enemy_idx = i;
+        }
     }
-}*/
+    int minroute = INT_MAX;
+    int market_idx;
+    for(int i = 0; i < map.getterMarkets().size(); i++)
+    {
+        if(CalculateLengthOfRoute(alg.manipPaths(player.getEnemies()[enemy_idx].home_idx,map.getterMarkets()[i].point_idx, empty, empty)) < minroute)
+        {
+            minroute = CalculateLengthOfRoute(alg.manipPaths(player.getEnemies()[enemy_idx].home_idx,map.getterMarkets()[i].point_idx, empty, empty));
+            market_idx = map.getterMarkets()[i].point_idx;
+        }
+    }
+    empty.append(market_idx);
+    player.setPostsRoute(Train.idx, empty);
+}
 
 void Strategy::CalculateEnemy(Map1 map, train Train, bool isMarket, Player &player)
 {
@@ -445,7 +462,7 @@ void Strategy::CalculateEnemy(Map1 map, train Train, bool isMarket, Player &play
             {
                 market post1 = BestPost(map, map.getterMarkets(), Enemies[i], pointsOfGraph[enemyPos.first]);
                 market post2 = BestPost(map, map.getterMarkets(), Enemies[i], pointsOfGraph[enemyPos.second]);
-                if(CalculateLengthOfRoute(alg.manipPaths(pointsOfGraph[enemyPos.first], post1.point_idx, empty, empty)) > CalculateLengthOfRoute(alg.manipPaths(pointsOfGraph[enemyPos.second], post2.point_idx, empty, empty)))
+                if(CalculateLengthOfRoute(alg.manipPaths(pointsOfGraph[enemyPos.first], post1.point_idx, empty, empty)) < CalculateLengthOfRoute(alg.manipPaths(pointsOfGraph[enemyPos.second], post2.point_idx, empty, empty)))
                     post1 = post2;
                 if(CalculateLengthOfRoute(alg.manipPaths(player.getPlayerData().home_idx, post1.point_idx, empty, Train.pointsToAvoid)) >
                         CalculateLengthOfRoute(alg.manipPaths(pointsOfGraph[enemyPos.first], post1.point_idx, empty, empty)) && Enemies[i].trains[j].goods_type != ARMOR)
@@ -461,7 +478,7 @@ void Strategy::CalculateEnemy(Map1 map, train Train, bool isMarket, Player &play
             } else {
                 market post1 = BestPost(map, map.getterStorages(), Enemies[i], pointsOfGraph[enemyPos.first]);
                 market post2 = BestPost(map, map.getterStorages(), Enemies[i], pointsOfGraph[enemyPos.second]);
-                if(CalculateLengthOfRoute(alg.manipPaths(pointsOfGraph[enemyPos.first], post1.point_idx, empty, empty)) > CalculateLengthOfRoute(alg.manipPaths(pointsOfGraph[enemyPos.second], post2.point_idx, empty, empty)))
+                if(CalculateLengthOfRoute(alg.manipPaths(pointsOfGraph[enemyPos.first], post1.point_idx, empty, empty)) < CalculateLengthOfRoute(alg.manipPaths(pointsOfGraph[enemyPos.second], post2.point_idx, empty, empty)))
                     post1 = post2;
                 if(CalculateLengthOfRoute(alg.manipPaths(player.getPlayerData().home_idx, post1.point_idx, empty, Train.pointsToAvoid)) >
                         CalculateLengthOfRoute(alg.manipPaths(pointsOfGraph[enemyPos.first], post1.point_idx, empty, empty)) && Enemies[i].trains[j].goods_type != PRODUCTS)

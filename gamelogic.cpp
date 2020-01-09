@@ -31,24 +31,14 @@ void GameLogic::Alhoritm()
     int realTownIdx = this->player.getPlayerData().home_idx;
     int townIdx = pointsOfGraph.indexOf(realTownIdx);
     this->strategy = new Strategy(townIdx,Table_sym, pointsOfGraph, layer1.getterPosts(), socket, layer0);
-    //strategy->Moving(this->layer1, this->player);
-    //this->playerTrain = player.getPlayerTrains()[0];
-   /* if(Table[std::max(curRoute[0],curRoute[1])][std::min(curRoute[0],curRoute[1])] < 0) {
-        playerTrain.position = Table[std::min(curRoute[0],curRoute[1])][std::max(curRoute[0],curRoute[1])];
-    }*/
     trainsOneStep();
     connect(&*(this->socket),SIGNAL(TurnFinished()),this,SLOT(trainsOneStep()));
 
 }
 
 void GameLogic::trainOneStep(train Train) {
-       /* socket->SendMessage(MAP,{{"layer",1}});
-        QJsonDocument newMap;
-        newMap = socket->getterDoc();*/
         curRoute = Train.route;
         if(!Train.route.isEmpty()) {
-            qDebug() <<"ITERATORRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRR"<<Train.iter;
-            qDebug() <<"CURRENT FUCKING ROUTE"<< curRoute;
             int sourceEdgePoint = curRoute[Train.iter - 1];
             int destEdgePoint = curRoute[Train.iter];
             int curSpeed = 1;
@@ -134,7 +124,7 @@ void GameLogic::trainOneStep(train Train) {
                         this->player.setRoute(Train.idx, Train.route);
                         this->player.setPostsRoute(Train.idx, Train.postsRoute);
 
-                    } else {
+                    } else if(!Train.killer){
                         std::reverse(curRoute.begin(),curRoute.end());
                         player.setRoute(Train.idx,curRoute);
                         Train.iter = 1;
@@ -162,11 +152,11 @@ void GameLogic::trainsOneStep()
 
 }
 
-bool GameLogic::CanTrainGo(train Train)
+/*bool GameLogic::CanTrainGo(train Train)
 {
     for(int i = 0; i < layer1.getTrains().size(); i++)
     {
         //Ваня, запили функцию!!!!
     }
     return true;
-}
+}*/
