@@ -37,6 +37,8 @@ private:
       Strategy *strategy;
       QJsonDocument prevMap;
       QTimeLine *animTimer;
+      int home_line;
+      int home_position;
       //int destDiff;
 };
 #endif // GAMELOGIC_H

@@ -158,3 +158,7 @@ QPointF Edge::getSourcePoint() {
 QPointF Edge::getDestPoint() {
     return this->destPoint;
 }
+
+int Edge::getLength() {
+    return this->length;
+}

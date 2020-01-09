@@ -69,6 +69,7 @@ public:
 
     void adjust();
     int getIdx();
+    int getLength();
 
     enum { Type = UserType + 2 };
     int type() const override { return Type; }

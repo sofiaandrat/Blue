@@ -14,6 +14,9 @@ GameLogic::GameLogic(SocketTest *socket, QVector<Edge *> &edgeVec,Train *imageTr
     this->Table = layer0.getterTable();
     //this->playerTrain = player.getPlayerTrains()[0];
     this->prevMap = {};
+
+    this->home_line = player.getPlayerTrains()[0].line_idx;
+    this->home_position = player.getPlayerTrains()[0].position;
     //this->animTimer = new QTimeLine(500);
 }
 
@@ -42,9 +45,39 @@ void GameLogic::Alhoritm()
 }
 
 void GameLogic::trainOneStep(train Train) {
-       /* socket->SendMessage(MAP,{{"layer",1}});
-        QJsonDocument newMap;
-        newMap = socket->getterDoc();*/
+        //socket->SendMessage(MAP,{{"layer",1}});
+        //Map1 mapForCheck;
+        //mapForCheck.Pars(socket->getterDoc());
+        if(this->layer1.checkForCollision(Train.idx)) {
+            qDebug()<<"COLLISION CHECK IF ENTERED 123145145154151515";
+            Train.route.clear();
+            Train.postsRoute.clear();
+            Train.iter = 1;
+            Train.speed = 0;
+            Train.position = this->home_position;
+            Train.line_idx = this->home_line;
+            this->player.setTrainIter(Train.idx,Train.iter);
+            this->player.setTrainPosition(Train);
+            this->player.setRoute(Train.idx,Train.route);
+            this->player.setPostsRoute(Train.idx,Train.postsRoute);
+            int homeEdge;
+            for(int i = 0; i < edgeVec.size(); i++)
+            {
+                if(std::abs(edgeVec[i]->getIdx()) == this->home_line)
+                {
+                    homeEdge = i;
+                    break;
+                }
+            }
+            this->player.getTrain(Train.idx).imageTrain->advancePosition(edgeVec[homeEdge],edgeVec[homeEdge]->getLength(),Train.speed,Train.position,this->animTimer);
+            return;
+        }
+        if(this->layer1.checkForCooldown(Train.idx)) {
+                qDebug()<<"ZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZ";
+                return;
+        }
+        //QJsonDocument newMap;
+        //newMap = socket->getterDoc();*/
         curRoute = Train.route;
         if(!Train.route.isEmpty()) {
             qDebug() <<"ITERATORRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRR"<<Train.iter;
@@ -82,8 +115,9 @@ void GameLogic::trainOneStep(train Train) {
             if(Train.position != (curLengh - destDiff)) {
                 socket->sendMoveMessage(curEdgeIdx,curSpeed,Train.idx);
                 //socket->sendTurnMessage();
-                socket->SendMessage(MAP,{{"layer", 1}});
-                this->layer1.Pars(socket->getterDoc());
+                //socket->SendMessage(MAP,{{"layer", 1}});
+                //this->layer1.Pars(socket->getterDoc());
+
                 /*prevMap = newMap;
                 newMap = socket->getterDoc();
                 this->layer1 = *new Map1();
@@ -161,12 +195,17 @@ void GameLogic::trainOneStep(train Train) {
                     }
                 }
           }
-	}
+    } else {
+            qDebug() << "ROUTE IS EMPTY!!!!!!!";
+        }
 }
 
 void GameLogic::trainsOneStep()
 {
-    this->animTimer = nullptr;
+    //this->animTimer = nullptr;
+    socket->SendMessage(MAP,{{"layer",1}});
+    this->layer1.Pars(socket->getterDoc());
+
     this->animTimer = new QTimeLine(500);
     this->strategy->Moving(this->layer1, this->player);
     for(int i = 0; i < this->player.getPlayerTrains().size(); i++)

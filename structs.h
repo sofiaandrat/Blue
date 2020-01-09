@@ -46,6 +46,8 @@ struct train
     int speed;
     int level;
     int price;
+    int cooldown;
+    int collisionEvent;
     QVector <int> route;
     QVector <int> postsRoute;
     int waitIteration;
@@ -124,6 +126,9 @@ public:
     QVector <town> getTown();
     QVector <train> getEnemyTrains(QString player_idx);
     town getHome(QString player_idx);
+    train getTrain(int idx);
+    bool checkForCollision(int idx);
+    bool checkForCooldown(int idx);
     ~Map1(){}
 };
 

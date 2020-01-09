@@ -1,4 +1,5 @@
 #include "structs.h"
+#include "QDebug"
 
 void Map0::Pars(QJsonDocument doc)
 {
@@ -123,6 +124,15 @@ void Map1::Pars(QJsonDocument doc)
         Train.speed = obj["speed"].toInt();
         Train.level = obj["level"].toInt();
         Train.price = obj["next_level_price"].toInt();
+        Train.cooldown = obj["cooldown"].toInt();
+        QJsonArray eventsArray = obj["events"].toArray();
+        qDebug()<<"EVENTS ARRAY:"<<eventsArray;
+        qDebug()<<"SAAAAAAAAAIIIIIZZZZZZZZZEEEEEE"<<eventsArray.size();
+        if(eventsArray.size() != 0) {
+            Train.collisionEvent = 1;
+        } else {
+            Train.collisionEvent = 0;
+        }
         this->AllTrains.append(Train);
     }
 
@@ -359,5 +369,32 @@ train Player::getTrain(int idx)
         {
             return this->playerTrains[i];
         }
+    }
+}
+
+train Map1::getTrain(int idx)
+{
+    for(int i = 0; i < AllTrains.size(); i++)
+    {
+        if(idx == AllTrains[i].idx)
+        {
+            return this->AllTrains[i];
+        }
+    }
+}
+
+bool Map1::checkForCollision(int idx){
+    if(this->getTrain(idx).collisionEvent == 0) {
+        return false;
+    } else {
+        return true;
+    }
+}
+
+bool Map1::checkForCooldown(int idx){
+    if(this->getTrain(idx).cooldown == 0) {
+        return false;
+    } else {
+        return true;
     }
 }

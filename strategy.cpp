@@ -95,9 +95,10 @@ void Strategy::Moving(Map1 &map, Player &player)
             }
             socket->sendUpgradeMessage(false, upgradeTrains, player.getPlayerData().home_idx);
         }
-        socket->SendMessage(MAP,{{"layer", 1}});
-        map = *new Map1();
-        map.Pars(socket->getterDoc());
+        //socket->SendMessage(MAP,{{"layer", 1}});
+        //map = *new Map1();
+        //map.Pars(socket->getterDoc());
+        qDebug() <<"FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFEEEEEEEEEEEEEEEEEEEEEZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZ";
         QVector <train> Trains;
         for(int i = 0; i < map.getTrains().size(); i++)
         {
