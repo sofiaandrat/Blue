@@ -55,6 +55,7 @@ struct train
     int waitIteration;
     int iter = 1;
     Train* imageTrain;
+    bool killer;
     bool operator==(const train &anotherTrain);
 };
 
@@ -161,6 +162,7 @@ public:
     void setTrainPosition(train Train);
     void setTrainIter(int idx,int iter);
     void setPointsToAvoid(train Train, QVector<int> pointsToAvoid);
+    void setKiller(train Train, bool IsKiller);
 };
 
 class ExistingGames
