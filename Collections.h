@@ -1,4 +1,4 @@
-#ifndef COLLECTIONS_H
+ #ifndef COLLECTIONS_H
 #define COLLECTIONS_H
 
 enum Actions
@@ -47,6 +47,13 @@ enum EventType
     RESOURCE_OVERFLOW = 5,
     RESOURCE_LACK = 6,
     GAME_OVER = 100
+};
+
+enum GoodsType
+{
+    NO_GOODS = 0,
+    PRODUCTS = 1,
+    ARMOR = 2
 };
 
 

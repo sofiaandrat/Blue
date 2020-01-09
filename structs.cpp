@@ -117,7 +117,7 @@ void Map1::Pars(QJsonDocument doc)
         Train.idx = obj["idx"].toInt();
         Train.goods = obj["goods"].toInt();
         Train.goods_capacity = obj["goods_capacity"].toInt();
-        Train.goods_type = obj["goods_type"].toInt();
+        Train.goods_type = static_cast<GoodsType>(obj["goods_type"].toInt());
         Train.line_idx = obj["line_idx"].toInt();
         Train.position = obj["position"].toInt();
         Train.speed = obj["speed"].toInt();
@@ -161,7 +161,7 @@ void Player::Pars(QJsonDocument doc) {
         Train.idx = obj["idx"].toInt();
         Train.goods = obj["goods"].toInt();
         Train.goods_capacity = obj["goods_capacity"].toInt();
-        Train.goods_type = obj["goods_type"].toInt();
+        Train.goods_type = static_cast<GoodsType>(obj["goods_type"].toInt());
         Train.line_idx = obj["line_idx"].toInt();
         Train.position = obj["position"].toInt();
         Train.speed = obj["speed"].toInt();
@@ -250,6 +250,7 @@ void Player::ParsEnemies(Map1 layer1)
                 if(Trains[j].player_idx == Towns[i].player_idx)
                     Enemy.trains.append(Trains[j]);
             }
+            Enemy.player_idx = Enemy.Town.player_idx;
             Enemies.append(Enemy);
         }
     }
@@ -358,6 +359,39 @@ train Player::getTrain(int idx)
         if(idx == playerTrains[i].idx)
         {
             return this->playerTrains[i];
+        }
+    }
+}
+
+void Player::setPointsToAvoid(train Train, QVector<int> pointsToAvoid)
+{
+    playerTrains[playerTrains.indexOf(Train)].pointsToAvoid = pointsToAvoid;
+}
+
+bool train::operator==(const train &anotherTrain)
+{
+    if(this->idx == anotherTrain.idx)
+        return true;
+    else
+        return false;
+}
+
+bool player::operator==(player &anotherPlayer)
+{
+    if(this->player_idx == anotherPlayer.player_idx)
+        return true;
+    else
+        return false;
+}
+
+QPair <int, int> Map0::getPoints(int line_idx)
+{
+    for(int i = 0; i < this->pointsOfGraph.size(); i++)
+    {
+        for(int j = 0; j < this->pointsOfGraph.size(); j++)
+        {
+            if(Table[i][j] == line_idx)
+                return qMakePair(i, j);
         }
     }
 }
