@@ -18,6 +18,7 @@ public:
       void setTrainOnRoute(SocketTest *socket,train playerTrain,QVector<int> &pathToMarket,QVector<QVector<int>> &Table);
       void Alhoritm();
       void trainOneStep(train Train);
+      bool CanTrainGo(train Train);
 
 public slots:
       void trainsOneStep();

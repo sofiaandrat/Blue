@@ -12,9 +12,10 @@ private:
     DijkstrasAlg alg;
     SocketTest *socket;
     int indexOfFirstArmorTrain = 0;
+    Map0 layer0;
 public:
-    Strategy(int townIdx,QVector <QVector <int> > &Table, QVector<int> &pointsOfGraph, QVector<post> posts, SocketTest *socket);
-    market BestPost(Map1 map, QVector <market> posts, Player player, int pos);
+    Strategy(int townIdx,QVector <QVector <int> > &Table, QVector <int> pointsOfGraph, QVector<post> posts, SocketTest *socket, Map0 &layer0);
+    market BestPost(Map1 map, QVector <market> posts, player Player, int pos);
     void Moving(Map1 &map, Player &player);
     QVector <int> PathToNearestMarket(QVector<market> markets);
     QVector <market> GoodPosts(Map1 map, QVector <market> posts, Player player);
@@ -24,6 +25,8 @@ public:
     int CalculateLengthOfRoute(QVector <int> route);
     void Upgrade(Map1 &map, Player &player);
     void CalculateArmorTrain(Map1 &map, Player &player);
+    void KillEnemy(Map1 &map, Player &player, train Train);
+    void CalculateEnemy(Map1 map, train Train, bool isMarket, Player &player);
 };
 
 #endif // STRATEGY_H
