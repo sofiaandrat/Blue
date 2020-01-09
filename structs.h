@@ -32,6 +32,7 @@ struct player
     int home_idx;
     int home_post_idx;
     QString player_idx;
+    bool operator==(player &anotherPlayer);
 };
 
 struct train
@@ -40,7 +41,7 @@ struct train
     int idx;
     int goods;
     int goods_capacity;
-    int goods_type;
+    GoodsType goods_type;
     int line_idx;
     int position;
     int speed;
@@ -50,10 +51,13 @@ struct train
     int collisionEvent;
     QVector <int> route;
     QVector <int> postsRoute;
+    QVector <int> pointsToAvoid;
     int waitIteration;
     int iter = 1;
     Train* imageTrain;
+    bool operator==(const train &anotherTrain);
 };
+
 
 struct post
 {
@@ -82,7 +86,7 @@ struct game
     GameState gameState;
 };
 
-struct enemy
+struct enemy:player
 {
     town Town;
     QVector <train> trains;
@@ -99,6 +103,7 @@ public:
     void Pars(QJsonDocument doc);
     QVector <int> getterPointsOfgraph();
     QVector <QVector <int> > getterTable();
+    QPair <int, int> getPoints(int line_idx);
 };
 
 class Map1
@@ -155,6 +160,7 @@ public:
     train getTrain(int idx);
     void setTrainPosition(train Train);
     void setTrainIter(int idx,int iter);
+    void setPointsToAvoid(train Train, QVector<int> pointsToAvoid);
 };
 
 class ExistingGames

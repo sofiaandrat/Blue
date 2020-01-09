@@ -1,4 +1,4 @@
-#include "gamelogic.h"
+﻿#include "gamelogic.h"
 #include <QTime>
 #include "strategy.h"
 GameLogic::GameLogic(SocketTest *socket, QVector<Edge *> &edgeVec,Train *imageTrain,Map0 &Layer0, Map1 &Layer1,Player &player)
@@ -33,7 +33,7 @@ void GameLogic::Alhoritm()
     }
     int realTownIdx = this->player.getPlayerData().home_idx;
     int townIdx = pointsOfGraph.indexOf(realTownIdx);
-    this->strategy = new Strategy(townIdx,Table_sym,pointsOfGraph, layer1.getterPosts(), socket);
+    this->strategy = new Strategy(townIdx,Table_sym, pointsOfGraph, layer1.getterPosts(), socket, layer0);
     //strategy->Moving(this->layer1, this->player);
     //this->playerTrain = player.getPlayerTrains()[0];
    /* if(Table[std::max(curRoute[0],curRoute[1])][std::min(curRoute[0],curRoute[1])] < 0) {
@@ -140,7 +140,6 @@ void GameLogic::trainOneStep(train Train) {
                     this->player.setTrainPosition(Train);
                     this->player.getTrain(Train.idx).imageTrain->advancePosition(edgeVec[curEdge],curLengh,curSpeed,Train.position,this->animTimer);
                 }
-                //socket->sendTurnMessage();
             } else {
 // Разбор стыка рёбер. Не оч красиво, но работает.
                 if(Train.iter + 1 < curRoute.size()) {
@@ -181,8 +180,8 @@ void GameLogic::trainOneStep(train Train) {
                         Train.iter = 1;
                         this->player.setTrainIter(Train.idx,Train.iter);
                         this->player.setTrainPosition(Train);
-                        this->player.setRoute(Train.idx,Train.route);
-                        this->player.setPostsRoute(Train.idx,Train.postsRoute);
+                        this->player.setRoute(Train.idx, Train.route);
+                        this->player.setPostsRoute(Train.idx, Train.postsRoute);
 
                     } else {
                         std::reverse(curRoute.begin(),curRoute.end());
@@ -211,6 +210,17 @@ void GameLogic::trainsOneStep()
     for(int i = 0; i < this->player.getPlayerTrains().size(); i++)
         trainOneStep(this->player.getPlayerTrains()[i]);
     this->animTimer->start();
+    socket->SendMessage(MAP,{{"layer", 1}});
+    this->layer1.Pars(socket->getterDoc());
     socket->sendTurnMessage();
 
+}
+
+bool GameLogic::CanTrainGo(train Train)
+{
+    for(int i = 0; i < layer1.getTrains().size(); i++)
+    {
+        //Ваня, запили функцию!!!!
+    }
+    return true;
 }
