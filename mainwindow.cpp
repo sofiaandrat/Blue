@@ -4,21 +4,31 @@
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
-    , ui(new Ui::MainWindow)
+   // , ui(new Ui::MainWindow)
 {
-    ui->setupUi(this);
+
 }
 
 MainWindow::~MainWindow()
 {
-    delete ui;
+   // delete ui;
 }
 
-
-void MainWindow::on_pushButton_clicked()
+game MainWindow::getGame()
 {
-    SocketTest *Socket = new SocketTest(this);
-    Socket->Connect();
-    QString loginText = ui->login->text();
-    new GraphWidget(nullptr,*Socket,loginText,this);
+    //this->Socket = new SocketTest(this);
+    //this->Socket->Connect();
+    this->Socket->SendMessage(GAMES,{});
+    ExistingGames games;
+    games.Pars(this->Socket->getterDoc());
+    QVector <game> Games = games.getGames();
+    for(int i = 0; i < Games.size(); i++)
+    {
+        if(Games[i].gameName == this->Game.gameName)
+            return Games[i];
+    }
+}
+SocketTest* MainWindow::getSocket()
+{
+    return this->Socket;
 }

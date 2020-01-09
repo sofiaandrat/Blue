@@ -1,6 +1,5 @@
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
-#include "ui_mainwindow.h"
 #include "sockettest.h"
 //#include "graphwidget.h"
 #include "structs.h"
@@ -22,11 +21,13 @@ class MainWindow : public QMainWindow
 public:
     MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
+    game getGame();
+    SocketTest* getSocket();
+    //virtual auto getUi();
 
-private slots:
-    void on_pushButton_clicked();
-
-private:
-    Ui::MainWindow *ui;
+protected:
+    SocketTest *Socket;
+    game Game;
+    //Ui::MainWindow *ui;
 };
 #endif // MAINWINDOW_H

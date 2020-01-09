@@ -103,7 +103,7 @@ void Node::calculateForces()
         QPointF vec = mapToItem(node, 0, 0);
         qreal dx = vec.x();
         qreal dy = vec.y();
-        double l = 0.5 * (dx * dx + dy * dy); // 0.5 coeff changes edge length
+        double l = 7.0 * (dx * dx + dy * dy); // 0.5 coeff changes edge length
         if (l > 0) {
             xvel += (dx * 150.0) / l;
             yvel += (dy * 150.0) / l;
@@ -236,5 +236,19 @@ int Node::getNodeType()
 
 void Node::setImage(QGraphicsPixmapItem* image)
 {
+    if(this->imageOnScene != nullptr) {
+        qDebug() << "IMAGE ON SCENE";
+        graph->getScene()->removeItem(this->imageOnScene);
+    }
     this->imageOnScene = image;
+    setImagePosition();
+}
+
+void Node::setImagePosition() {
+    if(imageOnScene != nullptr) {
+        QRectF rect = this->imageOnScene->boundingRect();
+        qreal width = rect.width();
+        qreal height = rect.height();
+        this->imageOnScene->setPos(newPos.x() - width/2,newPos.y() - height/2);
+    }
 }

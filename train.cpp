@@ -1,8 +1,5 @@
 #include "train.h"
 #include "edge.h"
-#include <QDebug>
-#include <QTimeLine>
-#include <QGraphicsItemAnimation>
 #include <QObject>
 
 Train::Train(GraphWidget *graphWidget,QPointF begPos,QGraphicsPixmapItem *image)
@@ -22,7 +19,7 @@ void Train::setImage(QGraphicsPixmapItem* image)
     this->image= image;
 }
 
-void Train::advancePosition(Edge *edge,double coef,int curSpeed,int curPos) {
+void Train::advancePosition(Edge *edge,double coef,int curSpeed,int curPos,QTimeLine* animTimer) {
     QPointF sourcePoint = edge->getSourcePoint();
     QPointF destPoint = edge->getDestPoint();
     QRectF edgeRect = edge->boundingRect();
@@ -50,13 +47,14 @@ void Train::advancePosition(Edge *edge,double coef,int curSpeed,int curPos) {
     double offsetW = (this->image->boundingRect().width())/2;
     double offsetH = this->image->boundingRect().height();
 
-    QTimeLine *timer = new QTimeLine(500);
-    QGraphicsItemAnimation *animation = new QGraphicsItemAnimation(timer);
+    //QTimeLine *timer = new QTimeLine(500);
+    QGraphicsItemAnimation *animation = new QGraphicsItemAnimation();
 
     animation->setItem(this->image);
-    animation->setTimeLine(timer);
+    //animation->setTimeLine(timer);
+    animation->setTimeLine(animTimer);
     animation->setPosAt(1.0,QPointF(sourcePoint.x() + stepW*posForDraw - offsetW,sourcePoint.y() + stepH*posForDraw - offsetH));
-    timer->start();
+    //timer->start();
 }
 
 QGraphicsPixmapItem* Train::getImage() {

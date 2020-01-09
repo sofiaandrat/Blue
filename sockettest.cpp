@@ -1,5 +1,7 @@
 #include "sockettest.h"
 #include "Collections.h"
+#include <QTimer>
+
 SocketTest::SocketTest(QObject *parent) : QObject(parent)
 {}
 
@@ -12,6 +14,7 @@ void SocketTest::Connect()
     socket->setSocketOption(QAbstractSocket::LowDelayOption, 1);
    // qDebug() << socket->socketOption(QAbstractSocket::KeepAliveOption);
     socket->connectToHost("wgforge-srv.wargaming.net", 443);
+    //TryConnect();
     if(socket->waitForConnected(500))
     {
         qDebug() << "Connected!";
@@ -26,7 +29,7 @@ void SocketTest::SendMessage(Actions Action, QJsonObject jsonObj)
 {
     if(socket->isOpen())
     {
-        socket->write(toMessageFormat(Action,jsonObj));
+       socket->write(toMessageFormat(Action,jsonObj));
        socket->waitForReadyRead(900);
     } else {
         qDebug() << "socket is close";
@@ -54,6 +57,12 @@ void SocketTest::readyRead()
     int int_sizeOfData;
     in >> int_sizeOfData;
 
+    QDataStream code(resultCode);
+    code.setByteOrder(QDataStream::LittleEndian);
+    int int_code;
+    code >> int_code;
+    this->code = static_cast<Result>(int_code);
+
     qDebug() << resultCode;
     Data = data;
     while(Data.size() < int_sizeOfData) {
@@ -62,6 +71,7 @@ void SocketTest::readyRead()
     }
     qDebug() << Data;
     doc = QJsonDocument::fromJson(Data, &docError);
+    //code = QJsonA::fromJson(resultCode, &codeError);
 }
 
 
@@ -107,9 +117,19 @@ void SocketTest::sendMoveMessage(int line_idx,int speed, int train_idx) {
 
 void SocketTest::sendTurnMessage() {
     SocketTest::SendMessageWOW(TURN,{});
+    /*if(this->socket->isOpen())
+    {
+        this->socket->write(toMessageFormat(TURN,{}));
+    }*/
+    /*while(code != OKEY) {
+        qDebug() << code;
+        qDebug() <<"Number";
+        socket->waitForReadyRead(500);
+    }*/
 }
 
 SocketTest::~SocketTest() {
+    this->socket->close();
     qDebug()<<"Destructed";
 }
 
@@ -117,8 +137,14 @@ void SocketTest::SendMessageWOW(Actions Action, QJsonObject jsonObj)
 {
     if(socket->isOpen())
     {
-        socket->write(toMessageFormat(Action,jsonObj));
-        socket->waitForReadyRead(500);
+        if(Action == TURN)
+        {
+            connect(socket,SIGNAL(readyRead()),this,SLOT(dataArrived()));
+            socket->write(toMessageFormat(Action,jsonObj));
+        } else {
+            socket->write(toMessageFormat(Action,jsonObj));
+            socket->waitForReadyRead(750);
+        }
     } else {
         qDebug() << "socket is close";
     }
@@ -138,3 +164,11 @@ void SocketTest::sendUpgradeMessage(bool upgradeTown, QVector <train> Trains, in
     SendMessageWOW(UPGRADE, upgradeObj);
 }
 
+void SocketTest::Finished() {
+    emit TurnFinished();
+}
+
+void SocketTest::dataArrived() {
+    QObject::disconnect(socket,SIGNAL(readyRead()),this,SLOT(dataArrived()));
+    QTimer::singleShot(500,this,SLOT(Finished()));
+}
