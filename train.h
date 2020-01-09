@@ -2,6 +2,8 @@
 #define TRAIN_H
 
 #include <QGraphicsPixmapItem>
+#include <QTimeLine>
+#include <QGraphicsItemAnimation>
 //#include "graphwidget.h"
 
 class Edge;
@@ -17,7 +19,7 @@ public:
     int type() const override { return Type; }
 
     void setImage(QGraphicsPixmapItem *image);
-    void advancePosition(Edge *edge,double coef,int curSpeed,int curPos);
+    void advancePosition(Edge *edge,double coef,int curSpeed,int curPos,QTimeLine* animTimer);
     QGraphicsPixmapItem* getImage();
 
 private:

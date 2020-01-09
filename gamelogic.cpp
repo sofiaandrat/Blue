@@ -14,6 +14,7 @@ GameLogic::GameLogic(SocketTest *socket, QVector<Edge *> &edgeVec,Train *imageTr
     this->Table = layer0.getterTable();
     //this->playerTrain = player.getPlayerTrains()[0];
     this->prevMap = {};
+    //this->animTimer = new QTimeLine(500);
 }
 
 void GameLogic::Alhoritm()
@@ -99,11 +100,11 @@ void GameLogic::trainOneStep(train Train) {
                 if((curLengh - destDiff) == curLengh) {
                     Train.position++;
                     this->player.setTrainPosition(Train);
-                    this->player.getTrain(Train.idx).imageTrain->advancePosition(edgeVec[curEdge],curLengh,curSpeed,Train.position);
+                    this->player.getTrain(Train.idx).imageTrain->advancePosition(edgeVec[curEdge],curLengh,curSpeed,Train.position,this->animTimer);
                 } else if((curLengh - destDiff) == 0){
                     Train.position--;
                     this->player.setTrainPosition(Train);
-                    this->player.getTrain(Train.idx).imageTrain->advancePosition(edgeVec[curEdge],curLengh,curSpeed,Train.position);
+                    this->player.getTrain(Train.idx).imageTrain->advancePosition(edgeVec[curEdge],curLengh,curSpeed,Train.position,this->animTimer);
                 }
                 //socket->sendTurnMessage();
             } else {
@@ -149,13 +150,15 @@ void GameLogic::trainOneStep(train Train) {
                         this->player.setRoute(Train.idx, Train.route);
                         this->player.setPostsRoute(Train.idx, Train.postsRoute);
 
-                    } else{
-                    std::reverse(curRoute.begin(),curRoute.end());
-                    player.setRoute(Train.idx,curRoute);
-                    Train.iter = 1;
-                    this->player.setTrainIter(Train.idx,Train.iter);
-                    this->player.setTrainPosition(Train);
-                    trainOneStep(Train);}
+                    } else {
+                        std::reverse(curRoute.begin(),curRoute.end());
+                        player.setRoute(Train.idx,curRoute);
+                        Train.iter = 1;
+                        this->player.setTrainIter(Train.idx,Train.iter);
+                        this->player.setTrainPosition(Train);
+                        Train.route = curRoute;
+                        trainOneStep(Train);
+                    }
                 }
           }
 	}
@@ -163,9 +166,12 @@ void GameLogic::trainOneStep(train Train) {
 
 void GameLogic::trainsOneStep()
 {
+    this->animTimer = nullptr;
+    this->animTimer = new QTimeLine(500);
     this->strategy->Moving(this->layer1, this->player);
     for(int i = 0; i < this->player.getPlayerTrains().size(); i++)
         trainOneStep(this->player.getPlayerTrains()[i]);
+    this->animTimer->start();
     socket->sendTurnMessage();
 
 }
