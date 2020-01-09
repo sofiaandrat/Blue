@@ -15,72 +15,49 @@ void Strategy::Moving(Map1 &map, Player &player)
     QVector <market> storages = map.getterStorages();
     QVector <market> GoodMarkets = GoodPosts(map, markets, player);
     QVector <int> pointsToVisit(0);
-    if(player.getEnemies().size() == 0)
+    Upgrade(map, player);
+    QVector <train> Trains;
+    for(int i = 0; i < map.getTrains().size(); i++)
     {
-        Upgrade(map, player);
-        QVector <train> Trains;
-        for(int i = 0; i < map.getTrains().size(); i++)
+        if(map.getTrains()[i].player_idx == player.getPlayerData().player_idx)
+        Trains.append(map.getTrains()[i]);
+    }
+    player.setTrainsLevel(Trains);
+    CalculateArmorTrain(map, player);
+    for(int i = 0; i < player.getPlayerTrains().size(); i++)
+    {
+        if(player.getPlayerTrains()[i].route.isEmpty())
         {
-            if(map.getTrains()[i].player_idx == player.getPlayerData().player_idx)
-                Trains.append(map.getTrains()[i]);
-        }
-        player.setTrainsLevel(Trains);
-        this->indexOfFirstArmorTrain = player.getPlayerTrains().size();//определяем сколько поездов куда едет
-        int sum = 0;
-        for(int i = 0; i < map.getterStorages().size(); i++)
-            sum += map.getterStorages()[i].goods;
-        int count = 0;
-        while(sum > 0 && count < (player.getPlayerTrains().size() + 1) / 2 )
-        {
-            sum -= player.getPlayerTrains()[count].goods_capacity;
-            count++;
-            this->indexOfFirstArmorTrain--;
-        }
-        market Market = BestPost(map, GoodMarkets, player, map.getHome(player.getPlayerData().player_idx).point_idx);
-        int lengthOfPathToMarket = shortestPaths[pointsOfGraph.indexOf(Market.point_idx)][0];
-        sum = 0;
-        for(int i = 0; i < indexOfFirstArmorTrain; i++)
-            sum += player.getPlayerTrains()[count].goods_capacity;
-        while((map.getHome(player.getPlayerData().player_idx).population * 2 * lengthOfPathToMarket + (lengthOfPathToMarket / 25) * lengthOfPathToMarket) * 1.5 > sum)
-        {
-            indexOfFirstArmorTrain++;
-            sum += player.getPlayerTrains()[indexOfFirstArmorTrain - 1].goods_capacity;
-            if(indexOfFirstArmorTrain == player.getPlayerTrains().size())
-                break;
-        }//определили
-        for(int i = 0; i < player.getPlayerTrains().size(); i++)
-        {
-            if(player.getPlayerTrains()[i].route.isEmpty())
+            MakeRoute(map, player, i < indexOfFirstArmorTrain, player.getPlayerTrains()[i]);
+            pointsToVisit = player.getPlayerTrains()[i].postsRoute;
+            if(!pointsToVisit.isEmpty())
             {
-                MakeRoute(map, player, i < indexOfFirstArmorTrain, player.getPlayerTrains()[i]);
-                pointsToVisit = player.getPlayerTrains()[i].postsRoute;
-                if(!pointsToVisit.isEmpty())
-                {
-                    pointsToVisit.pop_back();
-                }
-                if(!player.getPlayerTrains()[i].postsRoute.isEmpty())
-                {
-                    QVector <int> pointsToAvoid(0);
-                    if(i < indexOfFirstArmorTrain)
-                    {
-                        for(int i = 0; i < storages.size(); i++)
-                            pointsToAvoid.append(storages[i].point_idx);
-                        player.setPointsToAvoid(player.getPlayerTrains()[i], pointsToAvoid);
-                    }
-                    else
-
-                    {
-                        for(int i = 0; i < markets.size(); i++)
-                            pointsToAvoid.append(markets[i].point_idx);
-                        player.setPointsToAvoid(player.getPlayerTrains()[i], pointsToAvoid);
-                    }
-                    QVector <int> route = alg.manipPaths(player.getPlayerData().home_idx,player.getPlayerTrains()[i].postsRoute.last(),pointsToVisit,pointsToAvoid);
-                    player.setRoute(player.getPlayerTrains()[i].idx, route);
-                    NotCrashFunction(player,player.getPlayerTrains()[i]);
-                }
+                pointsToVisit.pop_back();
             }
-        }
+            if(!player.getPlayerTrains()[i].postsRoute.isEmpty())
+            {
+                QVector <int> pointsToAvoid(0);
+                if(i < indexOfFirstArmorTrain)
+                {
+                    for(int i = 0; i < storages.size(); i++)
+                        pointsToAvoid.append(storages[i].point_idx);
+                    player.setPointsToAvoid(player.getPlayerTrains()[i], pointsToAvoid);
+                }
+                else
+                {
+                    for(int i = 0; i < markets.size(); i++)
+                        pointsToAvoid.append(markets[i].point_idx);
+                    player.setPointsToAvoid(player.getPlayerTrains()[i], pointsToAvoid);
+                }
+                QVector <int> route = alg.manipPaths(player.getPlayerData().home_idx,player.getPlayerTrains()[i].postsRoute.last(),pointsToVisit,pointsToAvoid);
+                player.setRoute(player.getPlayerTrains()[i].idx, route);
+                NotCrashFunction(player,player.getPlayerTrains()[i]);
+            }
+       }
+        else if(player.getEnemies().size() != 0)
+        {
 
+        }
     }
 }
 
@@ -189,7 +166,7 @@ void Strategy::MakeRoute(Map1 map, Player &player, bool isMarket, train Train)
         market Market;
         int numOfMarketPerTrain = map.getterMarkets().size() / indexOfFirstArmorTrain;
         int needProducts = 0;
-        if(player.getPlayerTrains()[0].idx == Train.idx)
+        if(player.getPlayerTrains()[0] == Train)
         {
             QVector <int> path;
             while((needProducts < map.getHome(player.getPlayerData().player_idx).products || player.getPlayerTrains()[0].postsRoute.size() < numOfMarketPerTrain + 1)
@@ -199,7 +176,6 @@ void Strategy::MakeRoute(Map1 map, Player &player, bool isMarket, train Train)
                     Market = BestPost(map, posts, player,path.last());
                 else
                     Market = BestPost(map, posts, player,map.getHome(player.getPlayerData().player_idx).point_idx);
-                QVector <int> temp;
                 path.append(Market.point_idx);
                 int lengthOfPathToMarket = CalculateLengthOfRoute(path);
                 goods_capacity -= Market.goods;
@@ -269,13 +245,14 @@ void Strategy::NotCrashFunction(Player &player, train Train)
                                 {
                                     player.setWaitIteration(Train.idx, player.getPlayerTrains()[idx].waitIteration + 1);
                                     player.setRoute(Train.idx, QVector <int> (0));
+                                    player.setPostsRoute(Train.idx,QVector <int> (0));
                                 } else{
                                     postsToAvoid.pop_back();
                                     player.setRoute(Train.idx, currentPath);
                                 }
                                 break;
                             }
-                            currentPath = player.getPlayerTrains()[i].route;
+                            currentPath = player.getPlayerTrains()[idx].route;
                             if(j == (player.getPlayerTrains()[idx].route.size() - 1) || j == (player.getPlayerTrains()[i].route.size() - 1))
                                 wrong = false;
                             break;
@@ -300,17 +277,17 @@ void Strategy::CreatePlanFunction(Map1 map, Player &player, train Train, QVector
     QVector <int> path(0);
     while(goods_capacity > 0 && posts.size() != 0)
     {
-        market Storage;
+        market Post;
         if(!path.isEmpty())
-            Storage = BestPost(map, posts, player,path.last());
+            Post = BestPost(map, posts, player,path.last());
         else
-            Storage = BestPost(map, posts, player,map.getHome(player.getPlayerData().player_idx).point_idx);
-        path.append(Storage.point_idx);
-        goods_capacity -= Storage.goods;
+            Post = BestPost(map, posts, player,map.getHome(player.getPlayerData().player_idx).point_idx);
+        path.append(Post.point_idx);
+        goods_capacity -= Post.goods;
         int del = 0;
         for(int i = 0; i < posts.size(); i++)
         {
-            if(posts[i].point_idx == Storage.point_idx)
+            if(posts[i].point_idx == Post.point_idx)
             {
                 del = i;
                 break;
@@ -411,4 +388,31 @@ void Strategy::Upgrade(Map1 &map, Player &player)
     socket->SendMessage(MAP,{{"layer", 1}});
     map = *new Map1();
     map.Pars(socket->getterDoc());
+}
+
+void Strategy::CalculateArmorTrain(Map1 &map, Player &player)
+{
+    this->indexOfFirstArmorTrain = player.getPlayerTrains().size();//определяем сколько поездов куда едет
+    int sum = 0;
+    for(int i = 0; i < map.getterStorages().size(); i++)
+        sum += map.getterStorages()[i].goods;
+    int count = 0;
+    while(sum > 0 && count < (player.getPlayerTrains().size() + 1) / 2 )
+    {
+        sum -= player.getPlayerTrains()[count].goods_capacity;
+        count++;
+        this->indexOfFirstArmorTrain--;
+    }
+    market Market = BestPost(map, GoodPosts(map, map.getterMarkets(), player), player, map.getHome(player.getPlayerData().player_idx).point_idx);
+    int lengthOfPathToMarket = shortestPaths[pointsOfGraph.indexOf(Market.point_idx)][0];
+    sum = 0;
+    for(int i = 0; i < indexOfFirstArmorTrain; i++)
+        sum += player.getPlayerTrains()[count].goods_capacity;
+    while((map.getHome(player.getPlayerData().player_idx).population * 2 * lengthOfPathToMarket + (lengthOfPathToMarket / 25) * lengthOfPathToMarket) > sum)
+    {
+        indexOfFirstArmorTrain++;
+        sum += player.getPlayerTrains()[indexOfFirstArmorTrain - 1].goods_capacity;
+        if(indexOfFirstArmorTrain == player.getPlayerTrains().size())
+            break;
+    }
 }
