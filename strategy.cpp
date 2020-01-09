@@ -388,9 +388,6 @@ void Strategy::Upgrade(Map1 &map, Player &player)
         }
         socket->sendUpgradeMessage(false, upgradeTrains, player.getPlayerData().home_idx);
     }
-    socket->SendMessage(MAP,{{"layer", 1}});
-    map = *new Map1();
-    map.Pars(socket->getterDoc());
 }
 
 void Strategy::CalculateArmorTrain(Map1 &map, Player &player)
