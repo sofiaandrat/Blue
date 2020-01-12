@@ -130,7 +130,9 @@ public:
     int getTick();
     QVector <train> getTrains();
     QVector <town> getTown();
-    QVector <train> getEnemyTrains(QString player_idx);
+    QVector <train> getAllEnemiesTrains(QString player_idx);
+    train getEnemyTrain(QString enemy_idx, int train_idx);
+    train getPlayerTrain(QString player_idx, int train_idx);
     town getHome(QString player_idx);
     train getTrain(int idx);
     bool checkForCollision(int idx);
@@ -163,6 +165,8 @@ public:
     void setTrainIter(int idx,int iter);
     void setPointsToAvoid(train Train, QVector<int> pointsToAvoid);
     void setKiller(train Train, bool IsKiller);
+    void setEnemyTrainImage(Train* trainImage, QString enemy_idx,int train_idx);
+    QString getPlayerIdx();
 };
 
 class ExistingGames

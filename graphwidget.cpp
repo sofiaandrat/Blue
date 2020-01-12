@@ -438,6 +438,24 @@ void GraphWidget::checkGameState() {
                 Update(player.getEnemiesTown()[i]);
             }
         }
+
+        for(int i = 0; i < this->player.getEnemies().size(); i++)
+        {
+            for(int j = 0; j < nodeVec.size(); j++)
+            {
+                if(nodeVec[j]->getNodeIndex() == player.getEnemies()[i].Town.point_idx)
+                {
+                   qDebug()<<"Trying to set enemy trains!!!!!!!!!!!";
+                   QPixmap enemyTrain;
+                   enemyTrain.load(":/resources/train_enemy.png");
+
+                   for(int z = 0; z < player.getEnemies()[i].trains.size(); z++)
+                   {
+                      this->player.setEnemyTrainImage(new Train(this,nodeVec[j]->pos(),scene->addPixmap(enemyTrain.scaled(QSize(34,51),Qt::IgnoreAspectRatio,Qt::SmoothTransformation))),player.getEnemies()[i].player_idx,player.getEnemies()[i].trains[z].idx);
+                   }
+                }
+            }
+        }
         this->startGameLogic();
         timer->stop();
     }

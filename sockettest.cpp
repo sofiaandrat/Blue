@@ -15,7 +15,7 @@ void SocketTest::Connect()
    // qDebug() << socket->socketOption(QAbstractSocket::KeepAliveOption);
     socket->connectToHost("wgforge-srv.wargaming.net", 443);
     //TryConnect();
-    if(socket->waitForConnected(500))
+    if(socket->waitForConnected(10000)) // было 500
     {
         qDebug() << "Connected!";
     }
@@ -30,7 +30,7 @@ void SocketTest::SendMessage(Actions Action, QJsonObject jsonObj)
     if(socket->isOpen())
     {
        socket->write(toMessageFormat(Action,jsonObj));
-       socket->waitForReadyRead(900);
+       socket->waitForReadyRead(5000); // было 900
     } else {
         qDebug() << "socket is close";
     }
@@ -42,7 +42,7 @@ void SocketTest::readyRead()
     QByteArray buffer = socket->readAll();
     while(buffer.size() < 8)
     {
-        if(socket->waitForReadyRead(900))
+        if(socket->waitForReadyRead(5000)) // было 900
         {
             buffer.append(socket->readAll());
         }
@@ -66,7 +66,7 @@ void SocketTest::readyRead()
     qDebug() << resultCode;
     Data = data;
     while(Data.size() < int_sizeOfData) {
-        if(socket->waitForReadyRead(900))
+        if(socket->waitForReadyRead(5000)) //было 900
             Data.append(socket->readAll());
     }
     qDebug() << Data;
@@ -143,7 +143,7 @@ void SocketTest::SendMessageWOW(Actions Action, QJsonObject jsonObj)
             socket->write(toMessageFormat(Action,jsonObj));
         } else {
             socket->write(toMessageFormat(Action,jsonObj));
-            socket->waitForReadyRead(750);
+            socket->waitForReadyRead(5000); // было 750
         }
     } else {
         qDebug() << "socket is close";

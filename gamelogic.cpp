@@ -61,7 +61,7 @@ void GameLogic::trainOneStep(train Train) {
                     break;
                 }
             }
-            this->player.getTrain(Train.idx).imageTrain->advancePosition(edgeVec[homeEdge],edgeVec[homeEdge]->getLength(),Train.speed,Train.position,this->animTimer);
+            //this->player.getTrain(Train.idx).imageTrain->advancePosition(edgeVec[homeEdge],edgeVec[homeEdge]->getLength(),Train.speed,Train.position,this->animTimer);
             return;
         }
         if(this->layer1.checkForCooldown(Train.idx)) {
@@ -99,6 +99,7 @@ void GameLogic::trainOneStep(train Train) {
                 destDiff = 0;
             }
 
+            Train.speed = curSpeed;
             if(Train.position != (curLengh - destDiff)) {
                 socket->sendMoveMessage(curEdgeIdx,curSpeed,Train.idx);
                 //socket->sendTurnMessage();
@@ -121,11 +122,11 @@ void GameLogic::trainOneStep(train Train) {
                 if((curLengh - destDiff) == curLengh) {
                     Train.position++;
                     this->player.setTrainPosition(Train);
-                    this->player.getTrain(Train.idx).imageTrain->advancePosition(edgeVec[curEdge],curLengh,curSpeed,Train.position,this->animTimer);
+                    //this->player.getTrain(Train.idx).imageTrain->advancePosition(edgeVec[curEdge],curLengh,curSpeed,Train.position,this->animTimer);
                 } else if((curLengh - destDiff) == 0){
                     Train.position--;
                     this->player.setTrainPosition(Train);
-                    this->player.getTrain(Train.idx).imageTrain->advancePosition(edgeVec[curEdge],curLengh,curSpeed,Train.position,this->animTimer);
+                    //this->player.getTrain(Train.idx).imageTrain->advancePosition(edgeVec[curEdge],curLengh,curSpeed,Train.position,this->animTimer);
                 }
             } else {
 // Разбор стыка рёбер. Не оч красиво, но работает.
@@ -196,10 +197,40 @@ void GameLogic::trainsOneStep()
     this->strategy->Moving(this->layer1, this->player);
     for(int i = 0; i < this->player.getPlayerTrains().size(); i++)
         trainOneStep(this->player.getPlayerTrains()[i]);
+    animPlayerTrains();
+    if(player.getEnemies().size() > 0)
+    {
+        animEnemyTrains();
+    }
     this->animTimer->start();
-    socket->SendMessage(MAP,{{"layer", 1}});
-    this->layer1.Pars(socket->getterDoc());
     socket->sendTurnMessage();
+
+}
+
+void GameLogic::animEnemyTrains() {
+   //QVector<train> enemyTrains = this->layer1.getAllEnemiesTrains(this->player.getPlayerIdx());
+
+   for(int i = 0; i < this->player.getEnemies().size(); i++)
+   {
+        for(int j = 0; j < this->player.getEnemies()[i].trains.size(); j++)
+        {
+            int train_idx = player.getEnemies()[i].trains[j].idx;
+
+            train enemyTrain = this->layer1.getEnemyTrain(player.getEnemies()[i].player_idx,train_idx);
+            int curEdge = -1;
+            int curLength = -1;
+            for(int z = 0; z < edgeVec.size(); z++)
+            {
+                if(std::abs(edgeVec[z]->getIdx()) == enemyTrain.line_idx)
+                {
+                    curEdge = z;
+                    curLength = edgeVec[z]->getLength();
+                    break;
+                }
+            }
+            this->player.getEnemies()[i].trains[j].imageTrain->advancePosition(edgeVec[curEdge],curLength,enemyTrain.speed,enemyTrain.position,this->animTimer);
+        }
+   }
 
 }
 
@@ -211,3 +242,24 @@ void GameLogic::trainsOneStep()
     }
     return true;
 }*/
+
+void GameLogic::animPlayerTrains() {
+    for(int i = 0; i < this->player.getPlayerTrains().size(); i++)
+    {
+        int train_idx = player.getPlayerTrains()[i].idx;
+
+        train playerTrain = this->layer1.getPlayerTrain(player.getPlayerData().player_idx,train_idx);
+        int curEdge = -1;
+        int curLength = -1;
+        for(int j = 0; j < edgeVec.size(); j++)
+        {
+            if(std::abs(edgeVec[j]->getIdx()) == playerTrain.line_idx)
+            {
+                curEdge = j;
+                curLength = edgeVec[j]->getLength();
+                break;
+            }
+        }
+        this->player.getPlayerTrains()[i].imageTrain->advancePosition(edgeVec[curEdge],curLength,playerTrain.speed,playerTrain.position,this->animTimer);
+    }
+}

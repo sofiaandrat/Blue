@@ -67,6 +67,7 @@ public:
     void setParentWindow(MainWindow *window);
     MainWindow* getParentWindow() const;
     QGraphicsScene* getScene();
+    void Update(town Town);
 
 public slots:
     void shuffle();
@@ -74,7 +75,6 @@ public slots:
     void zoomOut();
     void startGameLogic();
     void checkGameState();
-    void Update(town Town);
 
 protected:
     void keyPressEvent(QKeyEvent *event) override;

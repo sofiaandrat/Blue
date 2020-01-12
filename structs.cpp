@@ -127,7 +127,7 @@ void Map1::Pars(QJsonDocument doc)
         Train.cooldown = obj["cooldown"].toInt();
         QJsonArray eventsArray = obj["events"].toArray();
         qDebug()<<"EVENTS ARRAY:"<<eventsArray;
-        qDebug()<<"SAAAAAAAAAIIIIIZZZZZZZZZEEEEEE"<<eventsArray.size();
+        //qDebug()<<"SAAAAAAAAAIIIIIZZZZZZZZZEEEEEE"<<eventsArray.size();
         if(eventsArray.size() != 0) {
             Train.collisionEvent = 1;
         } else {
@@ -267,7 +267,7 @@ void Player::ParsEnemies(Map1 layer1)
     }
 }
 
-QVector <train> Map1::getEnemyTrains(QString player_idx)
+QVector <train> Map1::getAllEnemiesTrains(QString player_idx)
 {
     QVector <train> Trains;
     for(int i = 0; i < AllTrains.size(); i++)
@@ -276,6 +276,26 @@ QVector <train> Map1::getEnemyTrains(QString player_idx)
             Trains.append(AllTrains[i]);
     }
     return Trains;
+}
+
+train Map1::getEnemyTrain(QString enemy_idx, int train_idx)
+{
+    for(int i = 0; i < AllTrains.size(); i++)
+    {
+        if(AllTrains[i].idx == train_idx){
+            return AllTrains[i];
+        }
+    }
+}
+
+train Map1::getPlayerTrain(QString player_idx, int train_idx)
+{
+    for(int i = 0; i < AllTrains.size(); i++)
+    {
+        if(AllTrains[i].idx == train_idx){
+            return AllTrains[i];
+        }
+    }
 }
 
 QVector <town> Map1::getTown()
@@ -363,6 +383,25 @@ void Player::setTrainImage(Train *trainImage, int index)
     this->playerTrains[index].imageTrain = trainImage;
 }
 
+void Player::setEnemyTrainImage(Train *trainImage, QString enemy_idx,int train_idx)
+{
+    for(int i = 0; i < Enemies.size(); i++)
+    {
+        if(Enemies[i].player_idx == enemy_idx)
+        {
+            for(int j = 0; j < Enemies[i].trains.size(); j++)
+            {
+                if(Enemies[i].trains[j].idx == train_idx)
+                {
+                    this->Enemies[i].trains[j].imageTrain = trainImage;
+                    break;
+                }
+            }
+        }
+
+    }
+}
+
 train Player::getTrain(int idx)
 {
     for(int i = 0; i < playerTrains.size(); i++)
@@ -437,4 +476,8 @@ QPair <int, int> Map0::getPoints(int line_idx)
 void Player::setKiller(train Train, bool IsKiller)
 {
     playerTrains[this->playerTrains.indexOf(Train)].killer = IsKiller;
+}
+
+QString Player::getPlayerIdx() {
+    return this->playerData.player_idx;
 }
