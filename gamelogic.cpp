@@ -41,7 +41,7 @@ void GameLogic::Alhoritm()
 
 void GameLogic::trainOneStep(train Train) {
         if(this->layer1.checkForCollision(Train.idx)) {
-            qDebug()<<"COLLISION CHECK IF ENTERED 123145145154151515";
+            //qDebug()<<"COLLISION CHECK IF ENTERED 123145145154151515";
             Train.route.clear();
             Train.postsRoute.clear();
             Train.iter = 1;
@@ -67,6 +67,7 @@ void GameLogic::trainOneStep(train Train) {
         if(this->layer1.checkForCooldown(Train.idx)) {
                 return;
         }
+
         curRoute = Train.route;
         if(!Train.route.isEmpty()) {
             int sourceEdgePoint = curRoute[Train.iter - 1];
@@ -84,7 +85,20 @@ void GameLogic::trainOneStep(train Train) {
                     break;
                 }
             }
+            //Train.line_idx = curEdgeIdx;
             int curLengh = Table[std::min(sourceEdgePoint, destEdgePoint)][std::max(sourceEdgePoint, destEdgePoint)];
+            if(Train.iter == 1 && Train.line_idx != curEdgeIdx) {
+                Train.line_idx = curEdgeIdx;
+                if(sourceEdgePoint < destEdgePoint) {
+                    Train.position = 0;
+                }
+                if(sourceEdgePoint > destEdgePoint) {
+                    Train.position = curLengh;
+                }
+            } else if(Train.line_idx != curEdgeIdx) {
+                Train.line_idx = curEdgeIdx;
+            }
+
             if((sourceEdgePoint < destEdgePoint) && (curEdgeInfo > 0)) {
                 curSpeed = 1;
                 destDiff = 0;
@@ -98,7 +112,6 @@ void GameLogic::trainOneStep(train Train) {
                 curSpeed = 1;
                 destDiff = 0;
             }
-
             Train.speed = curSpeed;
             if(Train.position != (curLengh - destDiff)) {
                 socket->sendMoveMessage(curEdgeIdx,curSpeed,Train.idx);
