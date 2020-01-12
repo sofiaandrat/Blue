@@ -61,3 +61,8 @@ void MainWindowForEnterExistingGame::on_back_clicked()
     askSelect->show();
     this->close();
 }
+
+QJsonObject MainWindowForEnterExistingGame::getLoginData()
+{
+    return *(new QJsonObject);
+}

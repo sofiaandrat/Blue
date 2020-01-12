@@ -49,10 +49,10 @@
 ****************************************************************************/
 
 #include "graphwidget.h"
-#include "edge.h"
-#include "node.h"
-#include "train.h"
-#include "gamelogic.h"
+#include "Model/edge.h"
+#include "Model/node.h"
+#include "Model/train.h"
+#include "Model/gamelogic.h"
 
 #include <math.h>
 

@@ -1,12 +1,12 @@
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
-#include "sockettest.h"
+#include "Model/sockettest.h"
 //#include "graphwidget.h"
-#include "structs.h"
-#include "edge.h"
-#include "train.h"
-#include "node.h"
-#include "dijkstrasalg.h"
+#include "Model/structs.h"
+#include "Model/edge.h"
+#include "Model/train.h"
+#include "Model/node.h"
+#include "Model/dijkstrasalg.h"
 #include <QMainWindow>
 #include <QTimer>
 
@@ -23,7 +23,9 @@ public:
     ~MainWindow();
     game getGame();
     SocketTest* getSocket();
-    //virtual auto getUi();
+    virtual QJsonObject getLoginData() = 0;
+signals:
+    void BackPush();
 
 protected:
     SocketTest *Socket;

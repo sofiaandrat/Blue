@@ -16,6 +16,7 @@ MainWindowChangingPresenter::~MainWindowChangingPresenter()
 void MainWindowChangingPresenter::OpenSinglePlayerGameWindow()
 {
     MainWindow *window = new MainWindowForSinglePlay();
+    delete this;
 }
 
 void MainWindowChangingPresenter::OpenEnterToMultiplayerGameWindow()

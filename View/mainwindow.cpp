@@ -18,7 +18,7 @@ game MainWindow::getGame()
 {
     //this->Socket = new SocketTest(this);
     //this->Socket->Connect();
-    this->Socket->SendMessage(GAMES,{});
+   /* this->Socket->SendMessage(GAMES,{});
     ExistingGames games;
     games.Pars(this->Socket->getterDoc());
     QVector <game> Games = games.getGames();
@@ -26,7 +26,9 @@ game MainWindow::getGame()
     {
         if(Games[i].gameName == this->Game.gameName)
             return Games[i];
-    }
+    }*/
+    game *Game = new game();
+    return *Game;
 }
 SocketTest* MainWindow::getSocket()
 {

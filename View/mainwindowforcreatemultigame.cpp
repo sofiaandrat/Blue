@@ -38,3 +38,8 @@ void MainWindowForCreateMultigame::on_back_clicked()
     askSelect->show();
     this->close();
 }
+
+QJsonObject MainWindowForCreateMultigame::getLoginData()
+{
+    return *(new QJsonObject());
+}

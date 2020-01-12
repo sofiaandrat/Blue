@@ -4,6 +4,8 @@
 //#include <QMainWindow>
 #include "mainwindow.h"
 #include "askselect.h"
+#include "Model/socketservice.h"
+#include "Presenter/singleplayerpresenter.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui {
@@ -17,8 +19,9 @@ class MainWindowForSinglePlay : public MainWindow
 
 public:
     explicit MainWindowForSinglePlay(QMainWindow *parent = nullptr);
-    ~MainWindowForSinglePlay();
+    ~MainWindowForSinglePlay() override;
     QString getLoginText();
+    QJsonObject getLoginData() override;
 private slots:
     void on_pushButton_clicked();
     void on_back_clicked();
@@ -27,6 +30,7 @@ private:
     Ui::MainWindowForSinglePlay *ui;
 signals:
     void StartGame();
+    //void BackPush();
 };
 
 #endif // MAINWINDOWFORSINGLEPLAY_H

@@ -51,7 +51,7 @@
 #define GRAPHWIDGET_H
 
 #include <QGraphicsView>
-#include "mainwindow.h"
+#include "View/mainwindow.h"
 
 class Node;
 

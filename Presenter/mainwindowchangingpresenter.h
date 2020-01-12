@@ -1,11 +1,11 @@
 #ifndef MAINWINDOWCHANGINGPRESENTER_H
 #define MAINWINDOWCHANGINGPRESENTER_H
 
-#include "mainwindow.h"
-#include "askselect.h"
-#include "mainwindowforcreatemultigame.h"
-#include "mainwindowforenterexistinggame.h"
-#include "mainwindowforsingleplay.h"
+#include "View/mainwindow.h"
+#include "View/askselect.h"
+#include "View/mainwindowforcreatemultigame.h"
+#include "View/mainwindowforenterexistinggame.h"
+#include "View/mainwindowforsingleplay.h"
 
 class MainWindowChangingPresenter:public QObject
 {

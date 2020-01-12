@@ -1,7 +1,7 @@
 #ifndef GAMELOGIC_H
 #define GAMELOGIC_H
 
-#include "mainwindow.h"
+#include "View/mainwindow.h"
 #include "edge.h"
 #include "strategy.h"
 //#include <stdlib.h>
@@ -19,6 +19,7 @@ public:
       void Alhoritm();
       void trainOneStep(train Train);
       bool CanTrainGo(train Train);
+      train CalculateTrainPosition(train Enemy);
 
 public slots:
       void trainsOneStep();

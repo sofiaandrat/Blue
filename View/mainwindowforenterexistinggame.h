@@ -3,7 +3,7 @@
 
 #include <QMainWindow>
 #include "mainwindow.h"
-#include "structs.h"
+#include "Model/structs.h"
 #include "askselect.h"
 
 QT_BEGIN_NAMESPACE
@@ -19,6 +19,9 @@ class MainWindowForEnterExistingGame : public MainWindow
 public:
     explicit MainWindowForEnterExistingGame(QWidget *parent = nullptr);
     ~MainWindowForEnterExistingGame();
+    QJsonObject getLoginData() override;
+signals:
+   // void BackPush() override;
 
 private slots:
     void on_refresh_clicked();

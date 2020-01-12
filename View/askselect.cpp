@@ -7,11 +7,12 @@ AskSelect::AskSelect(QWidget *parent) :
 {
     MainWindowChangingPresenter *presenter = new MainWindowChangingPresenter(this);
     ui->setupUi(this);
+    this->show();
 }
 
 AskSelect::~AskSelect()
 {
-    delete ui;
+//    delete ui;
 }
 
 void AskSelect::on_single_clicked()
