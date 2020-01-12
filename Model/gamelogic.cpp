@@ -41,7 +41,6 @@ void GameLogic::Alhoritm()
 
 void GameLogic::trainOneStep(train Train) {
         if(this->layer1.checkForCollision(Train.idx)) {
-            qDebug()<<"COLLISION CHECK IF ENTERED 123145145154151515";
             Train.route.clear();
             Train.postsRoute.clear();
             Train.iter = 1;
@@ -101,23 +100,6 @@ void GameLogic::trainOneStep(train Train) {
 
             if(Train.position != (curLengh - destDiff)) {
                 socket->sendMoveMessage(curEdgeIdx,curSpeed,Train.idx);
-                //socket->sendTurnMessage();
-                //socket->SendMessage(MAP,{{"layer", 1}});
-                //this->layer1.Pars(socket->getterDoc());
-
-                /*prevMap = newMap;
-                newMap = socket->getterDoc();
-                this->layer1 = *new Map1();
-                layer1.Pars(newMap);*/
-
-               /* QVector <train> Trains = layer1.getTrains();
-                QVector <train> NewTrainsInfo;
-                for(int i = 0; i < Trains.size(); i++)
-                {
-                    if(Trains[i].player_idx == player.getPlayerData().player_idx)
-                        NewTrainsInfo.append(Trains[i]);
-                }
-                player.setTrains(NewTrainsInfo);*/
                 if((curLengh - destDiff) == curLengh) {
                     Train.position++;
                     this->player.setTrainPosition(Train);
@@ -195,19 +177,46 @@ void GameLogic::trainsOneStep()
     this->animTimer = new QTimeLine(500);
     this->strategy->Moving(this->layer1, this->player);
     for(int i = 0; i < this->player.getPlayerTrains().size(); i++)
-        trainOneStep(this->player.getPlayerTrains()[i]);
+    {
+        if(CanTrainGo(player.getPlayerTrains()[i]))
+            trainOneStep(this->player.getPlayerTrains()[i]);
+    }
     this->animTimer->start();
-    socket->SendMessage(MAP,{{"layer", 1}});
-    this->layer1.Pars(socket->getterDoc());
     socket->sendTurnMessage();
 
 }
 
-/*bool GameLogic::CanTrainGo(train Train)
+bool GameLogic::CanTrainGo(train Train)
 {
+    Train = CalculateTrainPosition(Train);
+    QPair <int, int> pairOfPoints = layer0.getPoints(Train.line_idx);
     for(int i = 0; i < layer1.getTrains().size(); i++)
     {
-        //Ваня, запили функцию!!!!
+        train enemyTrain = CalculateTrainPosition(layer1.getTrains()[i]);
+        if(((enemyTrain.position == Train.position && enemyTrain.line_idx == Train.line_idx)||(enemyTrain.killer == true)) &&
+            (std::min(pointsOfGraph[pairOfPoints.first], pointsOfGraph[pairOfPoints.second]) != player.getPlayerData().home_idx))
+            return false;
     }
     return true;
-}*/
+}
+
+train GameLogic::CalculateTrainPosition(train Train)
+{
+    QPair <int, int> pairOfPoints = layer0.getPoints(Train.line_idx);
+    int curLength = Table[std::min(pairOfPoints.first, pairOfPoints.second)][std::max(pairOfPoints.first, pairOfPoints.second)];
+    int speedInfo = Table[std::max(pairOfPoints.first, pairOfPoints.second)][std::min(pairOfPoints.first, pairOfPoints.second)];
+    train newTrain = Train;
+    if(Train.position == 0 || Train.position == curLength)
+    {
+        if(std::min(pointsOfGraph[pairOfPoints.first], pointsOfGraph[pairOfPoints.second]) != player.getPlayerData().home_idx)
+            newTrain.killer = true;
+    } else {
+        if(Train.speed == 0)
+        {}
+        else if((speedInfo < 0 && Train.speed < 0) || (speedInfo > 0 && Train.speed > 0))
+            newTrain.position++;
+        else
+            newTrain.position--;
+    }
+    return newTrain;
+}

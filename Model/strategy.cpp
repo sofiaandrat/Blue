@@ -58,7 +58,7 @@ void Strategy::Moving(Map1 &map, Player &player)
             }
             else if(player.getEnemies().size() != 0)
             {
-                void KillEnemy();
+                //void KillEnemy();
             }
        }
     }
@@ -408,7 +408,7 @@ void Strategy::CalculateArmorTrain(Map1 &map, Player &player)
     sum = 0;
     for(int i = 0; i < indexOfFirstArmorTrain; i++)
         sum += player.getPlayerTrains()[count].goods_capacity;
-    while((map.getHome(player.getPlayerData().player_idx).population * 2 * lengthOfPathToMarket + (lengthOfPathToMarket / 25) * lengthOfPathToMarket) > sum)
+    while((map.getHome(player.getPlayerData().player_idx).population * 2 * lengthOfPathToMarket + (lengthOfPathToMarket / 25) * lengthOfPathToMarket) * 1.5 > sum)
     {
         indexOfFirstArmorTrain++;
         sum += player.getPlayerTrains()[indexOfFirstArmorTrain - 1].goods_capacity;

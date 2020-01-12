@@ -17,6 +17,22 @@ DEFINES += QT_DEPRECATED_WARNINGS
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 SOURCES += \
+    Model/dijkstrasalg.cpp \
+    Model/edge.cpp \
+    Model/gamelogic.cpp \
+    Model/node.cpp \
+    Model/socketservice.cpp \
+    Model/sockettest.cpp \
+    Model/strategy.cpp \
+    Model/structs.cpp \
+    Model/train.cpp \
+    Presenter/mainwindowchangingpresenter.cpp \
+    Presenter/singleplayerpresenter.cpp \
+    View/askselect.cpp \
+    View/mainwindow.cpp \
+    View/mainwindowforcreatemultigame.cpp \
+    View/mainwindowforenterexistinggame.cpp \
+    View/mainwindowforsingleplay.cpp \
     askselect.cpp \
     dijkstrasalg.cpp \
     edge.cpp \
@@ -29,6 +45,7 @@ SOURCES += \
     mainwindowforenterexistinggame.cpp \
     mainwindowforsingleplay.cpp \
     node.cpp \
+    singleplayerpresenter.cpp \
     socketservice.cpp \
     sockettest.cpp \
     statshandler.cpp \
@@ -39,17 +56,37 @@ SOURCES += \
 
 HEADERS += \
     Collections.h \
+    Model/Collections.h \
+    Model/dijkstrasalg.h \
+    Model/edge.h \
+    Model/gamelogic.h \
+    Model/isocketservice.h \
+    Model/node.h \
+    Model/socketservice.h \
+    Model/sockettest.h \
+    Model/strategy.h \
+    Model/structs.h \
+    Model/train.h \
+    Presenter/mainwindowchangingpresenter.h \
+    Presenter/singleplayerpresenter.h \
+    View/askselect.h \
+    View/mainwindow.h \
+    View/mainwindowforcreatemultigame.h \
+    View/mainwindowforenterexistinggame.h \
+    View/mainwindowforsingleplay.h \
     askselect.h \
     dijkstrasalg.h \
     edge.h \
     gamelogic.h \
     graphwidget.h \
+    isocketservice.h \
     mainwindow.h \
     mainwindowchangingpresenter.h \
     mainwindowforcreatemultigame.h \
     mainwindowforenterexistinggame.h \
     mainwindowforsingleplay.h \
     node.h \
+    singleplayerpresenter.h \
     socketservice.h \
     sockettest.h \
     statshandler.h \
@@ -59,6 +96,10 @@ HEADERS += \
     train.h
 
 FORMS += \
+    View/askselect.ui \
+    View/mainwindowforcreatemultigame.ui \
+    View/mainwindowforenterexistinggame.ui \
+    View/mainwindowforsingleplay.ui \
     askselect.ui \
     mainwindowforcreatemultigame.ui \
     mainwindowforenterexistinggame.ui \
