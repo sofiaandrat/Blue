@@ -19,6 +19,8 @@ public:
       void Alhoritm();
       void trainOneStep(train Train);
       bool CanTrainGo(train Train);
+      void animEnemyTrains();
+      void animPlayerTrains();
 
 public slots:
       void trainsOneStep();

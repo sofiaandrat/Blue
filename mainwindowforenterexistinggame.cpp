@@ -45,14 +45,14 @@ void MainWindowForEnterExistingGame::on_refresh_clicked()
 
 void MainWindowForEnterExistingGame::on_login_clicked()
 {
-    QString loginText = ui->login->text();
+    QString loginText = ui->login_2->text();
     QLabel *label = new QLabel(this);
     label->setFrameStyle(QFrame::Panel | QFrame::Sunken);
     label->setAlignment(Qt::AlignBottom | Qt::AlignRight);
     label->setText("Something");
     label->setGeometry(QRect(10,10,30,80));
     Game.gameName = ui->gameList->currentText();
-    new GraphWidget(nullptr, *(this->Socket), this, ui->login->text(), ui->gameList->currentText());
+    new GraphWidget(nullptr, *(this->Socket), this, ui->login_2->text(), ui->gameList->currentText());
 }
 
 void MainWindowForEnterExistingGame::on_back_clicked()
