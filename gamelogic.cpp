@@ -41,7 +41,7 @@ void GameLogic::Alhoritm()
 
 void GameLogic::trainOneStep(train Train) {
         if(this->layer1.checkForCollision(Train.idx)) {
-            qDebug()<<"COLLISION CHECK IF ENTERED 123145145154151515";
+            //qDebug()<<"COLLISION CHECK IF ENTERED 123145145154151515";
             Train.route.clear();
             Train.postsRoute.clear();
             Train.iter = 1;
