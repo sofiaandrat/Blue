@@ -20,5 +20,4 @@ public slots:
     void LoginPush();
     void BackPush();
 };
-
 #endif // SINGLEPLAYERPRESENTER_H

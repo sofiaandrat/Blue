@@ -5,9 +5,11 @@
 #include "mainwindow.h"
 #include "askselect.h"
 
+QT_BEGIN_NAMESPACE
 namespace Ui {
 class MainWindowForCreateMultigame;
 }
+QT_END_NAMESPACE
 
 class MainWindowForCreateMultigame : public MainWindow
 {

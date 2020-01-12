@@ -2,12 +2,7 @@
 
 SocketService::SocketService()
 {
-    socket = new SocketTest();
-}
-
-SocketService::~SocketService()
-{
-
+    this->socket = new SocketTest();
 }
 
 void SocketService::OpenConnection()
@@ -20,7 +15,8 @@ QVector <game> SocketService::GetGames()
     socket->SendMessage(GAMES,{});
     ExistingGames games;
     games.Pars(socket->getterDoc());
-    QVector <game> gameList = games.getGames();
+    QVector <game> gameList;
+    gameList = games.getGames();
     return gameList;
 }
 

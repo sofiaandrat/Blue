@@ -2,6 +2,7 @@
 #define ISOCKETSERVICE_H
 
 #include "Model/structs.h"
+#include "Model/sockettest.h"
 
 class ISocketService
 {
