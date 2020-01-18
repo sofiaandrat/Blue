@@ -13,7 +13,7 @@ class GameLogic : public QObject
 {
     Q_OBJECT
 public:
-      GameLogic(ISocketService *service, QVector<Edge *> &edgeVec,Train *imageTrain,Map0 &layer0, Map1 &layer1, Player &player);
+      GameLogic(ISocketService *service, QVector<Edge *> &edgeVec, Map0 &layer0, Map1 &layer1, Player &player);
       //void gameLoop(DijkstrasAlg *alg);
       ~GameLogic(){}
       void setTrainOnRoute(SocketTest *socket,train playerTrain,QVector<int> &pathToMarket,QVector<QVector<int>> &Table);
@@ -31,7 +31,6 @@ private:
 
       ISocketService *service;
       QVector<Edge *> edgeVec;
-      Train *imageTrain;
       train playerTrain;
 
       QVector <QVector <int>> Table;

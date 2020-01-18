@@ -43,7 +43,7 @@ void Starter::Check()
         {
             for(int i = 0; i < this->player.getEnemiesTown().size(); i++)
             {
-                Update(player.getEnemiesTown()[i]);
+                emit Update(player.getEnemiesTown()[i]);
             }
         }
         this->StartGameLogic();
@@ -53,6 +53,6 @@ void Starter::Check()
 
 void Starter::StartGameLogic()
 {
-    GameLogic *alg = new GameLogic(service,this->edgeVec,player.getPlayerTrains()[0].imageTrain, this->layer0,this->layer1,this->player);
+    GameLogic *alg = new GameLogic(service,this->edgeVec, this->layer0,this->layer1,this->player);
     alg->Alhoritm();
 }

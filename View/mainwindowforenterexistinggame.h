@@ -5,6 +5,7 @@
 #include "mainwindow.h"
 #include "Model/structs.h"
 #include "askselect.h"
+#include "Presenter/enterexistinggamepresenter.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui {
@@ -18,22 +19,28 @@ class MainWindowForEnterExistingGame : public MainWindow
 
 public:
     explicit MainWindowForEnterExistingGame(QWidget *parent = nullptr);
-    ~MainWindowForEnterExistingGame();
+    ~MainWindowForEnterExistingGame() override;
     QJsonObject getLoginData() override;
     game * getGame() override;
-signals:
-   // void BackPush() override;
+    QString getGameName();
 
 private slots:
     void on_refresh_clicked();
 
     void on_login_clicked();
-
     void on_back_clicked();
+
+public slots:
+    void ShowGames(ExistingGames games);
 
 private:
     Ui::MainWindowForEnterExistingGame *ui;
     QVector <game> gameList;
+    game Game;
+signals:
+    void Refresh();
+
+
 };
 
 #endif // MAINWINDOWFORENTEREXISTINGGAME_H

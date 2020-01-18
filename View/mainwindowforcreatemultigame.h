@@ -4,6 +4,7 @@
 #include <QMainWindow>
 #include "mainwindow.h"
 #include "askselect.h"
+#include "Presenter/createmultiplayerpresenter.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui {
@@ -20,6 +21,9 @@ public:
     ~MainWindowForCreateMultigame() override;
     QJsonObject getLoginData() override;
     game * getGame() override;
+    QString getGameName();
+    int getNumOfPlayer();
+    int getnumOfTurns();
 
 private slots:
     void on_loginButton_clicked();
@@ -27,6 +31,7 @@ private slots:
 
 private:
     Ui::MainWindowForCreateMultigame *ui;
+    game Game;
 
 };
 

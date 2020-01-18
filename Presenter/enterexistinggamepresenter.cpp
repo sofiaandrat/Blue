@@ -1,19 +1,18 @@
-#include "singleplayerpresenter.h"
+#include "enterexistinggamepresenter.h"
 
-SinglePlayerPresenter::SinglePlayerPresenter(MainWindow *parent, ISocketService *service)
+EnterExistingGamePresenter::EnterExistingGamePresenter(MainWindow *parent, ISocketService *service)
 {
     this->parent = parent;
     this->service = service;
     connect(&*(this->parent), SIGNAL(StartGame()), this, SLOT(LoginPush()));
     connect(&*(this->parent), SIGNAL(BackPush()), this, SLOT(BackPush()));
+    connect(&*(this->parent), SIGNAL(Refresh()), this, SLOT(AskExistingGames()));
 }
-
-SinglePlayerPresenter::~SinglePlayerPresenter()
+EnterExistingGamePresenter::~EnterExistingGamePresenter()
 {}
 
-void SinglePlayerPresenter::LoginPush()
+void EnterExistingGamePresenter::LoginPush()
 {
-    service->OpenConnection();
     service->SendMessage(LOGIN, parent->getLoginData());
     player.Pars(service->getDoc());
 
@@ -24,19 +23,29 @@ void SinglePlayerPresenter::LoginPush()
     Map1 layer1;
     layer1.Pars(service->getDoc());
     player.ParsEnemies(layer1);
-    GraphWidget *widget = new GraphWidget(nullptr, parent, player, layer0, layer1);
+    widget = new GraphWidget(nullptr, parent, player, layer0, layer1);
     connect(&*(widget), SIGNAL(RenderFinished(QVector<Edge *>, Player)), &*(this), SLOT(StartStarter(QVector <Edge *>, Player)));
     widget->Render();
 }
 
-void SinglePlayerPresenter::BackPush()
+void EnterExistingGamePresenter::BackPush()
 {
     AskSelect *window = new AskSelect();
 }
 
-void SinglePlayerPresenter::StartStarter(QVector<Edge *> edgeVec, Player player)
+void EnterExistingGamePresenter::StartStarter(QVector<Edge *> edgeVec, Player player)
 {
     this->player = player;
     starter = new Starter(service, parent->getGame(), player, layer0, edgeVec);
+    connect(&*(starter),SIGNAL(Update(town )),&*(widget),SLOT(Update(town )));
     starter->CheckAndStart();
+}
+
+void EnterExistingGamePresenter::AskExistingGames()
+{
+    service->OpenConnection();
+    this->service->SendMessage(GAMES,{});
+    ExistingGames games;
+    games.Pars(this->service->getDoc());
+    emit ShowGames(games);
 }
