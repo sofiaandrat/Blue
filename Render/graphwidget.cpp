@@ -66,7 +66,7 @@
 //! [0]
 /*GraphWidget::GraphWidget(QWidget *parent,SocketTest &socket,MainWindow *window,QString loginText, QString gameName, int numberOfPlayers, int numberOfTurns)
     : QGraphicsView(parent), timerId(0), timerId_1(1)*/
-GraphWidget::GraphWidget(QWidget *parent, MainWindow *window, Player player, Map0 layer0, Map1 layer1):QGraphicsView(parent),timerId_1(1)
+GraphWidget::GraphWidget(QWidget *parent, MainWindow *window, Player &player, Map0 layer0, Map1 layer1):QGraphicsView(parent),timerId_1(1)
 {
     this->scene = new QGraphicsScene(this);
     this->edgeVec = edgeVec;
@@ -209,7 +209,7 @@ void GraphWidget::Render()
     for(int i = 0; i<this->player.getPlayerTrains().size(); i++) {
         this->player.setTrainImage(new Train(this,homeTown->pos(),scene->addPixmap(train.scaled(QSize(34,51),Qt::IgnoreAspectRatio,Qt::SmoothTransformation))),i);
     }
-    emit RenderFinished(edgeVec);
+    emit RenderFinished(edgeVec, player);
 }
 //! [2]
 void GraphWidget::itemMoved()

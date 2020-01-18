@@ -1,4 +1,4 @@
-#include<statslabel.h>
+#include "statslabel.h"
 
 StatsLabel::StatsLabel(GraphWidget *parent, QString string) {
     QFont *font = new QFont("Helvetica", 20, QFont::Bold);

@@ -5,9 +5,7 @@ MainWindowForCreateMultigame::MainWindowForCreateMultigame(QWidget *parent) :
     MainWindow(parent),
     ui(new Ui::MainWindowForCreateMultigame)
 {
-    this->Socket = new SocketTest(this);
-    this->Socket->Connect();
-    this->Socket->SendMessage(GAMES,{});
+    CreateMultiplayerPresenter *presenter = new CreateMultiplayerPresenter(this, new SocketService);
     ui->setupUi(this);
     this->show();
 }
@@ -19,15 +17,7 @@ MainWindowForCreateMultigame::~MainWindowForCreateMultigame()
 
 void MainWindowForCreateMultigame::on_loginButton_clicked()
 {
-    QString loginText = ui->login->text();
-    QLabel *label = new QLabel(this);
-    label->setFrameStyle(QFrame::Panel | QFrame::Sunken);
-    label->setAlignment(Qt::AlignBottom | Qt::AlignRight);
-    label->setText("Something");
-    label->setGeometry(QRect(10,10,30,80));
-    Game->gameName = ui->gameName->text();
-    //new GraphWidget(nullptr, *(this->Socket), this, ui->login->text(), ui->gameName->text(), ui->numberOfPlayers->text().toInt(),
-                    //ui->numberOfTurns->text().toInt());
+    emit StartGame();
 }
 
 
@@ -40,11 +30,29 @@ void MainWindowForCreateMultigame::on_back_clicked()
 
 QJsonObject MainWindowForCreateMultigame::getLoginData()
 {
-    return *(new QJsonObject());
+    return {{"name", this->ui->login->text()},{"game", getGameName()},{"nam_turns", getnumOfTurns()}, {"num_players", getNumOfPlayer()}};
 }
 
 game* MainWindowForCreateMultigame::getGame()
 {
-    game* Game;
-    return Game;
+    Game.gameName = getGameName();
+    Game.gameState = INIT;
+    Game.numberOfTurns = getnumOfTurns();
+    Game.numberOfPlayers = getNumOfPlayer();
+    return &Game;
+}
+
+QString MainWindowForCreateMultigame::getGameName()
+{
+    return this->ui->gameName->text();
+}
+
+int MainWindowForCreateMultigame::getnumOfTurns()
+{
+    return this->ui->numberOfTurns->text().toInt();
+}
+
+int MainWindowForCreateMultigame::getNumOfPlayer()
+{
+    return this->ui->numberOfPlayers->text().toInt();
 }

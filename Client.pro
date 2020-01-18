@@ -27,6 +27,8 @@ SOURCES += \
     Model/strategy.cpp \
     Model/structs.cpp \
     Model/train.cpp \
+    Presenter/createmultiplayerpresenter.cpp \
+    Presenter/enterexistinggamepresenter.cpp \
     Presenter/mainwindowchangingpresenter.cpp \
     Presenter/singleplayerpresenter.cpp \
     View/askselect.cpp \
@@ -54,6 +56,8 @@ HEADERS += \
     Model/strategy.h \
     Model/structs.h \
     Model/train.h \
+    Presenter/createmultiplayerpresenter.h \
+    Presenter/enterexistinggamepresenter.h \
     Presenter/mainwindowchangingpresenter.h \
     Presenter/singleplayerpresenter.h \
     View/askselect.h \

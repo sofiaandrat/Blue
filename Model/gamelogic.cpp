@@ -1,7 +1,7 @@
 #include "gamelogic.h"
 #include <QTime>
 #include "strategy.h"
-GameLogic::GameLogic(ISocketService *service, QVector<Edge *> &edgeVec,Train *imageTrain,Map0 &Layer0, Map1 &Layer1,Player &player)
+GameLogic::GameLogic(ISocketService *service, QVector<Edge *> &edgeVec,Map0 &Layer0, Map1 &Layer1,Player &player)
 {
     this->layer0 = Layer0;
     this->layer1 = Layer1;
@@ -9,7 +9,6 @@ GameLogic::GameLogic(ISocketService *service, QVector<Edge *> &edgeVec,Train *im
 
     this->service = service;
     this->edgeVec = edgeVec;
-    this->imageTrain = imageTrain;
     this->pointsOfGraph = layer0.getterPointsOfgraph();
     this->Table = layer0.getterTable();
     //this->playerTrain = player.getPlayerTrains()[0];
@@ -185,7 +184,7 @@ void GameLogic::trainsOneStep()
 
 }
 
-bool GameLogic::CanTrainGo(train Train)
+/*bool GameLogic::CanTrainGo(train Train)
 {
     Train = CalculateTrainPosition(Train);
     QPair <int, int> pairOfPoints = layer0.getPoints(Train.line_idx);
@@ -218,4 +217,4 @@ train GameLogic::CalculateTrainPosition(train Train)
             newTrain.position--;
     }
     return newTrain;
-}
+}*/
