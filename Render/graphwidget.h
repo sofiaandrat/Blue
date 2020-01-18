@@ -61,19 +61,18 @@ class GraphWidget : public QGraphicsView
     Q_OBJECT
 
 public:
-    GraphWidget(QWidget *parent,SocketTest &socket,MainWindow *window,QString loginText, QString gameName = "", int numberOfPlayers = 0, int numberOfTurns = 0);
-
+    //GraphWidget(QWidget *parent,SocketTest &socket,MainWindow *window,QString loginText, QString gameName = "", int numberOfPlayers = 0, int numberOfTurns = 0);
+    GraphWidget(QWidget *parent, MainWindow * window, Player player, Map0 layer0, Map1 layer1);
     void itemMoved();
     void setParentWindow(MainWindow *window);
     MainWindow* getParentWindow() const;
     QGraphicsScene* getScene();
+    void Render();
 
 public slots:
     void shuffle();
     void zoomIn();
     void zoomOut();
-    void startGameLogic();
-    void checkGameState();
     void Update(town Town);
 
 protected:
@@ -87,7 +86,7 @@ protected:
     void scaleView(qreal scaleFactor);
 
 private:
-    SocketTest *socket;
+   // SocketTest *socket;
     QVector<Edge *> edgeVec;
     QVector<Node *> nodeVec;
     Train *playerTrain;
@@ -103,6 +102,8 @@ private:
     int timerId_1;
     Node *centerNode;
     MainWindow *parent;
+signals:
+    void RenderFinished(QVector<Edge *> edgeVec);
 };
 //! [0]
 

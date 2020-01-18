@@ -1,6 +1,5 @@
 #include "mainwindowforenterexistinggame.h"
 #include "ui_mainwindowforenterexistinggame.h"
-#include "graphwidget.h"
 
 MainWindowForEnterExistingGame::MainWindowForEnterExistingGame(QWidget *parent) :
     MainWindow(parent),
@@ -51,8 +50,8 @@ void MainWindowForEnterExistingGame::on_login_clicked()
     label->setAlignment(Qt::AlignBottom | Qt::AlignRight);
     label->setText("Something");
     label->setGeometry(QRect(10,10,30,80));
-    Game.gameName = ui->gameList->currentText();
-    new GraphWidget(nullptr, *(this->Socket), this, ui->login->text(), ui->gameList->currentText());
+    Game->gameName = ui->gameList->currentText();
+   // new GraphWidget(nullptr, *(this->Socket), this, ui->login->text(), ui->gameList->currentText());
 }
 
 void MainWindowForEnterExistingGame::on_back_clicked()
@@ -65,4 +64,10 @@ void MainWindowForEnterExistingGame::on_back_clicked()
 QJsonObject MainWindowForEnterExistingGame::getLoginData()
 {
     return *(new QJsonObject);
+}
+
+game* MainWindowForEnterExistingGame::getGame()
+{
+    game* Game;
+    return Game;
 }

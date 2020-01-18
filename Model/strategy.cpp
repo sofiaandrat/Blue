@@ -1,12 +1,12 @@
 #include "strategy.h"
 #include "dijkstrasalg.h"
 #include "dijkstrasalg.cpp"
-Strategy::Strategy(int townIdx,QVector <QVector <int> > &Table, QVector <int> pointsOfGraph, QVector<post> posts, SocketTest *socket, Map0 &layer0):alg(townIdx, Table, pointsOfGraph, posts)
+Strategy::Strategy(int townIdx,QVector <QVector <int> > &Table, QVector <int> pointsOfGraph, QVector<post> posts, Map0 &layer0, ISocketService * service):alg(townIdx, Table, pointsOfGraph, posts)
 {
     this->pointsOfGraph = pointsOfGraph;
     this->shortestPaths = alg.getPaths();
-    this->socket = socket;
     this->layer0 = layer0;
+    this->service = service;
 }
 
 void Strategy::Moving(Map1 &map, Player &player)
@@ -353,7 +353,7 @@ void Strategy::Upgrade(Map1 &map, Player &player)
             }
         }
         upgradeTrains.push_back(player.getPlayerTrains()[0]);
-        socket->sendUpgradeMessage(true, upgradeTrains, player.getPlayerData().home_post_idx);
+        service->SendUpgradeMessage(true, upgradeTrains, player.getPlayerData().home_post_idx);
     } else if (player.getPlayerTrains()[player.getPlayerTrains().size() - 1].price <= currentArmor && player.getPlayerTrains()[player.getPlayerTrains().size() - 1].price != 0)
     {
         int start = 0;
@@ -386,7 +386,7 @@ void Strategy::Upgrade(Map1 &map, Player &player)
                     break;
             }
         }
-        socket->sendUpgradeMessage(false, upgradeTrains, player.getPlayerData().home_idx);
+        service->SendUpgradeMessage(false, upgradeTrains, player.getPlayerData().home_idx);
     }
 }
 

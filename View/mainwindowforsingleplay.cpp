@@ -1,16 +1,12 @@
 #include "View/mainwindowforsingleplay.h"
 #include "ui_mainwindowforsingleplay.h"
-#include "graphwidget.h"
 
 MainWindowForSinglePlay::MainWindowForSinglePlay(QMainWindow *parent) :
     MainWindow(parent),
     ui(new Ui::MainWindowForSinglePlay)
 {
-//    this->Socket = new SocketTest(this);
-//    this->Socket->Connect();
-//    this->Socket->SendMessage(GAMES,{});
-    SinglePlayerPresenter *presenter = new SinglePlayerPresenter(this, new SocketService());
     ui->setupUi(this);
+    SinglePlayerPresenter *presenter = new SinglePlayerPresenter(this, new SocketService());
     this->show();
 }
 
@@ -21,16 +17,13 @@ MainWindowForSinglePlay::~MainWindowForSinglePlay()
 
 void MainWindowForSinglePlay::on_pushButton_clicked()
 {
-
-    /*QString loginText = this->getLoginText();
-    Game.gameName = "Game of " + this->getLoginText();
-    new GraphWidget(nullptr, *(this->getSocket()), this, loginText);*/
+    loginText = ui->login->text();
     emit StartGame();
 }
 
 QString MainWindowForSinglePlay::getLoginText()
 {
-    return "Game of " + ui->login->text();
+    return loginText;
 }
 
 void MainWindowForSinglePlay::on_back_clicked()
@@ -41,6 +34,14 @@ void MainWindowForSinglePlay::on_back_clicked()
 
 QJsonObject MainWindowForSinglePlay::getLoginData()
 {
-    QString loginText = getLoginText();
     return {{"name", loginText}};
+}
+
+game* MainWindowForSinglePlay::getGame()
+{
+    Game.gameName = "Game of " + loginText;
+    Game.gameState = INIT;
+    Game.numberOfTurns = -1;
+    Game.numberOfPlayers = 1;
+    return &Game;
 }

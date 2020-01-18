@@ -21,15 +21,16 @@ class MainWindow : public QMainWindow
 public:
     MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
-    game getGame();
+    virtual game* getGame() = 0;
     SocketTest* getSocket();
     virtual QJsonObject getLoginData() = 0;
 signals:
     void BackPush();
+    void StartGame();
 
 protected:
     SocketTest *Socket;
-    game Game;
+    game *Game;
     //Ui::MainWindow *ui;
 };
 #endif // MAINWINDOW_H

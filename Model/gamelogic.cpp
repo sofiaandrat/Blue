@@ -1,13 +1,13 @@
 #include "gamelogic.h"
 #include <QTime>
 #include "strategy.h"
-GameLogic::GameLogic(SocketTest *socket, QVector<Edge *> &edgeVec,Train *imageTrain,Map0 &Layer0, Map1 &Layer1,Player &player)
+GameLogic::GameLogic(ISocketService *service, QVector<Edge *> &edgeVec,Train *imageTrain,Map0 &Layer0, Map1 &Layer1,Player &player)
 {
     this->layer0 = Layer0;
     this->layer1 = Layer1;
     this->player = player;
 
-    this->socket = socket;
+    this->service = service;
     this->edgeVec = edgeVec;
     this->imageTrain = imageTrain;
     this->pointsOfGraph = layer0.getterPointsOfgraph();
@@ -33,9 +33,9 @@ void GameLogic::Alhoritm()
     }
     int realTownIdx = this->player.getPlayerData().home_idx;
     int townIdx = pointsOfGraph.indexOf(realTownIdx);
-    this->strategy = new Strategy(townIdx,Table_sym, pointsOfGraph, layer1.getterPosts(), socket, layer0);
+    this->strategy = new Strategy(townIdx,Table_sym, pointsOfGraph, layer1.getterPosts(), layer0, service);
     trainsOneStep();
-    connect(&*(this->socket),SIGNAL(TurnFinished()),this,SLOT(trainsOneStep()));
+    connect(&*(this->service),SIGNAL(Turn()),this,SLOT(trainsOneStep()));
 
 }
 
@@ -99,7 +99,7 @@ void GameLogic::trainOneStep(train Train) {
             }
 
             if(Train.position != (curLengh - destDiff)) {
-                socket->sendMoveMessage(curEdgeIdx,curSpeed,Train.idx);
+                service->SendMoveMessage(curEdgeIdx,curSpeed,Train.idx);
                 if((curLengh - destDiff) == curLengh) {
                     Train.position++;
                     this->player.setTrainPosition(Train);
@@ -171,18 +171,17 @@ void GameLogic::trainOneStep(train Train) {
 void GameLogic::trainsOneStep()
 {
     //this->animTimer = nullptr;
-    socket->SendMessage(MAP,{{"layer",1}});
-    this->layer1.Pars(socket->getterDoc());
+    service->SendMessage(MAP,{{"layer",1}});
+    this->layer1.Pars(service->getDoc());
 
     this->animTimer = new QTimeLine(500);
     this->strategy->Moving(this->layer1, this->player);
     for(int i = 0; i < this->player.getPlayerTrains().size(); i++)
     {
-        if(CanTrainGo(player.getPlayerTrains()[i]))
-            trainOneStep(this->player.getPlayerTrains()[i]);
+        trainOneStep(this->player.getPlayerTrains()[i]);
     }
     this->animTimer->start();
-    socket->sendTurnMessage();
+    service->SendTurnMessage();
 
 }
 

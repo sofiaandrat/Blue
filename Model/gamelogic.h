@@ -4,6 +4,7 @@
 #include "View/mainwindow.h"
 #include "edge.h"
 #include "strategy.h"
+#include "isocketservice.h"
 //#include <stdlib.h>
 #include <QObject>
 #include <QTimeLine>
@@ -12,7 +13,7 @@ class GameLogic : public QObject
 {
     Q_OBJECT
 public:
-      GameLogic(SocketTest *socket, QVector<Edge *> &edgeVec,Train *imageTrain,Map0 &layer0, Map1 &layer1, Player &player);
+      GameLogic(ISocketService *service, QVector<Edge *> &edgeVec,Train *imageTrain,Map0 &layer0, Map1 &layer1, Player &player);
       //void gameLoop(DijkstrasAlg *alg);
       ~GameLogic(){}
       void setTrainOnRoute(SocketTest *socket,train playerTrain,QVector<int> &pathToMarket,QVector<QVector<int>> &Table);
@@ -28,7 +29,7 @@ private:
       Map1 layer1;
       Player player;
 
-      SocketTest *socket;
+      ISocketService *service;
       QVector<Edge *> edgeVec;
       Train *imageTrain;
       train playerTrain;

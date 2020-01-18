@@ -22,15 +22,16 @@ public:
     ~MainWindowForSinglePlay() override;
     QString getLoginText();
     QJsonObject getLoginData() override;
+    game * getGame() override;
+
 private slots:
     void on_pushButton_clicked();
     void on_back_clicked();
 
 private:
     Ui::MainWindowForSinglePlay *ui;
-signals:
-    void StartGame();
-    //void BackPush();
+    game Game;
+    QString loginText;
 };
 
 #endif // MAINWINDOWFORSINGLEPLAY_H

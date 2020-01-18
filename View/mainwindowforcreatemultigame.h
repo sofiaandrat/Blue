@@ -19,12 +19,10 @@ public:
     explicit MainWindowForCreateMultigame(QWidget *parent = nullptr);
     ~MainWindowForCreateMultigame() override;
     QJsonObject getLoginData() override;
-signals:
-   // void BackPush() override;
+    game * getGame() override;
 
 private slots:
     void on_loginButton_clicked();
-
     void on_back_clicked();
 
 private:

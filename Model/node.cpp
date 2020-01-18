@@ -50,7 +50,7 @@
 
 #include "edge.h"
 #include "node.h"
-#include "graphwidget.h"
+#include "Render/graphwidget.h"
 
 //! [0]
 Node::Node(GraphWidget *graphWidget,int idx,int node_type,QGraphicsPixmapItem *image)

@@ -1,6 +1,5 @@
 #include "mainwindowforcreatemultigame.h"
 #include "ui_mainwindowforcreatemultigame.h"
-#include "graphwidget.h"
 
 MainWindowForCreateMultigame::MainWindowForCreateMultigame(QWidget *parent) :
     MainWindow(parent),
@@ -26,9 +25,9 @@ void MainWindowForCreateMultigame::on_loginButton_clicked()
     label->setAlignment(Qt::AlignBottom | Qt::AlignRight);
     label->setText("Something");
     label->setGeometry(QRect(10,10,30,80));
-    Game.gameName = ui->gameName->text();
-    new GraphWidget(nullptr, *(this->Socket), this, ui->login->text(), ui->gameName->text(), ui->numberOfPlayers->text().toInt(),
-                    ui->numberOfTurns->text().toInt());
+    Game->gameName = ui->gameName->text();
+    //new GraphWidget(nullptr, *(this->Socket), this, ui->login->text(), ui->gameName->text(), ui->numberOfPlayers->text().toInt(),
+                    //ui->numberOfTurns->text().toInt());
 }
 
 
@@ -42,4 +41,10 @@ void MainWindowForCreateMultigame::on_back_clicked()
 QJsonObject MainWindowForCreateMultigame::getLoginData()
 {
     return *(new QJsonObject());
+}
+
+game* MainWindowForCreateMultigame::getGame()
+{
+    game* Game;
+    return Game;
 }

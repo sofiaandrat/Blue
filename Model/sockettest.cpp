@@ -3,16 +3,15 @@
 #include <QTimer>
 
 SocketTest::SocketTest(QObject *parent) : QObject(parent)
-{}
+{
+}
 
 void SocketTest::Connect()
 {
     socket = new QTcpSocket(this);
     connect(socket,SIGNAL(readyRead()), this, SLOT(readyRead()));
     connect(socket, SIGNAL(disconnected()), this, SLOT(disconnect()));
-  //  qDebug() << socket->socketOption(QAbstractSocket::KeepAliveOption);
     socket->setSocketOption(QAbstractSocket::LowDelayOption, 1);
-   // qDebug() << socket->socketOption(QAbstractSocket::KeepAliveOption);
     socket->connectToHost("wgforge-srv.wargaming.net", 443);
     //TryConnect();
     if(socket->waitForConnected(10000))

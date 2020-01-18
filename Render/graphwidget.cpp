@@ -64,10 +64,22 @@
 #include <QThread>
 
 //! [0]
-GraphWidget::GraphWidget(QWidget *parent,SocketTest &socket,MainWindow *window,QString loginText, QString gameName, int numberOfPlayers, int numberOfTurns)
-    : QGraphicsView(parent), timerId(0), timerId_1(1)
+/*GraphWidget::GraphWidget(QWidget *parent,SocketTest &socket,MainWindow *window,QString loginText, QString gameName, int numberOfPlayers, int numberOfTurns)
+    : QGraphicsView(parent), timerId(0), timerId_1(1)*/
+GraphWidget::GraphWidget(QWidget *parent, MainWindow *window, Player player, Map0 layer0, Map1 layer1):QGraphicsView(parent),timerId_1(1)
 {
     this->scene = new QGraphicsScene(this);
+    this->edgeVec = edgeVec;
+
+    this->layer0 = layer0;
+    this->layer1 = layer1;
+    this->player = player;
+    this->parent = window;
+}
+//! [1]
+
+void GraphWidget::Render()
+{
     scene->setItemIndexMethod(QGraphicsScene::NoIndex);
     scene->setSceneRect(-2000, -2000, 4000, 4000);
     setScene(scene);
@@ -77,11 +89,9 @@ GraphWidget::GraphWidget(QWidget *parent,SocketTest &socket,MainWindow *window,Q
     setRenderHint(QPainter::Antialiasing);
     setTransformationAnchor(AnchorUnderMouse);
     scale(qreal(0.6), qreal(0.6));
-    //setMinimumSize(400, 400);
     setMinimumSize(800, 600);
     setWindowTitle(tr("Train Simulator 2020"));
 
-//! [0]
 
     QPixmap storage;
     QPixmap town;
@@ -91,34 +101,14 @@ GraphWidget::GraphWidget(QWidget *parent,SocketTest &socket,MainWindow *window,Q
     QPixmap enemyTown;
     QPixmap ghostTown;
 
-    storage.load(":/resources/storage_1.png");
-    town.load(":/resources/town.png");
-    market.load(":/resources/market.png");
-    train.load(":/resources/train.png");
-    enemyTrain.load(":/resources/train_enemy.png");
-    enemyTown.load(":/resources/town_enemy.png");
-    ghostTown.load(":/resources/town_ghost.png");
+    storage.load(":/resources/Pictures/storage_1.png");
+    town.load(":/resources/Pictures/town.png");
+    market.load(":/resources/Pictures/market.png");
+    train.load(":/resources/Pictures/train.png");
+    enemyTrain.load(":/resources/Pictures/train_enemy.png");
+    enemyTown.load(":/resources/Pictures/town_enemy.png");
+    ghostTown.load(":/resources/Pictures/town_ghost.png");
 
-//! Get initial info from server
-    if(gameName == "")
-        socket.SendMessage(LOGIN,{{"name", loginText}});
-    else if(numberOfPlayers == 0)
-        socket.SendMessage(LOGIN,{{"name", loginText},{"game", gameName}});
-    else
-        socket.SendMessage(LOGIN,{{"name", loginText}, {"game", gameName}, {"num_turns", numberOfTurns}, {"num_players", numberOfPlayers}});
-    Player player;
-    player.Pars(socket.getterDoc());
-
-    socket.SendMessage(MAP,{{"layer", 0}});
-    Map0 layer0;
-    layer0.Pars(socket.getterDoc());
-
-    socket.SendMessage(MAP,{{"layer", 1}});
-    Map1 layer1;
-    layer1.Pars(socket.getterDoc());
-    player.ParsEnemies(layer1);
-
-//! [1]
     Node* homeTown;
 
     QVector<int> pointsOfGraph = layer0.getterPointsOfgraph();
@@ -169,19 +159,11 @@ GraphWidget::GraphWidget(QWidget *parent,SocketTest &socket,MainWindow *window,Q
     QVector <QVector <int> > Table = layer0.getterTable();
     QVector <QVector <int> > Table_sym = Table;
 
-   /* QDebug deb = qDebug();
-    for(int i = 0; i < Table.size(); i++) {
-        for(int j = 0; j<Table[i].size();j++) {
-            deb<<Table[i][j];
-        }
-        deb<<endl;
-    }*/
 
     for(int i = 0; i < Table.size()-1; i++) {
         for(int j = i+1; j<Table[i].size();j++) {
             if(Table[i][j] != 0) {
                 edgeVec.push_back(new Edge(nodeVec[i],nodeVec[j],Table[i][j],Table[j][i]));
-               // qDebug() << Table[i][j]<<" "<<Table[j][i];
                 scene->addItem(edgeVec.last());
             }
             Table_sym[i][j] = abs(Table[i][j]);
@@ -190,7 +172,7 @@ GraphWidget::GraphWidget(QWidget *parent,SocketTest &socket,MainWindow *window,Q
     }
 
     shuffle();
-    setParentWindow(window);
+    setParentWindow(parent);
 
     QList<Node *> nodes;
     foreach (QGraphicsItem *item, scene->items()) {
@@ -213,47 +195,22 @@ GraphWidget::GraphWidget(QWidget *parent,SocketTest &socket,MainWindow *window,Q
         scaleView(1/qreal(1.2*4.5));
     }
 
-    //QLabel *label = new QLabel(this);
-    //label->setText("Random String");
 
     getParentWindow()->setCentralWidget(this);
 
-    //label->setParent(this);
-    //label->setGeometry(0,0,100,14);
-    //label->show();
-    //getParentWindow()->addDockWidget(Qt::TopDockWidgetArea,);
-
-    //QLabel *label2 = new QLabel(this);
-   // label2->setText("Random String 2");
-    //label2->setGeometry(0,14,100,14);
-    //label2->show();
-
-    this->socket = &socket;
     this->edgeVec = edgeVec;
 
     this->layer0 = layer0;
     this->layer1 = layer1;
     this->player = player;
 
-    //this->socket->sendTurnMessage();
-    //Train *playerTrain = new Train(this,homeTown->pos(),scene->addPixmap(train.scaled(QSize(34,51),Qt::IgnoreAspectRatio,Qt::SmoothTransformation)));
     this->playerTrain = playerTrain;
 
     for(int i = 0; i<this->player.getPlayerTrains().size(); i++) {
         this->player.setTrainImage(new Train(this,homeTown->pos(),scene->addPixmap(train.scaled(QSize(34,51),Qt::IgnoreAspectRatio,Qt::SmoothTransformation))),i);
     }
-   // while(Gam)
-    //this->timerId_1 = startTimer(100);
-    //QTimer *timer = new QTimer(parent);
-    //connect(timer, SIGNAL(timeout()), this, SLOT(checkGameState()));
-    //timer->start(1000);
-
-    this->timer = new QTimer(parent);
-    connect(this->timer, SIGNAL(timeout()), this, SLOT(checkGameState()));
-    this->timer->start(1000);
+    emit RenderFinished(edgeVec);
 }
-//! [1]
-
 //! [2]
 void GraphWidget::itemMoved()
 {
@@ -320,12 +277,6 @@ void GraphWidget::timerEvent(QTimerEvent *event) //создади таймер �
         }
     }
 
-     /*if(event->timerId() == timerId_1) //100мс
-     {
-         this->startGameLogic(); //запускаем геймлоджик
-         killTimer(timerId_1);
-         timerId_1 = 1;
-     }*/
 }
 //! [4]
 
@@ -417,36 +368,10 @@ MainWindow* GraphWidget::getParentWindow() const
     return parent;
 }
 
-void GraphWidget::startGameLogic() { //создаем гейм лоджик и запускаем алгоритм
-    GameLogic *alg = new GameLogic(this->socket,this->edgeVec,this->playerTrain,this->layer0,this->layer1,this->player);
-    alg->Alhoritm();
-}
-
-void GraphWidget::checkGameState() {
-    qDebug() << "THIS!";
-    if(this->parent->getGame().gameState == RUN) {
-        this->socket->SendMessage(MAP,{{"layer", 1}});
-        Map1 layer1;
-        layer1.Pars(this->socket->getterDoc());
-        this->layer1 = layer1;
-        QVector <enemy> Enemies = player.getEnemies();
-        player.ParsEnemies(layer1);
-        if(Enemies.size() != this->player.getEnemies().size())
-        {
-            for(int i = 0; i < this->player.getEnemiesTown().size(); i++)
-            {
-                Update(player.getEnemiesTown()[i]);
-            }
-        }
-        this->startGameLogic();
-        timer->stop();
-    }
-}
-
 void GraphWidget::Update(town Town)
 {
     QPixmap enemyTown;
-    enemyTown.load(":/resources/town_enemy.png");
+    enemyTown.load(":/resources/Pictures/town_enemy.png");
     for(int i = 0; i < nodeVec.size(); i++)
     {
         if(nodeVec[i]->getNodeIndex() == Town.point_idx)

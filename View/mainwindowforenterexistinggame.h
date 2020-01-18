@@ -20,6 +20,7 @@ public:
     explicit MainWindowForEnterExistingGame(QWidget *parent = nullptr);
     ~MainWindowForEnterExistingGame();
     QJsonObject getLoginData() override;
+    game * getGame() override;
 signals:
    // void BackPush() override;
 

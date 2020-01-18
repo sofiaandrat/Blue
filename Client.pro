@@ -23,6 +23,7 @@ SOURCES += \
     Model/node.cpp \
     Model/socketservice.cpp \
     Model/sockettest.cpp \
+    Model/starter.cpp \
     Model/strategy.cpp \
     Model/structs.cpp \
     Model/train.cpp \
@@ -33,21 +34,23 @@ SOURCES += \
     View/mainwindowforcreatemultigame.cpp \
     View/mainwindowforenterexistinggame.cpp \
     View/mainwindowforsingleplay.cpp \
-    graphwidget.cpp \
+    Render/graphwidget.cpp \
     main.cpp \
-    statshandler.cpp \
-    statslabel.cpp
+    Render/statshandler.cpp \
+    Render/statslabel.cpp
 
 HEADERS += \
-    Collections.h \
+    Model/Collections.h \
     Model/Collections.h \
     Model/dijkstrasalg.h \
     Model/edge.h \
     Model/gamelogic.h \
     Model/isocketservice.h \
+    Model/istarter.h \
     Model/node.h \
     Model/socketservice.h \
     Model/sockettest.h \
+    Model/starter.h \
     Model/strategy.h \
     Model/structs.h \
     Model/train.h \
@@ -58,9 +61,9 @@ HEADERS += \
     View/mainwindowforcreatemultigame.h \
     View/mainwindowforenterexistinggame.h \
     View/mainwindowforsingleplay.h \
-    graphwidget.h \
-    statshandler.h \
-    statslabel.h
+    Render/graphwidget.h \
+    Render/statshandler.h \
+    Render/statslabel.h
 
 FORMS += \
     View/askselect.ui \

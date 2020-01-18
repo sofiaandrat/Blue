@@ -14,13 +14,14 @@ class SocketTest : public QObject
     Q_OBJECT
 public:
     explicit SocketTest(QObject *parent = nullptr);
-    void Connect();
+//    void Connect();
     void SendMessage(Actions Action, QJsonObject jsonData);
     void SendMessageWOW(Actions Action, QJsonObject jsonData);
     QJsonDocument getterDoc();
     void sendMoveMessage(int line_idx, int speed, int train_idx);
     void sendTurnMessage();
     void sendUpgradeMessage(bool upgradeTown, QVector <train> Trains, int home_idx);
+    void Connect();
     void sendMap1Message();
     ~SocketTest();
 signals:
@@ -30,7 +31,7 @@ public slots:
     void readyRead();
     void disconnect();
     void Finished();
-    void dataArrived();
+    void dataArrived();    
 
 private:
     QTcpSocket *socket;

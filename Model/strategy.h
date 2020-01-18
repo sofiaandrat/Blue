@@ -3,18 +3,18 @@
 #include <QVector>
 #include "structs.h"
 #include "dijkstrasalg.h"
-#include "sockettest.h"
+#include "isocketservice.h"
 class Strategy //бедный SOLID громко плачет
 {
 private:
     QVector <QVector <int> > shortestPaths;
     QVector<int> pointsOfGraph;
     DijkstrasAlg alg;
-    SocketTest *socket;
     int indexOfFirstArmorTrain = 0;
     Map0 layer0;
+    ISocketService *service;
 public:
-    Strategy(int townIdx,QVector <QVector <int> > &Table, QVector <int> pointsOfGraph, QVector<post> posts, SocketTest *socket, Map0 &layer0);
+    Strategy(int townIdx,QVector <QVector <int> > &Table, QVector <int> pointsOfGraph, QVector<post> posts, Map0 &layer0, ISocketService *service);
     market BestPost(Map1 map, QVector <market> posts, player Player, int pos);
     void Moving(Map1 &map, Player &player);
     QVector <int> PathToNearestMarket(QVector<market> markets);
