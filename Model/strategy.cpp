@@ -21,7 +21,14 @@ void Strategy::Moving(Map1 &map, Player &player)
     CalculateArmorTrain(map, player);
     for(int i = 0; i < player.getPlayerTrains().size(); i++)
     {
-        if(player.getPlayerTrains()[i].route.isEmpty())
+        if(player.getPlayerTrains()[i].line_idx != player.getPlayerData().home_line_idx && player.getPlayerTrains()[i].route.isEmpty())
+        {
+            QVector <int> empty(0);
+            QVector <int> route = alg.manipPaths(player.getPlayerTrains()[i].postsRoute.last(), player.getPlayerData().home_idx, empty,empty);
+            player.setRoute(player.getPlayerTrains()[i].idx, route);
+            NotCrashFunction(player,player.getPlayerTrains()[i]);
+        }
+        else if(player.getPlayerTrains()[i].route.isEmpty())
         {
             MakeRoute(map, player, i < indexOfFirstArmorTrain, player.getPlayerTrains()[i]);
             if(player.getEnemies().size() != 0)
@@ -49,10 +56,6 @@ void Strategy::Moving(Map1 &map, Player &player)
                 QVector <int> route = alg.manipPaths(player.getPlayerData().home_idx,player.getPlayerTrains()[i].postsRoute.last(),pointsToVisit,pointsToAvoid);
                 player.setRoute(player.getPlayerTrains()[i].idx, route);
                 NotCrashFunction(player,player.getPlayerTrains()[i]);
-            }
-            else if(player.getEnemies().size() != 0)
-            {
-                //void KillEnemy();
             }
        }
     }
@@ -434,33 +437,6 @@ void Strategy::CalculateArmorTrain(Map1 &map, Player &player)
     }
 }
 
-void Strategy::KillEnemy(Map1 &map, Player &player, train Train)
-{
-    player.setKiller(Train, true);
-    int maxRating = 0;
-    int enemy_idx;
-    QVector <int> empty(0);
-    for(int i = 0; i < player.getEnemies().size(); i++)
-    {
-        if(player.getEnemies()[i].rating > maxRating)
-        {
-            maxRating = player.getEnemies()[i].rating;
-            enemy_idx = i;
-        }
-    }
-    int minroute = INT_MAX;
-    int market_idx;
-    for(int i = 0; i < map.getterMarkets().size(); i++)
-    {
-        if(CalculateLengthOfRoute(alg.manipPaths(player.getEnemies()[enemy_idx].home_idx,map.getterMarkets()[i].point_idx, empty, empty)) < minroute)
-        {
-            minroute = CalculateLengthOfRoute(alg.manipPaths(player.getEnemies()[enemy_idx].home_idx,map.getterMarkets()[i].point_idx, empty, empty));
-            market_idx = map.getterMarkets()[i].point_idx;
-        }
-    }
-    empty.append(market_idx);
-    player.setPostsRoute(Train.idx, empty);
-}
 
 void Strategy::CalculateEnemy(Map1 map, train Train, bool isMarket, Player &player)
 {
