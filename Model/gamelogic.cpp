@@ -187,6 +187,11 @@ void GameLogic::trainsOneStep()
     service->SendMessage(MAP,{{"layer",1}});
     this->layer1.Pars(service->getDoc());
 
+    if(this->layer1.checkForGameOver(this->player.getPlayerIdx())) {
+        qDebug() << "GAME OVER";
+        return;
+    }
+
     this->animTimer = new QTimeLine(500);
     this->strategy->Moving(this->layer1, this->player);
     for(int i = 0; i < this->player.getPlayerTrains().size(); i++)

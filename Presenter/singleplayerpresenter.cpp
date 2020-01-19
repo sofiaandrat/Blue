@@ -24,8 +24,13 @@ void SinglePlayerPresenter::LoginPush()
     Map1 layer1;
     layer1.Pars(service->getDoc());
     player.ParsEnemies(layer1);
-    GraphWidget *widget = new GraphWidget(nullptr, parent, player, layer0, layer1);
-    connect(&*(widget), SIGNAL(RenderFinished(QVector<Edge *>, Player)), &*(this), SLOT(StartStarter(QVector <Edge *>, Player)));
+
+    service->SendMessage(MAP,{{"layer", 10}});
+    Map10 layer10;
+    layer10.Pars(service->getDoc());
+
+    GraphWidget *widget = new GraphWidget(nullptr, parent, player, layer0, layer1, layer10);
+    connect(&*(widget), SIGNAL(RenderFinished(QVector<Edge *>, Player&)), &*(this), SLOT(StartStarter(QVector <Edge *>, Player&)));
     widget->Render();
 }
 
@@ -34,7 +39,7 @@ void SinglePlayerPresenter::BackPush()
     AskSelect *window = new AskSelect();
 }
 
-void SinglePlayerPresenter::StartStarter(QVector<Edge *> edgeVec, Player player)
+void SinglePlayerPresenter::StartStarter(QVector<Edge *> edgeVec, Player& player)
 {
     this->player = player;
     starter = new Starter(service, parent->getGame(), player, layer0, edgeVec);

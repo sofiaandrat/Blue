@@ -82,6 +82,13 @@ void Map1::Pars(QJsonDocument doc)
             Town.armor_capacity = obj["armor_capacity"].toInt();
             Town.products_capacity = obj["products_capacity"].toInt();
             Town.population_capacity = obj["population_capacity"].toInt();
+            QJsonArray eventsArray = obj["events"].toArray();
+            foreach(const QJsonValue & value, eventsArray) {
+                QJsonObject obj = value.toObject();
+                if(obj["type"] == GAME_OVER) {
+                    Town.game_over = true;
+                }
+            }
             this->Towns.append(Town);
         }
         if(obj["type"].toInt() == MARKET) {
@@ -136,6 +143,46 @@ void Map1::Pars(QJsonDocument doc)
         this->AllTrains.append(Train);
     }
 
+}
+
+void Map10::Pars(QJsonDocument doc)
+{
+    QJsonObject jsonObject = doc.object();
+    QJsonArray jsonArray = jsonObject["coordinates"].toArray();
+    foreach(const QJsonValue & value, jsonArray)
+    {
+        QJsonObject obj = value.toObject();
+        int idx = obj["idx"].toInt();
+        point Point;
+        Point.x = obj["x"].toInt();
+        Point.y = obj["y"].toInt();
+        this->coords.append(QPair<int,point>(idx,Point));
+    }
+    this->idx = jsonObject["idx"].toInt();
+    jsonArray = jsonObject["size"].toArray();
+    this->size_x = jsonArray[0].toInt();
+    this->size_y = jsonArray[1].toInt();
+}
+
+int Map10::getSizeX()
+{
+    return this->size_x;
+}
+
+int Map10::getSizeY()
+{
+    return this->size_y;
+}
+
+point Map10::getCoordsByIdx(int idx)
+{
+    for(int i = 0; i < this->coords.size(); i++)
+    {
+        if(coords[i].first == idx)
+        {
+            return coords[i].second;
+        }
+    }
 }
 
 QVector <post> Map1::getterPosts()
@@ -437,6 +484,14 @@ bool Map1::checkForCooldown(int idx){
         return false;
     } else {
         return true;
+    }
+}
+
+bool Map1::checkForGameOver(QString player_idx) {
+    if(this->getHome(player_idx).game_over) {
+        return true;
+    } else {
+        return false;
     }
 }
 

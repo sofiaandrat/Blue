@@ -54,7 +54,6 @@ void MainWindowForEnterExistingGame::ShowGames(ExistingGames games)
 {
     QStringList GameList;
     this->gameList = games.getGames();
-    ui->setupUi(this);
     for(int i = 0; i < gameList.size(); i++)
     {
         GameList.append(this->gameList[i].gameName);
