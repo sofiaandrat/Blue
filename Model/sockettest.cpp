@@ -111,11 +111,11 @@ void SocketTest::sendMoveMessage(int line_idx,int speed, int train_idx) {
     moveObj.insert("speed",QJsonValue::fromVariant(speed));
     moveObj.insert("train_idx",QJsonValue::fromVariant(train_idx));
 
-    SocketTest::SendMessageWOW(MOVE,moveObj);
+    SendMessageWOW(MOVE,moveObj);
 }
 
 void SocketTest::sendTurnMessage() {
-    SocketTest::SendMessageWOW(TURN,{});
+    SendMessageWOW(TURN,{});
     /*if(this->socket->isOpen())
     {
         this->socket->write(toMessageFormat(TURN,{}));
@@ -169,5 +169,5 @@ void SocketTest::Finished() {
 
 void SocketTest::dataArrived() {
     QObject::disconnect(socket,SIGNAL(readyRead()),this,SLOT(dataArrived()));
-    QTimer::singleShot(500,this,SLOT(Finished()));
+    QTimer::singleShot(200,this,SLOT(Finished()));
 }

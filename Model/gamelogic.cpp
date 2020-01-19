@@ -116,11 +116,9 @@ void GameLogic::trainOneStep(train Train) {
                 if((curLengh - destDiff) == curLengh) {
                     Train.position++;
                     this->player.setTrainPosition(Train);
-                    //this->player.getTrain(Train.idx).imageTrain->advancePosition(edgeVec[curEdge],curLengh,curSpeed,Train.position,this->animTimer);
                 } else if((curLengh - destDiff) == 0){
                     Train.position--;
                     this->player.setTrainPosition(Train);
-                    //this->player.getTrain(Train.idx).imageTrain->advancePosition(edgeVec[curEdge],curLengh,curSpeed,Train.position,this->animTimer);
                 }
             } else {
 // Разбор стыка рёбер. Не оч красиво, но работает.
@@ -189,10 +187,9 @@ void GameLogic::trainsOneStep()
 
     if(this->layer1.checkForGameOver(this->player.getPlayerIdx())) {
         qDebug() << "GAME OVER";
-        return;
     }
 
-    this->animTimer = new QTimeLine(500);
+    this->animTimer = new QTimeLine(200);
     this->strategy->Moving(this->layer1, this->player);
     for(int i = 0; i < this->player.getPlayerTrains().size(); i++)
     {
@@ -207,9 +204,8 @@ void GameLogic::trainsOneStep()
     service->SendTurnMessage();
 }
 
-void GameLogic::animEnemyTrains() {
-   //QVector<train> enemyTrains = this->layer1.getAllEnemiesTrains(this->player.getPlayerIdx());
-
+void GameLogic::animEnemyTrains()
+{
    for(int i = 0; i < this->player.getEnemies().size(); i++)
    {
         for(int j = 0; j < this->player.getEnemies()[i].trains.size(); j++)
