@@ -64,15 +64,14 @@
 #include <QThread>
 
 //! [0]
-/*GraphWidget::GraphWidget(QWidget *parent,SocketTest &socket,MainWindow *window,QString loginText, QString gameName, int numberOfPlayers, int numberOfTurns)
-    : QGraphicsView(parent), timerId(0), timerId_1(1)*/
-GraphWidget::GraphWidget(QWidget *parent, MainWindow *window, Player &player, Map0 layer0, Map1 layer1):QGraphicsView(parent),timerId_1(1)
+GraphWidget::GraphWidget(QWidget *parent, MainWindow *window, Player &player, Map0 layer0, Map1 layer1, Map10 layer10):QGraphicsView(parent),timerId_1(1)
 {
     this->scene = new QGraphicsScene(this);
     this->edgeVec = edgeVec;
 
     this->layer0 = layer0;
     this->layer1 = layer1;
+    this->layer10 = layer10;
     this->player = player;
     this->parent = window;
 }
@@ -81,7 +80,6 @@ GraphWidget::GraphWidget(QWidget *parent, MainWindow *window, Player &player, Ma
 void GraphWidget::Render()
 {
     scene->setItemIndexMethod(QGraphicsScene::NoIndex);
-    scene->setSceneRect(-2000, -2000, 4000, 4000);
     setScene(scene);
 
     setCacheMode(CacheBackground);
@@ -108,7 +106,7 @@ void GraphWidget::Render()
     enemyTrain.load(":/resources/Pictures/train_enemy.png");
     enemyTown.load(":/resources/Pictures/town_enemy.png");
     ghostTown.load(":/resources/Pictures/town_ghost.png");
-
+    scene->setSceneRect(0, 0, layer10.getSizeX(), layer10.getSizeY());
     Node* homeTown;
 
     QVector<int> pointsOfGraph = layer0.getterPointsOfgraph();
@@ -145,15 +143,17 @@ void GraphWidget::Render()
                 }
             }
         } else if(a == 2) {
-            nodeVec.append(new Node(this,pointsOfGraph[i],a,scene->addPixmap(market.scaled(QSize(50,50),Qt::IgnoreAspectRatio,Qt::SmoothTransformation))));
+            nodeVec.append(new Node(this,pointsOfGraph[i],a,scene->addPixmap(market.scaled(QSize(25,25),Qt::IgnoreAspectRatio,Qt::SmoothTransformation))));
         } else if(a == 3) {
-            nodeVec.append(new Node(this,pointsOfGraph[i],a,scene->addPixmap(storage.scaled(QSize(50,50),Qt::IgnoreAspectRatio,Qt::SmoothTransformation))));
+            nodeVec.append(new Node(this,pointsOfGraph[i],a,scene->addPixmap(storage.scaled(QSize(25,25),Qt::IgnoreAspectRatio,Qt::SmoothTransformation))));
         } else {
             nodeVec.append(new Node(this,pointsOfGraph[i],a,nullptr));
         }
 
         scene->addItem(nodeVec.last());
-        nodeVec.last()->setPos(0,0);
+        point curPoint = layer10.getCoordsByIdx(nodeVec.last()->getNodeIndex());
+        nodeVec.last()->setPos(curPoint.x,curPoint.y);
+        nodeVec.last()->setImagePosition(curPoint.x,curPoint.y);
     }
 
     QVector <QVector <int> > Table = layer0.getterTable();
@@ -170,11 +170,10 @@ void GraphWidget::Render()
             Table_sym[j][i] = abs(Table[i][j]);
         }
     }
-
-    shuffle();
+    //shuffle();
     setParentWindow(parent);
 
-    QList<Node *> nodes;
+    /*QList<Node *> nodes;
     foreach (QGraphicsItem *item, scene->items()) {
         if (Node *node = qgraphicsitem_cast<Node *>(item))
             nodes << node;
@@ -189,7 +188,7 @@ void GraphWidget::Render()
             if (node->advancePosition())
                 itemsMoved = true;
         }
-    } while(itemsMoved);
+    } while(itemsMoved);*/
 
     if(pointsOfGraph.size() > 50) {
         scaleView(1/qreal(1.2*4.5));
@@ -214,8 +213,8 @@ void GraphWidget::Render()
 //! [2]
 void GraphWidget::itemMoved()
 {
-    if (!timerId)
-       timerId = startTimer(0);
+    //if (!timerId)
+    //   timerId = startTimer(0);
 }
 //! [2]
 
@@ -385,4 +384,24 @@ void GraphWidget::Update(town Town)
 
 QGraphicsScene* GraphWidget::getScene() {
     return this->scene;
+}
+
+void GraphWidget::SetEnemyTrains(enemy Enemy, Player& player)
+{
+    for(int j = 0; j < nodeVec.size(); j++)
+    {
+        if(nodeVec[j]->getNodeIndex() == Enemy.Town.point_idx)
+        {
+           qDebug()<<"Trying to set enemy trains!!!!!!!!!!!";
+           QPixmap enemyTrain;
+           enemyTrain.load(":/resources/Pictures/train_enemy.png");
+
+           for(int z = 0; z < Enemy.trains.size(); z++)
+           {
+              player.setEnemyTrainImage(new Train(this,nodeVec[j]->pos(),scene->addPixmap(enemyTrain.scaled(QSize(34,51),Qt::IgnoreAspectRatio,Qt::SmoothTransformation))),
+                                              Enemy.player_idx,Enemy.trains[z].idx);
+           }
+        }
+    }
+
 }

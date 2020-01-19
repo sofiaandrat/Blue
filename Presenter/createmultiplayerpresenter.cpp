@@ -24,8 +24,13 @@ void CreateMultiplayerPresenter::LoginPush()
     Map1 layer1;
     layer1.Pars(service->getDoc());
     player.ParsEnemies(layer1);
-    widget = new GraphWidget(nullptr, parent, player, layer0, layer1);
-    connect(&*(widget), SIGNAL(RenderFinished(QVector<Edge *>, Player)), &*(this), SLOT(StartStarter(QVector <Edge *>, Player)));
+
+    service->SendMessage(MAP,{{"layer", 10}});
+    Map10 layer10;
+    layer10.Pars(service->getDoc());
+
+    widget = new GraphWidget(nullptr, parent, player, layer0, layer1, layer10);
+    connect(&*(widget), SIGNAL(RenderFinished(QVector<Edge *>, Player&)), &*(this), SLOT(StartStarter(QVector <Edge *>, Player&)));
     widget->Render();
 }
 
@@ -33,11 +38,10 @@ void CreateMultiplayerPresenter::BackPush()
 {
     AskSelect *window = new AskSelect();
 }
-
-void CreateMultiplayerPresenter::StartStarter(QVector<Edge *> edgeVec, Player player)
+void CreateMultiplayerPresenter::StartStarter(QVector<Edge *> edgeVec, Player& player)
 {
     this->player = player;
     starter = new Starter(service, parent->getGame(), player, layer0, edgeVec);
-    connect(&*(starter),SIGNAL(Update(town )),&*(widget),SLOT(Update(town )));
+    connect(&*(starter),SIGNAL(SetEnemyTrains(enemy, Player&)),&*(widget),SLOT(SetEnemyTrains(enemy, Player&)));
     starter->CheckAndStart();
 }

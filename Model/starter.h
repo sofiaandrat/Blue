@@ -23,6 +23,7 @@ private:
     QVector<Edge *> edgeVec;
 signals:
     void Update(town Town);
+    void SetEnemyTrains(enemy Enemy,Player& player);
 };
 
 #endif // STARTER_H

@@ -103,7 +103,7 @@ void Node::calculateForces()
         QPointF vec = mapToItem(node, 0, 0);
         qreal dx = vec.x();
         qreal dy = vec.y();
-        double l = 7.0 * (dx * dx + dy * dy); // 0.5 coeff changes edge length
+        double l = 5.0 * (dx * dx + dy * dy); // 0.5 coeff changes edge length
         if (l > 0) {
             xvel += (dx * 150.0) / l;
             yvel += (dy * 150.0) / l;
@@ -250,5 +250,16 @@ void Node::setImagePosition() {
         qreal width = rect.width();
         qreal height = rect.height();
         this->imageOnScene->setPos(newPos.x() - width/2,newPos.y() - height/2);
+        //this->imageOnScene->setPos(pos().x() - width/2,pos().x()  - height/2);
+    }
+}
+
+void Node::setImagePosition(int x, int y) {
+    if(imageOnScene != nullptr) {
+        QRectF rect = this->imageOnScene->boundingRect();
+        qreal width = rect.width();
+        qreal height = rect.height();
+        this->newPos = QPointF(x,y);
+        this->imageOnScene->setPos(x - width/2,y - height/2);
     }
 }

@@ -26,6 +26,6 @@ private:
 public slots:
     void LoginPush();
     void BackPush();
-    void StartStarter(QVector<Edge *> edgeVec, Player player);
+    void StartStarter(QVector<Edge *> edgeVec, Player& player);
 };
 #endif // SINGLEPLAYERPRESENTER_H

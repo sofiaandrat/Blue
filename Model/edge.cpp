@@ -92,7 +92,7 @@ void Edge::adjust()
 
     prepareGeometryChange();
 
-    if (length > qreal(20.)) {
+    if (length > qreal(10.)) {
         sourcePoint = line.p1();
         destPoint = line.p2();
     } else {

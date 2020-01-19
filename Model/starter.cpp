@@ -46,6 +46,10 @@ void Starter::Check()
                 emit Update(player.getEnemiesTown()[i]);
             }
         }
+        for(int i = 0; i < this->player.getEnemies().size(); i++)
+        {
+            emit SetEnemyTrains(this->player.getEnemies()[i],this->player);
+        }
         this->StartGameLogic();
         timer->stop();
     }
