@@ -23,6 +23,7 @@ public:
       void animEnemyTrains();
       void animPlayerTrains();
       train CalculateTrainPosition(train Enemy);
+      void syncWithServer(train Train);
 
 public slots:
       void trainsOneStep();

@@ -189,13 +189,14 @@ void GameLogic::trainsOneStep()
 
     if(this->layer1.checkForGameOver(this->player.getPlayerIdx())) {
         qDebug() << "GAME OVER";
-        return;
+        //return;
     }
 
-    this->animTimer = new QTimeLine(500);
+    this->animTimer = new QTimeLine(200);
     this->strategy->Moving(this->layer1, this->player);
     for(int i = 0; i < this->player.getPlayerTrains().size(); i++)
     {
+        syncWithServer(this->layer1.getPlayerTrain(this->player.getPlayerData().player_idx,this->player.getPlayerTrains()[i].idx));
         trainOneStep(this->player.getPlayerTrains()[i]);
     }
     animPlayerTrains();
@@ -288,4 +289,14 @@ void GameLogic::animPlayerTrains() {
         }
         this->player.getPlayerTrains()[i].imageTrain->advancePosition(edgeVec[curEdge],curLength,playerTrain.speed,playerTrain.position,this->animTimer);
     }
+}
+
+void GameLogic::syncWithServer(train Train)
+{
+
+    if(this->player.getTrain(Train.idx).position != Train.position)
+    {
+        this->player.setTrainPosition(Train);
+    }
+
 }

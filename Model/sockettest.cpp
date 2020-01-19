@@ -169,5 +169,5 @@ void SocketTest::Finished() {
 
 void SocketTest::dataArrived() {
     QObject::disconnect(socket,SIGNAL(readyRead()),this,SLOT(dataArrived()));
-    QTimer::singleShot(500,this,SLOT(Finished()));
+    QTimer::singleShot(200,this,SLOT(Finished()));
 }
