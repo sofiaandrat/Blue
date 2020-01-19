@@ -93,6 +93,7 @@ public:
 
     void setImage(QGraphicsPixmapItem *image);
     void setImagePosition();
+    void setImagePosition(int x, int y);
 
 protected:
     QVariant itemChange(GraphicsItemChange change, const QVariant &value) override;

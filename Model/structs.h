@@ -7,6 +7,12 @@
 #include "Collections.h"
 #include "train.h"
 
+struct point
+{
+    int x;
+    int y;
+};
+
 struct town
 {
     int idx;
@@ -21,6 +27,7 @@ struct town
     int population_capacity;
     int level;
     int price;
+    bool game_over = false;
 };
 
 struct player
@@ -107,6 +114,22 @@ public:
     QPair <int, int> getPoints(int line_idx);
 };
 
+class Map10
+{
+private:
+    QVector<QPair<int,point>> coords;
+    int size_x;
+    int size_y;
+    int idx;
+public:
+    Map10(){}
+    ~Map10(){}
+    void Pars(QJsonDocument doc);
+    int getSizeX();
+    int getSizeY();
+    point getCoordsByIdx(int idx);
+};
+
 class Map1
 {
 private:
@@ -130,11 +153,14 @@ public:
     int getTick();
     QVector <train> getTrains();
     QVector <town> getTown();
-    QVector <train> getEnemyTrains(QString player_idx);
+    QVector <train> getAllEnemiesTrains(QString player_idx);
+    train getEnemyTrain(QString enemy_idx, int train_idx);
+    train getPlayerTrain(QString player_idx, int train_idx);
     town getHome(QString player_idx);
     train getTrain(int idx);
     bool checkForCollision(int idx);
     bool checkForCooldown(int idx);
+    bool checkForGameOver(QString player_idx);
     ~Map1(){}
 };
 
@@ -163,6 +189,8 @@ public:
     void setTrainIter(int idx,int iter);
     void setPointsToAvoid(train Train, QVector<int> pointsToAvoid);
     void setKiller(train Train, bool IsKiller);
+    void setEnemyTrainImage(Train* trainImage, QString enemy_idx,int train_idx);
+    QString getPlayerIdx();
 };
 
 class ExistingGames
