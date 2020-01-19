@@ -26,7 +26,7 @@ public slots:
     void StartStarter(QVector<Edge *> edgeVec, Player player);
     void AskExistingGames();
 signals:
-    void ShowGame(ExistingGames games);
+    void ShowGames(ExistingGames games);
 };
 
 #endif // ENTEREXISTINGGAMEPRESENTER_H

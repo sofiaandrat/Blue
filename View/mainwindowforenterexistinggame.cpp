@@ -6,7 +6,7 @@ MainWindowForEnterExistingGame::MainWindowForEnterExistingGame(QWidget *parent) 
     ui(new Ui::MainWindowForEnterExistingGame)
 {
     EnterExistingGamePresenter *presenter = new EnterExistingGamePresenter(this, new SocketService);
-    connect(&*(presenter),SIGNAL(ShowGame(ExistingGames )), &*(this), SLOT(ShowGames(ExistingGames )));
+    connect(&*(presenter),SIGNAL(ShowGames(ExistingGames )), &*(this), SLOT(ShowGames(ExistingGames )));
     ui->setupUi(this);
     this->show();
     presenter->AskExistingGames();
@@ -53,6 +53,7 @@ void MainWindowForEnterExistingGame::ShowGames(ExistingGames games)
 {
     QStringList GameList;
     this->gameList = games.getGames();
+    ui->setupUi(this);
     for(int i = 0; i < gameList.size(); i++)
     {
         GameList.append(this->gameList[i].gameName);

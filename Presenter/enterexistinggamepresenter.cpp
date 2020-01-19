@@ -47,5 +47,5 @@ void EnterExistingGamePresenter::AskExistingGames()
     this->service->SendMessage(GAMES,{});
     ExistingGames games;
     games.Pars(this->service->getDoc());
-    emit ShowGame(games);
+    emit ShowGames(games);
 }
