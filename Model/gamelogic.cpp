@@ -88,13 +88,19 @@ void GameLogic::trainOneStep(train Train) {
             int curLengh = Table[std::min(sourceEdgePoint, destEdgePoint)][std::max(sourceEdgePoint, destEdgePoint)];
             if(Train.iter == 1 && Train.line_idx != curEdgeIdx) {
                 Train.line_idx = curEdgeIdx;
-                if(sourceEdgePoint < destEdgePoint) {
+                if((sourceEdgePoint < destEdgePoint) && (curEdgeInfo > 0)){
                     Train.position = 0;
                 }
-                if(sourceEdgePoint > destEdgePoint) {
+                if((sourceEdgePoint > destEdgePoint) && (curEdgeInfo > 0)){
                     Train.position = curLengh;
                 }
-            } else if(Train.line_idx != curEdgeIdx) {
+                if((sourceEdgePoint < destEdgePoint) && (curEdgeInfo < 0)){
+                    Train.position = curLengh;
+                }
+                if((sourceEdgePoint > destEdgePoint) && (curEdgeInfo < 0)){
+                    Train.position = 0;
+                }
+            } else if(Train.line_idx != curEdgeIdx){
                 Train.line_idx = curEdgeIdx;
             }
 

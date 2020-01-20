@@ -26,7 +26,6 @@ public:
     void Upgrade(Map1 &map, Player &player);
     void CalculateArmorTrain(Map1 &map, Player &player);
     void KillEnemy(Map1 &map, Player &player, train Train);
-    void CalculateEnemy(Map1 map, train Train, bool isMarket, Player &player);
 };
 
 #endif // STRATEGY_H
