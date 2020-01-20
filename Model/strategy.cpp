@@ -251,10 +251,21 @@ void Strategy::NotCrashFunction(Player &player, train Train)
                             postsToAvoid.append(pointsOfGraph[player.getPlayerTrains()[idx].route[j]]);
                             player.setRoute(Train.idx, alg.manipPaths(pointsOfGraph[player.getPlayerTrains()[idx].route[0]],
                                     pointsOfGraph[player.getPlayerTrains()[idx].route.last()], postsToVisit,postsToAvoid));
+                            if((pointsOfGraph[layer0.getPoints(player.getPlayerTrains()[i].line_idx).first] == player.getPlayerData().home_post_idx ||
+                                    pointsOfGraph[layer0.getPoints(player.getPlayerTrains()[i].line_idx).second] == player.getPlayerData().home_post_idx) && !player.getPlayerTrains()[i].postsRoute.isEmpty() &&
+                                    player.getPlayerTrains()[i].postsRoute.last() == player.getPlayerData().home_idx && Train.route.first() == player.getPlayerTrains()[i].route[player.getPlayerTrains()[i].route.size() - 1])
+                            {
+                                player.setWaitIteration(Train.idx, player.getPlayerTrains()[idx].waitIteration + 1);
+                                player.setRoute(Train.idx, QVector <int> (0));
+                                player.setPostsRoute(Train.idx,QVector <int> (0));
+                                wrong = false;
+                                break;
+                            }
                             if(CalculateLengthOfRoute(player.getPlayerTrains()[idx].route) > (current_length + player.getPlayerTrains()[idx].waitIteration + 1) ||
                                     CalculateLengthOfRoute(player.getPlayerTrains()[idx].route) < current_length)
                             {
                                 wrong = false;
+                                qDebug() << layer0.getPoints(player.getPlayerTrains()[i].line_idx);
                                 if(player.getPlayerTrains()[i].position == Train.position && player.getPlayerTrains()[i].line_idx == Train.line_idx) //переделать!!
                                 {
                                     player.setWaitIteration(Train.idx, player.getPlayerTrains()[idx].waitIteration + 1);
@@ -428,7 +439,7 @@ void Strategy::CalculateArmorTrain(Map1 &map, Player &player)
     for(int i = 0; i < indexOfFirstArmorTrain; i++)
         sum += player.getPlayerTrains()[count].goods_capacity;
     qDebug() << (map.getHome(player.getPlayerData().player_idx).population * 2 * lengthOfPathToMarket + (lengthOfPathToMarket / 25) * lengthOfPathToMarket);
-    while((map.getHome(player.getPlayerData().player_idx).population * 2 * lengthOfPathToMarket + (lengthOfPathToMarket / 25) * lengthOfPathToMarket) * 1.2 > sum)
+    while((map.getHome(player.getPlayerData().player_idx).population * 2 * lengthOfPathToMarket + (lengthOfPathToMarket / 25) * lengthOfPathToMarket) > sum)
     {
         indexOfFirstArmorTrain++;
         sum += player.getPlayerTrains()[indexOfFirstArmorTrain - 1].goods_capacity;

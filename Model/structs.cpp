@@ -519,6 +519,7 @@ bool player::operator==(player &anotherPlayer)
 
 QPair <int, int> Map0::getPoints(int line_idx)
 {
+    qDebug() << line_idx << "LOOOOOL";
     for(int i = 0; i < this->pointsOfGraph.size(); i++)
     {
         for(int j = 0; j < this->pointsOfGraph.size(); j++)
@@ -527,6 +528,7 @@ QPair <int, int> Map0::getPoints(int line_idx)
                 return qMakePair(i, j);
         }
     }
+    return qMakePair(0,0);
 }
 
 QString Player::getPlayerIdx() {
