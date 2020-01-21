@@ -26,9 +26,7 @@ void Strategy::Moving(Map1 &map, Player &player)
             QVector <int> empty(0);
             QVector <int> route = alg.manipPaths(player.getPlayerTrains()[i].postsRoute.last(), player.getPlayerData().home_idx, empty,empty);
             player.setRoute(player.getPlayerTrains()[i].idx, route);
-            qDebug() << "ooooy";
             NotCrashFunction(player,player.getPlayerTrains()[i]);
-            qDebug() <<"Here";
         }
         else if(player.getPlayerTrains()[i].route.isEmpty())
         {
