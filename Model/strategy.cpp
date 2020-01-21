@@ -26,7 +26,9 @@ void Strategy::Moving(Map1 &map, Player &player)
             QVector <int> empty(0);
             QVector <int> route = alg.manipPaths(player.getPlayerTrains()[i].postsRoute.last(), player.getPlayerData().home_idx, empty,empty);
             player.setRoute(player.getPlayerTrains()[i].idx, route);
+            qDebug() << "ooooy";
             NotCrashFunction(player,player.getPlayerTrains()[i]);
+            qDebug() <<"Here";
         }
         else if(player.getPlayerTrains()[i].route.isEmpty())
         {
@@ -55,6 +57,19 @@ void Strategy::Moving(Map1 &map, Player &player)
                 QVector <int> route = alg.manipPaths(player.getPlayerData().home_idx,player.getPlayerTrains()[i].postsRoute.last(),pointsToVisit,pointsToAvoid);
                 player.setRoute(player.getPlayerTrains()[i].idx, route);
                 NotCrashFunction(player,player.getPlayerTrains()[i]);
+                int idx = 0;
+                for(; idx < player.getPlayerTrains().size(); idx++)
+                {
+                    if(player.getPlayerTrains()[i] == player.getPlayerTrains()[idx])
+                    {
+                        break;
+                    }
+                }
+                for(int j = 0; j < player.getPlayerTrains().size(); j++)
+                {
+                    if(!(player.getPlayerTrains()[i] == player.getPlayerTrains()[j]))
+                        CanIGo(player, idx, player.getPlayerTrains()[i], player.getPlayerTrains()[j]);
+                }
             }
        }
     }
@@ -234,10 +249,13 @@ void Strategy::NotCrashFunction(Player &player, train Train)
     QVector <int> postsToAvoid = Train.pointsToAvoid;
     QVector <int> currentPath = Train.route;
 
+
     for(int i = 0; i < player.getPlayerTrains().size(); i++) //мммм алгоритмическая сложность куб, как мило
     {
         if(i != idx && !player.getPlayerTrains()[idx].route.isEmpty())
         {
+            if(!CanIGo(player, idx, Train, player.getPlayerTrains()[i]))
+                break;
             bool wrong = true;
              while(wrong)
             {
@@ -251,16 +269,6 @@ void Strategy::NotCrashFunction(Player &player, train Train)
                             postsToAvoid.append(pointsOfGraph[player.getPlayerTrains()[idx].route[j]]);
                             player.setRoute(Train.idx, alg.manipPaths(pointsOfGraph[player.getPlayerTrains()[idx].route[0]],
                                     pointsOfGraph[player.getPlayerTrains()[idx].route.last()], postsToVisit,postsToAvoid));
-                            if((pointsOfGraph[layer0.getPoints(player.getPlayerTrains()[i].line_idx).first] == player.getPlayerData().home_post_idx ||
-                                    pointsOfGraph[layer0.getPoints(player.getPlayerTrains()[i].line_idx).second] == player.getPlayerData().home_post_idx) && !player.getPlayerTrains()[i].postsRoute.isEmpty() &&
-                                    player.getPlayerTrains()[i].postsRoute.last() == player.getPlayerData().home_idx && Train.route.first() == player.getPlayerTrains()[i].route[player.getPlayerTrains()[i].route.size() - 1])
-                            {
-                                player.setWaitIteration(Train.idx, player.getPlayerTrains()[idx].waitIteration + 1);
-                                player.setRoute(Train.idx, QVector <int> (0));
-                                player.setPostsRoute(Train.idx,QVector <int> (0));
-                                wrong = false;
-                                break;
-                            }
                             if(CalculateLengthOfRoute(player.getPlayerTrains()[idx].route) > (current_length + player.getPlayerTrains()[idx].waitIteration + 1) ||
                                     CalculateLengthOfRoute(player.getPlayerTrains()[idx].route) < current_length)
                             {
@@ -273,6 +281,8 @@ void Strategy::NotCrashFunction(Player &player, train Train)
                                     player.setPostsRoute(Train.idx,QVector <int> (0));
                                 } else{
                                     postsToAvoid.pop_back();
+                                    if(!CanIGo(player, idx, Train, player.getPlayerTrains()[i]))
+                                        break;
                                     player.setRoute(Train.idx, currentPath);
                                 }
                                 break;
@@ -446,5 +456,19 @@ void Strategy::CalculateArmorTrain(Map1 &map, Player &player)
         if(indexOfFirstArmorTrain == player.getPlayerTrains().size())
             break;
     }
+}
+
+bool Strategy::CanIGo(Player &player, int idx, train Train, train anotherTrain)
+{
+    if((pointsOfGraph[layer0.getPoints(anotherTrain.line_idx).first] == player.getPlayerData().home_idx ||
+            pointsOfGraph[layer0.getPoints(anotherTrain.line_idx).second] == player.getPlayerData().home_idx) && !Train.route.isEmpty() && anotherTrain.route.size() > 1 &&
+            anotherTrain.route.last() == Train.route.first() && player.getPlayerTrains()[idx].route[1] == anotherTrain.route[anotherTrain.route.size() - 2])
+    {
+        player.setWaitIteration(Train.idx, player.getPlayerTrains()[idx].waitIteration + 1);
+        player.setRoute(Train.idx, QVector <int> (0));
+        player.setPostsRoute(Train.idx,QVector <int> (0));
+        return false;
+    }
+    return true;
 }
 
