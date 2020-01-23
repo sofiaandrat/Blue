@@ -29,7 +29,8 @@ void Strategy::Moving(Map1 &map, Player &player)
         {
             qDebug() << "555555555555555555";
             QVector <int> empty(0);
-            QVector <int> route = alg.manipPaths(player.getPlayerTrains()[i].postsRoute.last(), player.getPlayerData().home_idx, empty,empty);
+            QVector <QVector<int>> emptyLinesToAvoid(0);
+            QVector <int> route = alg.manipPaths(player.getPlayerTrains()[i].postsRoute.last(), player.getPlayerData().home_idx, empty,empty,emptyLinesToAvoid);
             player.setRoute(player.getPlayerTrains()[i].idx, route);
             qDebug() << "ooooy";
             NotCrashFunction(player,player.getPlayerTrains()[i]);
@@ -64,7 +65,8 @@ void Strategy::Moving(Map1 &map, Player &player)
                     player.setPointsToAvoid(player.getPlayerTrains()[i], pointsToAvoid);
                 }
                 qDebug() << "1010110101010";
-                QVector <int> route = alg.manipPaths(player.getPlayerData().home_idx,player.getPlayerTrains()[i].postsRoute.last(),pointsToVisit,pointsToAvoid);
+                QVector <QVector<int>> emptyLinesToAvoid(0);
+                QVector <int> route = alg.manipPaths(player.getPlayerData().home_idx,player.getPlayerTrains()[i].postsRoute.last(),pointsToVisit,pointsToAvoid, emptyLinesToAvoid);
                 player.setRoute(player.getPlayerTrains()[i].idx, route);
                 qDebug() << "11_11_11_11";
                 NotCrashFunction(player,player.getPlayerTrains()[i]);
@@ -290,8 +292,9 @@ void Strategy::NotCrashFunction(Player &player, train Train)
                         if(player.getPlayerTrains()[i].route.indexOf(player.getPlayerTrains()[idx].route[j]) != -1 && i != idx)
                         {
                             postsToAvoid.append(pointsOfGraph[player.getPlayerTrains()[idx].route[j]]);
+                            QVector <QVector<int>> emptyLinesToAvoid(0);
                             player.setRoute(Train.idx, alg.manipPaths(pointsOfGraph[player.getPlayerTrains()[idx].route[0]],
-                                    pointsOfGraph[player.getPlayerTrains()[idx].route.last()], postsToVisit,postsToAvoid));
+                                    pointsOfGraph[player.getPlayerTrains()[idx].route.last()], postsToVisit,postsToAvoid, emptyLinesToAvoid));
                             if(CalculateLengthOfRoute(player.getPlayerTrains()[idx].route) > (current_length + player.getPlayerTrains()[idx].waitIteration + 1) ||
                                     CalculateLengthOfRoute(player.getPlayerTrains()[idx].route) < current_length)
                             {

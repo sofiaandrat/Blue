@@ -38,12 +38,12 @@ QVector <QVector <int> > DijkstrasAlg::getPaths() {
     return shortestPaths;
 }
 
-QVector<int> DijkstrasAlg::manipPaths(int startpIdx, int endpIdx, QVector<int> &postsToVisit, QVector<int> &postsToAvoid)
+QVector<int> DijkstrasAlg::manipPaths(int startpIdx, int endpIdx, QVector<int> &postsToVisit, QVector<int> &postsToAvoid, QVector<QVector<int>> &linesToAvoid)
 {
     QVector<int> points;
     QVector<int> resultPath;
     QVector<QVector<int>> tempTable = Table;
-    removePosts(postsToAvoid, tempTable);
+    removePostsAndLines(postsToAvoid, linesToAvoid, tempTable);
     points.append(startpIdx);
     points.append(postsToVisit);
     QVector <bool> visited(points.size(), false);
@@ -117,7 +117,7 @@ QVector <QVector <int> > DijkstrasAlg::shPathsFunc2(int rawIdx, QVector<QVector<
 }
 
 //nulls edges to passed posts by way of avoiding them
-void DijkstrasAlg::removePosts(const QVector<int> &postsToRemove, QVector<QVector<int> > &tempTable)
+void DijkstrasAlg::removePostsAndLines(const QVector<int> &postsToRemove, const QVector<QVector<int>> &linesToRemove, QVector<QVector<int> > &tempTable)
 {
     int pSize = pointsOfGraph.size();
     int mSize = postsToRemove.size();
@@ -129,5 +129,13 @@ void DijkstrasAlg::removePosts(const QVector<int> &postsToRemove, QVector<QVecto
             tempTable[index][k] = 0;
             tempTable[k][index] = 0;
         }
+    }
+    int lSize = linesToRemove.size();
+    for(int i = 0;i<lSize;i++)
+    {
+        int index1 = pointsOfGraph.indexOf(linesToRemove[i][0]);
+        int index2 = pointsOfGraph.indexOf(linesToRemove[i][1]);
+        tempTable[index1][index2] = 0;
+        tempTable[index2][index1] = 0;
     }
 }
